@@ -1,0 +1,100 @@
+{
+  "title": "Build a game",
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "Time to put it all together. A game is just **state** (a word, a board) plus **selection** (what is revealed, who won) plus a **loop** (keep asking until it's over). You now have every piece."
+    },
+    {
+      "type": "prose",
+      "md": "**Hangman — the reveal.** Start with a row of `_`, find which letters of the word were guessed with `∊`, and drop those letters into their positions by masked indexed-assignment."
+    },
+    {
+      "type": "cell",
+      "code": "reveal←{b←(≢⍺)⍴'_' ⋄ m←⍺∊⍵ ⋄ b[m/⍳≢⍺]←m/⍺ ⋄ b} ⋄ 'hangman' reveal 'an'"
+    },
+    {
+      "type": "cell",
+      "code": "wrong←{+/~⍵∊⍺} ⋄ 'hangman' wrong 'axe'"
+    },
+    {
+      "type": "exercise",
+      "id": "game-reveal",
+      "prompt": "Define reveal (blanks for unguessed letters) and show 'apple' revealed with the guesses 'pe'. Expect _pp_e.",
+      "solution": "reveal←{b←(≢⍺)⍴'_' ⋄ m←⍺∊⍵ ⋄ b[m/⍳≢⍺]←m/⍺ ⋄ b}",
+      "test": "'apple' reveal 'pe'",
+      "inputs": [],
+      "expected": "_pp_e",
+      "hint": "make a '_' row, mask with ⍺∊⍵, assign the guessed letters into their slots"
+    },
+    {
+      "type": "exercise",
+      "id": "game-wrong",
+      "prompt": "Define wrong, which counts how many of the guessed letters ⍵ are NOT in the word ⍺, then evaluate 'apple' wrong 'xpz'. Expect 2.",
+      "solution": "wrong←{+/~⍵∊⍺}",
+      "test": "'apple' wrong 'xpz'",
+      "inputs": [],
+      "expected": "2",
+      "hint": "~⍵∊⍺ marks guesses that miss; sum them"
+    },
+    {
+      "type": "prose",
+      "md": "**Hangman — play it.** The board below is driven by exactly the `reveal` function above: every time you guess, your letters are handed to `reveal` and the result is drawn. Type a letter and press Enter."
+    },
+    {
+      "type": "hangman",
+      "label": "Hangman — guess the hidden word, six lives.",
+      "word": "wizard",
+      "lives": 6
+    },
+    {
+      "type": "prose",
+      "md": "**Tic-tac-toe — the board.** A 3×3 character matrix of `.`, with moves dropped in by indexed assignment."
+    },
+    {
+      "type": "cell",
+      "code": "b←3 3⍴'.' ⋄ b[1;1]←'X' ⋄ b[2;2]←'O' ⋄ b[1;3]←'X' ⋄ b"
+    },
+    {
+      "type": "prose",
+      "md": "**Tic-tac-toe — the win check.** Number the cells 1–9. There are eight ways to win — three rows, three columns, two diagonals — so list them as an 8×3 matrix of positions. That matrix `L` is the heart of the check; here it is on its own:"
+    },
+    {
+      "type": "cell",
+      "code": "8 3⍴1 2 3 4 5 6 7 8 9 1 4 7 2 5 8 3 6 9 1 5 9 3 5 7",
+      "expect": "1 2 3\n4 5 6\n7 8 9\n1 4 7\n2 5 8\n3 6 9\n1 5 9\n3 5 7"
+    },
+    {
+      "type": "prose",
+      "md": "Now mask the board with `⍵='X'`, index that mask by `L` to gather each line's three cells, `∧/` to ask *is this whole line X?*, and `∨/` to ask *did any line win?*"
+    },
+    {
+      "type": "cell",
+      "code": "wins←{m←⍵='X' ⋄ L←8 3⍴1 2 3 4 5 6 7 8 9 1 4 7 2 5 8 3 6 9 1 5 9 3 5 7 ⋄ ∨/∧/m[L]} ⋄ wins 'XXX...OO.'"
+    },
+    {
+      "type": "cell",
+      "code": "wins←{m←⍵='X' ⋄ L←8 3⍴1 2 3 4 5 6 7 8 9 1 4 7 2 5 8 3 6 9 1 5 9 3 5 7 ⋄ ∨/∧/m[L]} ⋄ wins 'X....X.X.'"
+    },
+    {
+      "type": "exercise",
+      "id": "game-ttt-place",
+      "prompt": "Build a tic-tac-toe board: a 3×3 grid of '.', then place X at the top-left and O in the centre, and show it. Expect X on the first row and O in the middle.",
+      "solution": "b←3 3⍴'.' ⋄ b[1;1]←'X' ⋄ b[2;2]←'O' ⋄ b",
+      "test": "",
+      "inputs": [],
+      "expected": "X..\n.O.\n...",
+      "hint": "reshape '.' into 3 3, then assign single cells with b[r;c]←"
+    },
+    {
+      "type": "exercise",
+      "id": "game-ttt-win",
+      "prompt": "Define wins (does X hold a full line on a 9-character board?) and test it on 'XXX...OO.'. Expect 1.",
+      "solution": "wins←{m←⍵='X' ⋄ L←8 3⍴1 2 3 4 5 6 7 8 9 1 4 7 2 5 8 3 6 9 1 5 9 3 5 7 ⋄ ∨/∧/m[L]}",
+      "test": "wins 'XXX...OO.'",
+      "inputs": [],
+      "expected": "1",
+      "hint": "index the X-mask by the 8×3 line matrix, ∧/ each line, ∨/ the results"
+    }
+  ]
+}

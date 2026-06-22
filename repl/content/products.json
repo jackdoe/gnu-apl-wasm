@@ -1,0 +1,73 @@
+{
+  "title": "Outer ∘.f & inner f.g products",
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "The **outer product** `∘.f` combines every element of the left with every element of the right, building a table. `(⍳3)∘.×⍳3` is a multiplication table."
+    },
+    {
+      "type": "cell",
+      "code": "(⍳3) ∘.× ⍳3"
+    },
+    {
+      "type": "prose",
+      "md": "Any scalar function works after `∘.`. With `+` you get an addition table; with `=` you get a table of matches — and an identity matrix falls out of `(⍳n)∘.=⍳n`."
+    },
+    {
+      "type": "cell",
+      "code": "(⍳4) ∘.+ ⍳4"
+    },
+    {
+      "type": "cell",
+      "code": "(⍳4) ∘.= ⍳4"
+    },
+    {
+      "type": "prose",
+      "md": "The **inner product** `f.g` is the general matrix/vector product. `+.×` is the familiar dot product (multiply pairwise, then sum)."
+    },
+    {
+      "type": "cell",
+      "code": "1 2 3 +.× 4 5 6"
+    },
+    {
+      "type": "exercise",
+      "id": "products-times-table",
+      "prompt": "Build the 5×5 multiplication table from the first five integers.",
+      "solution": "(⍳5) ∘.× ⍳5",
+      "test": "",
+      "inputs": [],
+      "expected": "1  2  3  4  5\n2  4  6  8 10\n3  6  9 12 15\n4  8 12 16 20\n5 10 15 20 25",
+      "hint": "outer product with ×"
+    },
+    {
+      "type": "exercise",
+      "id": "products-identity",
+      "prompt": "Make a 4×4 identity matrix (1 on the diagonal, 0 elsewhere) using an outer product of equality.",
+      "solution": "(⍳4) ∘.= ⍳4",
+      "test": "",
+      "inputs": [],
+      "expected": "1 0 0 0\n0 1 0 0\n0 0 1 0\n0 0 0 1",
+      "hint": "an element is 1 only where the row index equals the column index"
+    },
+    {
+      "type": "exercise",
+      "id": "products-dot",
+      "prompt": "Compute the dot product of 1 2 3 and 4 5 6. Expect 32.",
+      "solution": "1 2 3 +.× 4 5 6",
+      "test": "",
+      "inputs": [],
+      "expected": "32",
+      "hint": "multiply element-wise then sum: the inner product +.×"
+    },
+    {
+      "type": "exercise",
+      "id": "products-add-table",
+      "prompt": "Build the 3×3 addition table from the first three integers.",
+      "solution": "(⍳3) ∘.+ ⍳3",
+      "test": "",
+      "inputs": [],
+      "expected": "2 3 4\n3 4 5\n4 5 6",
+      "hint": "outer product with +"
+    }
+  ]
+}

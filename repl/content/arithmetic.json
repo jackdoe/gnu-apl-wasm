@@ -1,0 +1,98 @@
+{
+  "title": "Arithmetic & the session",
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "Welcome. You type an expression, press **run**, and APL prints the result. Start with plain arithmetic — `+ - × ÷` are the four basics (note `×` and `÷`, not `*` and `/`)."
+    },
+    {
+      "type": "cell",
+      "code": "3 + 4"
+    },
+    {
+      "type": "cell",
+      "code": "10 ÷ 4"
+    },
+    {
+      "type": "prose",
+      "md": "The single most important rule in APL: **there is no operator precedence**. Everything evaluates **right to left**. So `2 × 3 + 4` is `2 × (3 + 4)`, which is `14` — not `10`."
+    },
+    {
+      "type": "cell",
+      "code": "2 × 3 + 4"
+    },
+    {
+      "type": "prose",
+      "md": "A negative number is written with a high minus [[¯]], which is part of the number. The `-` glyph is the *subtract* function. `¯3` is negative three; `-3` is *negate* three. They print the same but read differently."
+    },
+    {
+      "type": "cell",
+      "code": "¯3 + 10"
+    },
+    {
+      "type": "predict",
+      "prompt": "Right to left, no precedence. What does this print?",
+      "code": "10 - 2 × 3"
+    },
+    {
+      "type": "cell",
+      "code": "- 3"
+    },
+    {
+      "type": "prose",
+      "md": "Power is `*`, and `*` with no left argument is *e to the power* (the exponential). Magnitude (absolute value) is `|`."
+    },
+    {
+      "type": "cell",
+      "code": "2 * 10"
+    },
+    {
+      "type": "cell",
+      "code": "| ¯7"
+    },
+    {
+      "type": "exercise",
+      "id": "arith-rtl",
+      "prompt": "Relying on right-to-left order, write a single expression with no parentheses that computes 2 plus 3 times 4, giving 14.",
+      "solution": "2 + 3 × 4",
+      "test": "",
+      "inputs": [],
+      "expected": "14",
+      "hint": "the rightmost operation happens first",
+      "requires": "×"
+    },
+    {
+      "type": "exercise",
+      "id": "arith-negative",
+      "prompt": "Add negative five to twelve using the high-minus sign. Expect 7.",
+      "solution": "¯5 + 12",
+      "test": "",
+      "inputs": [],
+      "expected": "7",
+      "hint": "¯ is backtick-2; it sticks to the number",
+      "requires": "¯"
+    },
+    {
+      "type": "exercise",
+      "id": "arith-power",
+      "prompt": "Compute three to the fourth power. Expect 81.",
+      "solution": "3 * 4",
+      "test": "",
+      "inputs": [],
+      "expected": "81",
+      "hint": "* is power in APL, not ×",
+      "requires": "*"
+    },
+    {
+      "type": "exercise",
+      "id": "arith-parens",
+      "prompt": "Use parentheses to force the subtraction first: compute (10 minus 4) times 5. Expect 30.",
+      "solution": "(10 - 4) × 5",
+      "test": "",
+      "inputs": [],
+      "expected": "30",
+      "hint": "parentheses override the right-to-left default",
+      "requires": "("
+    }
+  ]
+}

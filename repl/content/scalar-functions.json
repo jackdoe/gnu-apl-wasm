@@ -1,0 +1,104 @@
+{
+  "title": "Scalar functions & comparison",
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "A **scalar function** applies independently to each element and threads through arrays of any shape. You have already used `+ - × ÷ *`. Here are more: `⌈` maximum, `⌊` minimum, `|` residue/magnitude, `○` is pi-times (monadic) and trig (dyadic)."
+    },
+    {
+      "type": "cell",
+      "code": "5 ⌈ 3 8 1 9 2"
+    },
+    {
+      "type": "cell",
+      "code": "3 ⌊ 1 2 3 4 5"
+    },
+    {
+      "type": "prose",
+      "md": "Dyadic `|` is **residue** — the remainder of the right argument divided by the left. `2 | n` is the classic even/odd test."
+    },
+    {
+      "type": "cell",
+      "code": "2 | 1 2 3 4 5"
+    },
+    {
+      "type": "cell",
+      "code": "10 | 27"
+    },
+    {
+      "type": "prose",
+      "md": "Comparisons (`< ≤ = ≥ > ≠`) are scalar functions too. They return **1 for true and 0 for false** — Boolean arrays you can compute with."
+    },
+    {
+      "type": "cell",
+      "code": "3 < 1 2 3 4 5"
+    },
+    {
+      "type": "cell",
+      "code": "(⍳5) = 3"
+    },
+    {
+      "type": "prose",
+      "md": "[[○]] alone (monadic) multiplies by π — useful for turning revolutions into radians. Dyadic `k ○ x` picks a trig function by the left number `k`:\n- `1 ○ x` is sine\n- `2 ○ x` is cosine\n- `3 ○ x` is tangent"
+    },
+    {
+      "type": "cell",
+      "code": "○ 1",
+      "expect": "3.141592654"
+    },
+    {
+      "type": "cell",
+      "code": "1 ○ 0",
+      "expect": "0"
+    },
+    {
+      "type": "cell",
+      "code": "2 ○ 0",
+      "expect": "1"
+    },
+    {
+      "type": "exercise",
+      "id": "scalar-max",
+      "prompt": "Clamp the vector 3 8 1 9 2 so nothing is below 4: replace each element with the larger of itself and 4. Expect 4 8 4 9 4.",
+      "solution": "4 ⌈ 3 8 1 9 2",
+      "test": "",
+      "inputs": [],
+      "expected": "4 8 4 9 4",
+      "hint": "⌈ is dyadic maximum, element by element",
+      "requires": "⌈"
+    },
+    {
+      "type": "exercise",
+      "id": "scalar-parity",
+      "prompt": "Produce a Boolean vector marking the odd numbers among 1 to 8 (1 for odd, 0 for even).",
+      "solution": "2 | ⍳8",
+      "test": "",
+      "inputs": [],
+      "expected": "1 0 1 0 1 0 1 0",
+      "hint": "remainder mod 2 is 1 exactly for odd numbers",
+      "requires": "|"
+    },
+    {
+      "type": "exercise",
+      "id": "scalar-threshold",
+      "prompt": "From the first six integers, mark which are strictly greater than 3 (1 for yes, 0 for no).",
+      "solution": "(⍳6) > 3",
+      "test": "",
+      "inputs": [],
+      "expected": "0 0 0 1 1 1",
+      "hint": "comparison returns 1s and 0s",
+      "requires": ">"
+    },
+    {
+      "type": "exercise",
+      "id": "scalar-abs",
+      "prompt": "Take the magnitudes (absolute values) of ¯3 4 ¯5 6. Expect 3 4 5 6.",
+      "solution": "| ¯3 4 ¯5 6",
+      "test": "",
+      "inputs": [],
+      "expected": "3 4 5 6",
+      "hint": "monadic | is magnitude",
+      "requires": "|"
+    }
+  ]
+}

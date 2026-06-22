@@ -1,0 +1,5 @@
+["arithmetic", "vectors", "reshape", "scalar-functions",
+ "reduce-scan", "indexing", "products", "structural",
+ "operators", "sorting", "dfns", "nested", "boolean-idioms",
+ "conditionals", "text", "control-flow", "io",
+ "capstones", "games"]

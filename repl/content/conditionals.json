@@ -1,0 +1,72 @@
+{
+  "title": "Choosing with a condition",
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "A comparison gives 1 or 0. To *choose between two values* on a condition, the cleanest idiom is **pick**: index a two-item list with `1 + condition`. When the condition is 0 you get the first item, when it is 1 you get the second."
+    },
+    {
+      "type": "cell",
+      "code": "⊃ (1 + 3 > 2) ⌷ 'no' 'yes'"
+    },
+    {
+      "type": "prose",
+      "md": "The other idiom is plain arithmetic: multiply by the mask. `⍵ × ⍵ > 0` keeps positives and zeroes everything else — a one-line clamp, no branch in sight."
+    },
+    {
+      "type": "cell",
+      "code": "{⍵ × ⍵ > 0} ¯3 4 ¯1 6 ¯2"
+    },
+    {
+      "type": "prose",
+      "md": "`∊` (membership) asks *is each of these in that set?* — and it is the backbone of selection. `'hangman' ∊ 'an'` marks every letter of the word that has been guessed."
+    },
+    {
+      "type": "cell",
+      "code": "'hangman' ∊ 'an'"
+    },
+    {
+      "type": "exercise",
+      "id": "cond-sign",
+      "prompt": "Define sign so that a positive ⍵ gives 'pos' and anything else 'neg', then evaluate sign 5. Use the pick idiom. Expect pos.",
+      "solution": "sign ← {⊃(1+⍵>0)⌷'neg' 'pos'}",
+      "test": "sign 5",
+      "inputs": [],
+      "expected": "pos",
+      "hint": "1+(⍵>0) is 1 or 2; index the pair 'neg' 'pos'"
+    },
+    {
+      "type": "exercise",
+      "id": "cond-clamp",
+      "prompt": "Using a mask (no ⌈), turn the vector ¯3 4 ¯1 6 ¯2 into 0 4 0 6 0 — keep positives, zero the rest.",
+      "solution": "{⍵ × ⍵ > 0} ¯3 4 ¯1 6 ¯2",
+      "test": "",
+      "inputs": [],
+      "expected": "0 4 0 6 0",
+      "hint": "multiply each element by whether it is greater than 0",
+      "requires": ">"
+    },
+    {
+      "type": "exercise",
+      "id": "cond-member",
+      "prompt": "Mark which letters of 'banana' appear in the guessed set 'an' (1 for guessed, 0 for not).",
+      "solution": "'banana' ∊ 'an'",
+      "test": "",
+      "inputs": [],
+      "expected": "0 1 1 1 1 1",
+      "hint": "∊ tests membership letter by letter",
+      "requires": "∊"
+    },
+    {
+      "type": "exercise",
+      "id": "cond-among",
+      "prompt": "Of the numbers 1 2 3 4 5 6, mark which are members of the set 2 3 5 (the primes below 6).",
+      "solution": "(1 2 3 4 5 6) ∊ 2 3 5",
+      "test": "",
+      "inputs": [],
+      "expected": "0 1 1 0 1 0",
+      "hint": "left ∊ right tests each left element for membership in right",
+      "requires": "∊"
+    }
+  ]
+}

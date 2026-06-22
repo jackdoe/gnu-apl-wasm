@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APL — PLAYGROUND</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body class="repl">
+  <header>
+    <div class="brand"><span class="mark">⎕</span>APL<b>·</b>PLAYGROUND</div>
+    <div class="status"><a class="navlink" href="./learn.html">LEARN →</a><span><span class="dot" id="dot"></span><b id="statustxt">BOOTING ENGINE</b></span></div>
+  </header>
+  <main>
+    <section class="col left">
+      <div class="label">[ EDITOR ]<span class="hint">PREFIX <span class="prefix" id="prefbox">`</span> + KEY → GLYPH</span></div>
+      <div class="editwrap">
+        <textarea id="src" spellcheck="false" autocomplete="off" autocapitalize="off">2 3⍴⍳6
++/⍳100
+mean ← {(+/⍵)÷≢⍵}
+mean ⍳100
+(⍳5) ∘.× ⍳5</textarea>
+        <div class="toolbar">
+          <button id="run">▸ Run &nbsp;(Ctrl·↵)</button>
+          <button id="share">Share link</button>
+          <button id="clear">Clear session</button>
+        </div>
+      </div>
+      <div class="keys-wrap">
+        <div id="kbmount"></div>
+      </div>
+    </section>
+    <section class="col right">
+      <div class="label">[ SESSION ]<span class="hint"><label class="persist"><input type="checkbox" id="persist"> persist session</label></span></div>
+      <div id="out"><span class="ghost">Engine starting. Output appears here.</span></div>
+    </section>
+  </main>
+  <script type="module" src="./repl.js"></script>
+</body>
+</html>

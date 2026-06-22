@@ -1,0 +1,69 @@
+{
+  "title": "Traditional functions & branching (⎕FX)",
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "A dfn is one expression. Real programs need several steps, decisions, and repetition — that is a **traditional function**. You build one here with `⎕FX`, handing it a list of lines: the **header** first (result, name, arguments), then the body."
+    },
+    {
+      "type": "cell",
+      "code": "⎕FX 'R←dbl N' 'R←2×N' ⋄ dbl 21"
+    },
+    {
+      "type": "prose",
+      "md": "(In a desktop APL you would open the `∇` editor; this in-browser engine cannot, so `⎕FX` is how we define multi-line functions here.)"
+    },
+    {
+      "type": "prose",
+      "md": "Inside the body, `→(condition)/label` jumps to a label when the condition is true, and `→0` ends the function. That is all you need for branching and for **recursion** — a function that calls itself, like factorial."
+    },
+    {
+      "type": "cell",
+      "code": "⎕FX 'R←fact N' 'R←1' '→(N≤1)/0' 'R←N×fact N-1' ⋄ fact 5"
+    },
+    {
+      "type": "cell",
+      "code": "⎕FX 'R←fib N' 'R←N' '→(N<2)/0' 'R←(fib N-1)+fib N-2' ⋄ fib 10"
+    },
+    {
+      "type": "exercise",
+      "id": "flow-dbl",
+      "prompt": "Use ⎕FX to define a traditional function dbl with header R←dbl N that returns twice N, then evaluate dbl 21. Expect 42.",
+      "solution": "⎕FX 'R←dbl N' 'R←2×N'",
+      "test": "dbl 21",
+      "inputs": [],
+      "expected": "42",
+      "hint": "⎕FX takes the header line then each body line as separate strings"
+    },
+    {
+      "type": "exercise",
+      "id": "flow-fact",
+      "prompt": "Define a recursive factorial with ⎕FX (base case →(N≤1)/0), then compute fact 6. Expect 720.",
+      "solution": "⎕FX 'R←fact N' 'R←1' '→(N≤1)/0' 'R←N×fact N-1'",
+      "test": "fact 6",
+      "inputs": [],
+      "expected": "720",
+      "hint": "set R←1, return early when N≤1, otherwise R←N×fact N-1"
+    },
+    {
+      "type": "exercise",
+      "id": "flow-fib",
+      "prompt": "Define a recursive Fibonacci with ⎕FX (fib 0 is 0, fib 1 is 1), then compute fib 12. Expect 144.",
+      "solution": "⎕FX 'R←fib N' 'R←N' '→(N<2)/0' 'R←(fib N-1)+fib N-2'",
+      "test": "fib 12",
+      "inputs": [],
+      "expected": "144",
+      "hint": "return N when N<2, otherwise sum the two previous"
+    },
+    {
+      "type": "exercise",
+      "id": "flow-max",
+      "prompt": "Define a dyadic function mymax (header R←A mymax B) using a branch so that 3 mymax 8 gives 8 — without using ⌈.",
+      "solution": "⎕FX 'R←A mymax B' 'R←A' '→(A≥B)/0' 'R←B'",
+      "test": "3 mymax 8",
+      "inputs": [],
+      "expected": "8",
+      "hint": "start R←A, return if A≥B, otherwise R←B"
+    }
+  ]
+}

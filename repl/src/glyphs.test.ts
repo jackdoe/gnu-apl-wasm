@@ -1,0 +1,26 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { MAP, KEYOF, LAYOUT } from './glyphs.js';
+
+test('MAP derives core glyphs from LAYOUT', () => {
+  assert.equal(MAP['i'], '⍳');
+  assert.equal(MAP['r'], '⍴');
+  assert.equal(MAP['='], '÷');
+  assert.equal(MAP['2'], '¯');
+});
+
+test('MAP keeps the prefix-only glyphs that the old PALETTE dropped', () => {
+  assert.equal(MAP['h'], '∆');
+  assert.equal(MAP['k'], "'");
+});
+
+test('LAYOUT has no duplicate keys', () => {
+  const keys = LAYOUT.flat().map(([k]) => k);
+  assert.equal(keys.length, new Set(keys).size);
+});
+
+test('KEYOF inverts MAP', () => {
+  assert.equal(KEYOF['⍳'], 'i');
+  assert.equal(KEYOF['÷'], '=');
+  assert.equal(KEYOF['⍵'], 'w');
+});

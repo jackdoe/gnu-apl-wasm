@@ -1,0 +1,52 @@
+Fix a latent use-after-destruction in the scalar-function worklist.
+
+do_scalar_B / do_scalar_AB end each job with an explicit destructor call
+(job->~PJob_scalar_B()) on Thread_context::get_master().joblist_B's persistent
+`current_job` member. The next call's next_job() then does
+`current_job = jobs.back()` — copy-assignment INTO an object whose lifetime has
+already ended. On native x86 this is benign (the Value_P members were just
+cleared), but under WASM's typed call_indirect it corrupts a Cell vtable
+pointer after a couple of reuses, trapping the 3rd monadic scalar call with
+"null function or function signature mismatch".
+
+Replacing the explicit destructor with assignment of a fresh empty job
+releases ownership identically (PJob's destructor only clears its Value_P
+members) while leaving `current_job` a valid, assignable object.
+
+--- apl-2.0/src/ScalarFunction.cc
++++ apl-2.0/src/ScalarFunction.cc
+@@ -191,7 +191,7 @@
+                         ec = (cell_B.*fun)(&cell_Z);
+                         if (ec != E_NO_ERROR)
+                            {
+-                             job_B->~PJob_scalar_B();   // ownership of B, and Z
++                             *job_B = PJob_scalar_B();   // ownership of B, and Z
+                              job_B = 0;
+                              return Value_P();
+                            }
+@@ -200,7 +200,7 @@
+                  }
+            }
+         job_B->value_Z->check_value(LOC);
+-        job_B->~PJob_scalar_B();   // give up ownership of B, and Z.
++        *job_B = PJob_scalar_B();   // give up ownership of B, and Z.
+         job_B = 0;
+       }
+
+@@ -503,7 +503,7 @@
+                         if (ec != E_NO_ERROR)
+                            {
+                              // give up the ownership of A, B, Z.
+-                             job_AB->~PJob_scalar_AB();
++                             *job_AB = PJob_scalar_AB();
+                              job_AB = 0;
+                              return Value_P();
+                            }
+@@ -512,7 +512,7 @@
+                  }
+            }
+         job_AB->value_Z->check_value(LOC);
+-        job_AB->~PJob_scalar_AB();   // give up ownership of A, B, and Z.
++        *job_AB = PJob_scalar_AB();   // give up ownership of A, B, and Z.
+         job_AB = 0;
+       }

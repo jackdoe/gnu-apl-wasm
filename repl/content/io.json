@@ -1,0 +1,72 @@
+{
+  "title": "Input: ⎕ and ⍞",
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "`⎕` (quad) is a value that **reads what you type and evaluates it as APL**. Wherever `⎕` appears, your input drops in. Type a number below and run — `⎕` becomes that number."
+    },
+    {
+      "type": "tryinput",
+      "code": "2 × ⎕",
+      "ask": "type a number, then Enter"
+    },
+    {
+      "type": "prose",
+      "md": "Because `⎕` *evaluates* what you type, you can enter a whole expression — try `3 + 4`, or a vector like `1 2 3`."
+    },
+    {
+      "type": "tryinput",
+      "code": "10 + ⎕",
+      "ask": "type a number or expression"
+    },
+    {
+      "type": "prose",
+      "md": "`⍞` (quote-quad) is the same idea but reads **raw characters** — no evaluation. Type a word and watch it come back reversed."
+    },
+    {
+      "type": "tryinput",
+      "code": "⌽ ⍞",
+      "ask": "type a word"
+    },
+    {
+      "type": "prose",
+      "md": "That is all input is: a place your data enters. The exercises below are graded by running your expression on one fixed input, shown in each task."
+    },
+    {
+      "type": "exercise",
+      "id": "io-double",
+      "prompt": "Write an expression that reads a number with ⎕ and prints its double. (Graded with the input 21 → 42.)",
+      "solution": "2 × ⎕",
+      "test": "",
+      "inputs": [
+        "21"
+      ],
+      "expected": "⎕:\n      21\n42",
+      "hint": "⎕ stands for whatever value is typed in"
+    },
+    {
+      "type": "exercise",
+      "id": "io-square",
+      "prompt": "Write an expression that reads a number with ⎕ and prints its square. (Graded with the input 9 → 81.)",
+      "solution": "⎕ * 2",
+      "test": "",
+      "inputs": [
+        "9"
+      ],
+      "expected": "⎕:\n      9\n81",
+      "hint": "raise the input to the power 2"
+    },
+    {
+      "type": "exercise",
+      "id": "io-charrev",
+      "prompt": "Write an expression that reads a word with ⍞ and prints it reversed. (Graded with the input 'stressed' → desserts.)",
+      "solution": "⌽ ⍞",
+      "test": "",
+      "inputs": [
+        "stressed"
+      ],
+      "expected": "stressed\ndesserts",
+      "hint": "⍞ reads raw characters; ⌽ reverses them"
+    }
+  ]
+}

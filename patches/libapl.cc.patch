@@ -1,0 +1,60 @@
+Fix stale references AND make apl_exec exception-safe.
+
+1) Three stale references in upstream libapl.cc (wrong include, two renamed
+   types) so it builds against the apl-2.0 headers.
+2) apl_exec() called Command::process_line() with no try/catch, so an APL
+   error thrown from the finish_context phase (e.g. a top-level branch like
+   →3) escaped libapl as an uncaught C++ exception and crashed the host.
+   The native binary wraps process_line; libapl now does too — reporting the
+   error (⎕EM lines) like native instead of escaping.
+
+--- apl-2.0/src/libapl.cc	2026-06-22 19:22:20.823876582 +0200
++++ apl-2.0/src/libapl.cc	2026-06-22 19:22:20.871967852 +0200
+@@ -30,7 +30,7 @@
+ 
+ #include <Command.hh>
+ #include <ComplexCell.hh>
+-#include <DiffOut.hh>
++#include <FileBuffers.hh>
+ #include <Error.hh>
+ #include <FloatCell.hh>
+ #include <InputFile.hh>
+@@ -371,7 +371,19 @@
+ UTF8_string line_utf8(line);
+ UCS_string line_ucs(line_utf8);
+ const StateIndicator * si = Workspace::SI_top();
+-  Command::process_line(line_ucs, 0);
++   try
++      {
++        Command::process_line(line_ucs, 0);
++      }
++   catch (Error & err)
++      {
++        if (err.get_print_loc() == 0)   err.print_em(UERR, LOC);
++        return LIBAPL_error(err.get_error_code());
++      }
++   catch (...)
++      {
++        return LAE_UNKNOWN_ERROR;
++      }
+    if (si == Workspace::SI_top())   return LAE_NO_ERROR;
+ 
+    si = Workspace::SI_top_error(false);
+@@ -535,7 +547,7 @@
+    text.reserve(len);
+    for (const char ** f = function_lines_utf8; *f; ++f)
+       {
+-        text << *f << UNI_LF;
++        text << *f << "\n";
+       }
+ 
+    return fix_function_NL(text.c_str());
+@@ -759,7 +771,7 @@
+ //----------------------------------------------------------------------------
+ extern DiffOut DOUT_filebuf;
+ extern DiffOut UERR_filebuf;
+-extern ErrOut  CERR_filebuf;
++extern ErrOut_filebuf  CERR_filebuf;
+ 
+ int
+ expand_LF_to_CRLF(int on)

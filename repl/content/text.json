@@ -1,0 +1,85 @@
+{
+  "title": "Text: characters, ⍕ and ⍎",
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "Text is just an array of characters, written in single quotes. All the array tools you know work on it: shape, reverse, catenate, compare."
+    },
+    {
+      "type": "cell",
+      "code": "'hello, apl'"
+    },
+    {
+      "type": "cell",
+      "code": "≢ 'banana'"
+    },
+    {
+      "type": "cell",
+      "code": "⌽ 'stressed'"
+    },
+    {
+      "type": "cell",
+      "code": "'foo' , 'bar'"
+    },
+    {
+      "type": "prose",
+      "md": "Comparing characters gives a Boolean mask, so counting a letter is just `+/ text = 'x'`."
+    },
+    {
+      "type": "cell",
+      "code": "+/ 'banana' = 'a'"
+    },
+    {
+      "type": "prose",
+      "md": "`⍕` (format) turns a value into its text representation; `⍎` (execute) does the reverse — it runs a string as APL code."
+    },
+    {
+      "type": "cell",
+      "code": "⍕ 42"
+    },
+    {
+      "type": "cell",
+      "code": "⍎ '6 × 7'"
+    },
+    {
+      "type": "exercise",
+      "id": "text-length",
+      "prompt": "Report how many characters are in 'mississippi'. Expect 11.",
+      "solution": "≢ 'mississippi'",
+      "test": "",
+      "inputs": [],
+      "expected": "11",
+      "hint": "≢ tallies characters just like numbers"
+    },
+    {
+      "type": "exercise",
+      "id": "text-reverse",
+      "prompt": "Reverse the word 'desserts', giving stressed.",
+      "solution": "⌽ 'desserts'",
+      "test": "",
+      "inputs": [],
+      "expected": "stressed",
+      "hint": "⌽ reverses any vector, characters included"
+    },
+    {
+      "type": "exercise",
+      "id": "text-count",
+      "prompt": "Count how many times the letter s appears in 'mississippi'. Expect 4.",
+      "solution": "+/ 'mississippi' = 's'",
+      "test": "",
+      "inputs": [],
+      "expected": "4",
+      "hint": "compare against 's' to get a mask, then sum it"
+    },
+    {
+      "type": "exercise",
+      "id": "text-execute",
+      "prompt": "Use ⍎ to evaluate the string '2 + 3 × 4' as APL code. Expect 14.",
+      "solution": "⍎ '2 + 3 × 4'",
+      "test": "",
+      "inputs": [],
+      "expected": "14",
+      "hint": "⍎ runs the text as an expression"
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "title": "Indexing [ ] and selection",
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "Square brackets select elements. `v[i]` picks item `i` (counting from 1 by default). The index can itself be a vector, picking several items at once."
+    },
+    {
+      "type": "cell",
+      "code": "(10 20 30 40 50)[3]"
+    },
+    {
+      "type": "cell",
+      "code": "(⍳10)[3 5 7]"
+    },
+    {
+      "type": "prose",
+      "md": "A matrix is indexed with a semicolon separating the axes: `M[row;col]`. Leave one side blank to take a whole row or column."
+    },
+    {
+      "type": "cell",
+      "code": "(3 3 ⍴ ⍳9)[2;3]"
+    },
+    {
+      "type": "cell",
+      "code": "(3 3 ⍴ ⍳9)[2;]"
+    },
+    {
+      "type": "cell",
+      "code": "(3 3 ⍴ ⍳9)[;1]"
+    },
+    {
+      "type": "prose",
+      "md": "You can also **assign through** an index to change selected elements in place. The `⋄` (diamond) separates two statements on one line so we can change then show."
+    },
+    {
+      "type": "cell",
+      "code": "v←5⍴0 ⋄ v[2 4]←9 ⋄ v"
+    },
+    {
+      "type": "exercise",
+      "id": "index-third",
+      "prompt": "Select the third element of 10 20 30 40 50. Expect 30.",
+      "solution": "(10 20 30 40 50)[3]",
+      "test": "",
+      "inputs": [],
+      "expected": "30",
+      "hint": "indices start at 1"
+    },
+    {
+      "type": "exercise",
+      "id": "index-odds",
+      "prompt": "From the first ten integers, pick the elements at positions 1 3 5 7 9, giving 1 3 5 7 9.",
+      "solution": "(⍳10)[1 3 5 7 9]",
+      "test": "",
+      "inputs": [],
+      "expected": "1 3 5 7 9",
+      "hint": "the index can be a vector"
+    },
+    {
+      "type": "exercise",
+      "id": "index-cell",
+      "prompt": "From the 3×3 grid of 1 to 9, select the element in row 2, column 3. Expect 6.",
+      "solution": "(3 3 ⍴ ⍳9)[2;3]",
+      "test": "",
+      "inputs": [],
+      "expected": "6",
+      "hint": "M[row;col]"
+    },
+    {
+      "type": "exercise",
+      "id": "index-row",
+      "prompt": "From the 3×3 grid of 1 to 9, take the whole second row, giving 4 5 6.",
+      "solution": "(3 3 ⍴ ⍳9)[2;]",
+      "test": "",
+      "inputs": [],
+      "expected": "4 5 6",
+      "hint": "leave the column side of the semicolon empty"
+    },
+    {
+      "type": "exercise",
+      "id": "index-assign",
+      "prompt": "Start from a vector of five zeros, set positions 2 and 4 to 9, and show the result 0 9 0 9 0. Use ⋄ to separate statements.",
+      "solution": "v←5⍴0 ⋄ v[2 4]←9 ⋄ v",
+      "test": "",
+      "inputs": [],
+      "expected": "0 9 0 9 0",
+      "hint": "assign into v[2 4] then evaluate v"
+    }
+  ]
+}

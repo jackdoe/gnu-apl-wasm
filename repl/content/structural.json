@@ -1,0 +1,133 @@
+{
+  "title": "Structural: ⌽ ⊖ ⍉ ↑ ↓ , ⍳ ∊",
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "These functions rearrange and reshape without doing arithmetic. `⌽` reverses a vector (or each row of a matrix); `⊖` flips a matrix top-to-bottom; `⍉` transposes (swaps rows and columns)."
+    },
+    {
+      "type": "cell",
+      "code": "⌽ 1 2 3 4 5"
+    },
+    {
+      "type": "cell",
+      "code": "⍉ 2 3 ⍴ ⍳6"
+    },
+    {
+      "type": "prose",
+      "md": "`↑` (take) keeps the first n items; a negative n takes from the end. `↓` (drop) removes the first n items."
+    },
+    {
+      "type": "cell",
+      "code": "3 ↑ ⍳10"
+    },
+    {
+      "type": "cell",
+      "code": "¯3 ↑ ⍳10"
+    },
+    {
+      "type": "cell",
+      "code": "3 ↓ ⍳10"
+    },
+    {
+      "type": "prose",
+      "md": "`,` (catenate) joins arrays end to end."
+    },
+    {
+      "type": "cell",
+      "code": "1 2 3 , 4 5 6",
+      "expect": "1 2 3 4 5 6"
+    },
+    {
+      "type": "prose",
+      "md": "Two lookups round out the toolkit:\n- dyadic [[⍳]] is **index-of**: `set ⍳ x` reports the position where `x` first appears\n- [[∊]] is **membership**: for each left item, is it somewhere on the right?"
+    },
+    {
+      "type": "cell",
+      "code": "2 4 6 8 ⍳ 6",
+      "expect": "3"
+    },
+    {
+      "type": "cell",
+      "code": "3 ∊ 1 2 3 4",
+      "expect": "1"
+    },
+    {
+      "type": "exercise",
+      "id": "structural-reverse",
+      "prompt": "Reverse the vector 1 2 3 4 5, giving 5 4 3 2 1.",
+      "solution": "⌽ 1 2 3 4 5",
+      "test": "",
+      "inputs": [],
+      "expected": "5 4 3 2 1",
+      "hint": "⌽ is reverse",
+      "requires": "⌽"
+    },
+    {
+      "type": "exercise",
+      "id": "structural-take",
+      "prompt": "Take the first three integers from ⍳10, giving 1 2 3.",
+      "solution": "3 ↑ ⍳10",
+      "test": "",
+      "inputs": [],
+      "expected": "1 2 3",
+      "hint": "n ↑ keeps the first n",
+      "requires": "↑"
+    },
+    {
+      "type": "exercise",
+      "id": "structural-drop",
+      "prompt": "Drop the first two elements of ⍳6, leaving 3 4 5 6.",
+      "solution": "2 ↓ ⍳6",
+      "test": "",
+      "inputs": [],
+      "expected": "3 4 5 6",
+      "hint": "n ↓ removes the first n",
+      "requires": "↓"
+    },
+    {
+      "type": "exercise",
+      "id": "structural-catenate",
+      "prompt": "Join 1 2 3 and 4 5 6 into one vector 1 2 3 4 5 6.",
+      "solution": "1 2 3 , 4 5 6",
+      "test": "",
+      "inputs": [],
+      "expected": "1 2 3 4 5 6",
+      "hint": ", catenates",
+      "requires": ","
+    },
+    {
+      "type": "exercise",
+      "id": "structural-transpose",
+      "prompt": "Transpose the 2×3 matrix made from ⍳6 into a 3×2 matrix.",
+      "solution": "⍉ 2 3 ⍴ ⍳6",
+      "test": "",
+      "inputs": [],
+      "expected": "1 4\n2 5\n3 6",
+      "hint": "⍉ swaps rows and columns",
+      "requires": "⍉"
+    },
+    {
+      "type": "exercise",
+      "id": "structural-indexof",
+      "prompt": "In the vector 2 4 6 8, find the position of the value 6. Expect 3.",
+      "solution": "2 4 6 8 ⍳ 6",
+      "test": "",
+      "inputs": [],
+      "expected": "3",
+      "hint": "dyadic ⍳ is index-of",
+      "requires": "⍳"
+    },
+    {
+      "type": "exercise",
+      "id": "structural-member",
+      "prompt": "Of the numbers 1 2 3 4 5, mark which belong to the set 2 4 (1 for member, 0 for not). Expect 0 1 0 1 0.",
+      "solution": "1 2 3 4 5 ∊ 2 4",
+      "test": "",
+      "inputs": [],
+      "expected": "0 1 0 1 0",
+      "hint": "left ∊ right tests each left item for membership",
+      "requires": "∊"
+    }
+  ]
+}

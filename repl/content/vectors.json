@@ -1,0 +1,101 @@
+{
+  "title": "Vectors & ⍳",
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "APL is built on **arrays**. The simplest is a vector: just write numbers separated by spaces."
+    },
+    {
+      "type": "cell",
+      "code": "1 2 3 4 5"
+    },
+    {
+      "type": "prose",
+      "md": "Arithmetic works on whole vectors at once, element by element. This is the heart of APL — no loops needed."
+    },
+    {
+      "type": "cell",
+      "code": "10 × 1 2 3 4 5"
+    },
+    {
+      "type": "cell",
+      "code": "1 2 3 + 100 200 300"
+    },
+    {
+      "type": "prose",
+      "md": "[[⍳]] (iota) generates the first `n` integers: `1 2 3 … n`. It is how you make a range."
+    },
+    {
+      "type": "cell",
+      "code": "⍳10",
+      "expect": "1 2 3 4 5 6 7 8 9 10"
+    },
+    {
+      "type": "prose",
+      "md": "`≢` (tally) counts how many items a vector has. `⍴` (rho, backtick-r) gives its shape as a vector."
+    },
+    {
+      "type": "cell",
+      "code": "≢ 1 2 3 4 5"
+    },
+    {
+      "type": "cell",
+      "code": "⍴ ⍳10"
+    },
+    {
+      "type": "exercise",
+      "id": "vectors-range",
+      "prompt": "Generate the integers from 1 to 7.",
+      "solution": "⍳7",
+      "test": "",
+      "inputs": [],
+      "expected": "1 2 3 4 5 6 7",
+      "hint": "⍳ is backtick-i",
+      "requires": "⍳"
+    },
+    {
+      "type": "exercise",
+      "id": "vectors-scale",
+      "prompt": "Take the vector 1 2 3 4 and double every element, giving 2 4 6 8.",
+      "solution": "2 × 1 2 3 4",
+      "test": "",
+      "inputs": [],
+      "expected": "2 4 6 8",
+      "hint": "a scalar applies to every element",
+      "requires": "×"
+    },
+    {
+      "type": "exercise",
+      "id": "vectors-squares",
+      "prompt": "Produce the squares of the first five integers: 1 4 9 16 25.",
+      "solution": "(⍳5) * 2",
+      "test": "",
+      "inputs": [],
+      "expected": "1 4 9 16 25",
+      "hint": "raise ⍳5 to the power 2; parenthesise ⍳5",
+      "requires": "*"
+    },
+    {
+      "type": "exercise",
+      "id": "vectors-count",
+      "prompt": "How many integers are in the range 1 to 50? Use a function that counts the items of ⍳50.",
+      "solution": "≢⍳50",
+      "test": "",
+      "inputs": [],
+      "expected": "50",
+      "hint": "≢ tallies; it reads right to left so it counts ⍳50",
+      "requires": "≢"
+    },
+    {
+      "type": "exercise",
+      "id": "vectors-shifted",
+      "prompt": "Make the vector 11 12 13 14 15 by adding 10 to the first five integers.",
+      "solution": "10 + ⍳5",
+      "test": "",
+      "inputs": [],
+      "expected": "11 12 13 14 15",
+      "hint": "add a scalar to ⍳5",
+      "requires": "⍳"
+    }
+  ]
+}

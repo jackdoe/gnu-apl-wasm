@@ -1,0 +1,69 @@
+{
+  "title": "Dfns: your own functions {⍺ ⍵}",
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "A **dfn** is a function written in braces. Inside, `⍵` (omega) is the right argument and `⍺` (alpha) is the left. The value of the last expression is the result."
+    },
+    {
+      "type": "cell",
+      "code": "{⍵ × ⍵} 9"
+    },
+    {
+      "type": "prose",
+      "md": "Use a dfn with no `⍺` as a one-argument (monadic) function, and with `⍺` as a two-argument (dyadic) one. Give it a name with `←` and call it like any built-in."
+    },
+    {
+      "type": "cell",
+      "code": "dbl ← {2 × ⍵} ⋄ dbl 1 2 3 4"
+    },
+    {
+      "type": "cell",
+      "code": "mean ← {(+/⍵) ÷ ≢⍵} ⋄ mean 2 4 9 5"
+    },
+    {
+      "type": "prose",
+      "md": "Because the argument is an array, your function is automatically vectorised — `dbl` doubled the whole vector with no loop. This is the APL way: write the operation once, let it apply to everything."
+    },
+    {
+      "type": "exercise",
+      "id": "dfns-square",
+      "prompt": "Define a function sq that squares its argument, then square 12. Expect 144.",
+      "solution": "sq ← {⍵ × ⍵}",
+      "test": "sq 12",
+      "inputs": [],
+      "expected": "144",
+      "hint": "result is the last expression; multiply ⍵ by itself"
+    },
+    {
+      "type": "exercise",
+      "id": "dfns-mean",
+      "prompt": "Define mean as sum divided by count, then take the mean of 10 20 30 40. Expect 25.",
+      "solution": "mean ← {(+/⍵) ÷ ≢⍵}",
+      "test": "mean 10 20 30 40",
+      "inputs": [],
+      "expected": "25",
+      "hint": "(+/⍵) ÷ ≢⍵"
+    },
+    {
+      "type": "exercise",
+      "id": "dfns-dyadic",
+      "prompt": "Define a dyadic function pct that returns ⍺ as a percentage of ⍵ (100 × ⍺ ÷ ⍵), then compute 30 pct 200. Expect 15.",
+      "solution": "pct ← {100 × ⍺ ÷ ⍵}",
+      "test": "30 pct 200",
+      "inputs": [],
+      "expected": "15",
+      "hint": "⍺ is the left argument, ⍵ the right"
+    },
+    {
+      "type": "exercise",
+      "id": "dfns-range-sum",
+      "prompt": "Define a function that sums the first ⍵ integers, then apply it to 10. Expect 55.",
+      "solution": "tri ← {+/⍳⍵}",
+      "test": "tri 10",
+      "inputs": [],
+      "expected": "55",
+      "hint": "+/⍳⍵"
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "title": "Nested arrays & depth ≡",
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "So far every array held plain numbers. APL also lets an item *be* another array. Write vectors side by side in parentheses to nest them."
+    },
+    {
+      "type": "cell",
+      "code": "(1 2 3) (4 5)"
+    },
+    {
+      "type": "prose",
+      "md": "`≡` (depth) reports how deeply nested an array is. A plain number is depth 0, a flat vector depth 1, a vector of vectors depth 2."
+    },
+    {
+      "type": "cell",
+      "code": "≡ 1 2 3"
+    },
+    {
+      "type": "cell",
+      "code": "≡ (1 2) (3 4 5)"
+    },
+    {
+      "type": "prose",
+      "md": "To reach inside, `↑` (first) returns the first item, and dyadic `n⊃` (pick) selects the n-th item. `¨` (each) maps a function over every item."
+    },
+    {
+      "type": "cell",
+      "code": "↑ (1 2 3) (4 5)"
+    },
+    {
+      "type": "cell",
+      "code": "2 ⊃ (1 2 3) (4 5)"
+    },
+    {
+      "type": "cell",
+      "code": "≢¨ (1 2 3) (4 5)"
+    },
+    {
+      "type": "exercise",
+      "id": "nested-depth",
+      "prompt": "Report the depth of the nested vector (1 2)(3 4 5)(6). Expect 2.",
+      "solution": "≡ (1 2) (3 4 5) (6)",
+      "test": "",
+      "inputs": [],
+      "expected": "2",
+      "hint": "a vector whose items are vectors has depth 2"
+    },
+    {
+      "type": "exercise",
+      "id": "nested-first",
+      "prompt": "Take the first item of (10 20 30)(40 50), giving 10 20 30.",
+      "solution": "↑ (10 20 30) (40 50)",
+      "test": "",
+      "inputs": [],
+      "expected": "10 20 30",
+      "hint": "monadic ↑ is first"
+    },
+    {
+      "type": "exercise",
+      "id": "nested-pick",
+      "prompt": "Pick the second item of (10 20 30)(40 50), giving 40 50.",
+      "solution": "2 ⊃ (10 20 30) (40 50)",
+      "test": "",
+      "inputs": [],
+      "expected": "40 50",
+      "hint": "n⊃ picks the n-th item"
+    },
+    {
+      "type": "exercise",
+      "id": "nested-total",
+      "prompt": "Count the total number of elements across the items of (1 2 3 4)(5 6)(7 8 9) by summing the length of each. Expect 9.",
+      "solution": "+/ ≢¨ (1 2 3 4) (5 6) (7 8 9)",
+      "test": "",
+      "inputs": [],
+      "expected": "9",
+      "hint": "≢¨ gives a length per item; +/ adds them"
+    }
+  ]
+}

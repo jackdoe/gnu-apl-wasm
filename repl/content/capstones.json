@@ -1,0 +1,95 @@
+{
+  "title": "Capstones",
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "Before the games, a gallery of one-liners. Each solves a real problem in a single line — no loops, no recursion, just arrays. Read them slowly; you now know every glyph in them."
+    },
+    {
+      "type": "prose",
+      "md": "**Primes.** This one rewards taking apart. Watch it grow on `1..5` before reading the whole line:\n- `(⍳5)∘.|⍳5` is the residue table — every number mod every number\n- `0=` marks the exact divisors\n- `+⌿` counts divisors per column\n- a prime has exactly two (1 and itself)"
+    },
+    {
+      "type": "cell",
+      "code": "0 = (⍳5) ∘.| ⍳5"
+    },
+    {
+      "type": "cell",
+      "code": "+⌿ 0 = (⍳5) ∘.| ⍳5",
+      "expect": "1 2 2 3 2"
+    },
+    {
+      "type": "cell",
+      "code": "primes←{a←⍳⍵ ⋄ (2=+⌿0=a∘.|a)/a} ⋄ primes 30"
+    },
+    {
+      "type": "prose",
+      "md": "**Pascal's triangle row.** The binomials `k!n` for `k` from 0 to `n` are one row of Pascal's triangle."
+    },
+    {
+      "type": "cell",
+      "code": "pascal←{(0,⍳⍵)!⍵} ⋄ pascal 6"
+    },
+    {
+      "type": "prose",
+      "md": "**Histogram.** The trick: reshaping `'*'` to a length gives a bar of stars. Do that to *each* count with `⍴¨`, then `⊃` discloses the ragged rows into one character matrix."
+    },
+    {
+      "type": "cell",
+      "code": "5 ⍴ '*'",
+      "expect": "*****"
+    },
+    {
+      "type": "cell",
+      "code": "hbar←{⊃⍵⍴¨⊂'*'} ⋄ hbar 3 1 4 1 5"
+    },
+    {
+      "type": "prose",
+      "md": "**Running average.** A cumulative sum `+\\⍵` divided by the running count `⍳≢⍵`."
+    },
+    {
+      "type": "cell",
+      "code": "ravg←{(+\\⍵)÷⍳≢⍵} ⋄ ravg 2 4 6 8 10"
+    },
+    {
+      "type": "exercise",
+      "id": "cap-primes",
+      "prompt": "Define primes (using the divisor-counting idea above) and list every prime up to 40.",
+      "solution": "primes←{a←⍳⍵ ⋄ (2=+⌿0=a∘.|a)/a}",
+      "test": "primes 40",
+      "inputs": [],
+      "expected": "2 3 5 7 11 13 17 19 23 29 31 37",
+      "hint": "a number is prime when +⌿0=a∘.|a equals 2"
+    },
+    {
+      "type": "exercise",
+      "id": "cap-pascal",
+      "prompt": "Define pascal and produce the row of Pascal's triangle for n = 8 (nine numbers, 1 8 28 … 28 8 1).",
+      "solution": "pascal←{(0,⍳⍵)!⍵}",
+      "test": "pascal 8",
+      "inputs": [],
+      "expected": "1 8 28 56 70 56 28 8 1",
+      "hint": "the row is the binomials (0,⍳⍵)!⍵"
+    },
+    {
+      "type": "exercise",
+      "id": "cap-histogram",
+      "prompt": "Define hbar and draw a star histogram for the counts 2 5 3 1 4.",
+      "solution": "hbar←{⊃⍵⍴¨⊂'*'}",
+      "test": "hbar 2 5 3 1 4",
+      "inputs": [],
+      "expected": "**\n*****\n***\n*\n****",
+      "hint": "reshape '*' to each count, then ⊃ to disclose into a matrix"
+    },
+    {
+      "type": "exercise",
+      "id": "cap-fizz",
+      "prompt": "Define a function that keeps the numbers from 1 to ⍵ that are divisible by 3 or 5, then run it on 20. Expect 3 5 6 9 10 12 15 18 20.",
+      "solution": "fizz←{((0=3|⍳⍵)∨(0=5|⍳⍵))/⍳⍵}",
+      "test": "fizz 20",
+      "inputs": [],
+      "expected": "3 5 6 9 10 12 15 18 20",
+      "hint": "build two divisibility masks, combine with ∨, then compress ⍳⍵"
+    }
+  ]
+}
