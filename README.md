@@ -91,28 +91,77 @@ Patches (neither changes APL semantics):
 
 ## Playground & learning environment (`repl/`)
 
-`repl/` is a self-contained, static black-and-white site built on the compiled
-engine. Serve it (`node repl/serve.mjs`, then open `http://localhost:8137`):
+`repl/` is a self-contained, dependency-free static site built on the compiled
+engine. It is written in TypeScript and compiled with `tsc` — no bundler, no
+framework. The whole site is assembled into `repl/dist/`, which is what you ship.
+
+### Build
+
+```sh
+cd repl
+npm install        # dev-only: typescript + @types/node (nothing ships to the browser)
+npm run build      # tsc compiles src/ → dist/, then build.mjs copies the static assets in
+```
+
+`repl/dist/` is then the complete site: the HTML, CSS, compiled ES modules,
+`apl.mjs` / `apl.wasm`, and `content/`. Every reference inside it is relative,
+so the directory is portable to any static host.
+
+### Test
+
+```sh
+npm test           # build → node --test on the compiled output → content validation
+```
+
+`validate.ts` re-derives every exercise's `expected` by running its solution
+through the real engine, so the stored answers can never drift.
+
+### Run locally
+
+```sh
+node serve.mjs     # serves dist/ at http://localhost:8137 (run a build first)
+```
+
+### Ship
+
+Copy `repl/dist/` to any static file host. That is the entire deploy — no build
+step on the server, no runtime dependencies, real MIME types only (`.wasm` →
+`application/wasm`, `.js` → `text/javascript`).
+
+### What's inside
+
+Source lives in `repl/src/` as focused ES modules:
+
+- `engine.ts` — the only wrapper over the WASM module; `apl_exec`'s return code
+  is the authoritative error signal (no output scraping).
+- `glyphs.ts` — one `LAYOUT` table drives both the backtick-prefix input map and
+  the on-screen QWERTY-shaped keyboard.
+- `dom.ts`, `share.ts`, `input-modal.ts`, `content.ts`, `progress.ts` — shared
+  helpers (DOM builders, the URL-hash codec, `⎕`/`⍞` detection, the typed
+  curriculum loader, progress storage).
+- `blocks/` — one renderer per content block type (`prose`, `cell`, `predict`,
+  `tryinput`, `hangman`, `exercise`), dispatched by a registry.
+- `repl.ts` / `learn.ts` — the two page entry points; `static/repl.html` and
+  `static/learn.html` are thin shells that load them.
+
+Two pages:
 
 - **`repl.html`** — a brutalist REPL: a glyph keyboard, backtick-prefix input
-  (`` ` `` then a key → the APL glyph), and right-to-left evaluation. Programs can
-  be shared by URL: **Share link** base64url-encodes the editor into the location
-  hash, and opening such a link restores it (decoded only as text into the
-  `textarea`, so a shared link can never inject anything).
-- **`learn.html`** — a live notebook: an 18-topic, zero-to-fluent curriculum
-  (~76 checked exercises) ending in a playable **hangman** (a keydown-driven
-  widget whose board is computed by the APL you wrote) and tic-tac-toe logic.
-  Cells auto-run; exercises are checked in-browser against a stored `expected`;
-  `⎕`/`⍞` input is a live "type it" box; progress and scroll position persist in
-  `localStorage`.
+  (`` ` `` then a key → the APL glyph), right-to-left evaluation, and a "persist
+  session" toggle (off by default, so each run starts fresh). Programs share by
+  URL — **Share link** base64url-encodes the editor into the location hash,
+  decoded only as text into the `textarea`, so a shared link can never inject
+  anything.
+- **`learn.html`** — a live notebook: a 19-topic, zero-to-fluent curriculum
+  (~80 checked exercises) from arithmetic through sorting and capstone
+  one-liners, ending in a playable **hangman** (its board computed by the APL you
+  wrote) and tic-tac-toe logic. Topics collapse to a title list and the page
+  opens to where you left off; cells auto-run; exercises check in-browser against
+  a stored `expected`, showing your output vs. expected on a miss; progress
+  persists in `localStorage`.
 
 Content lives in `repl/content/` as one JSON file per topic plus an ordered
-`_manifest.json`. `validate.mjs` re-derives every exercise's `expected` by running
-its solution through the real engine, so the stored answers can never drift.
-
-To **deploy**, ship only the runtime files: `apl.wasm`, `apl.mjs`, `engine.mjs`,
-`glyphs.mjs`, `style.css`, `repl.html`, `learn.html`, and `content/`. The rest
-(`*.test.mjs`, `test.mjs`, `validate.mjs`, `serve.mjs`) is for development.
+`_manifest.json`.
 
 ## Layout
 
@@ -122,7 +171,13 @@ test.mjs                  conformance test
 patches/                  upstream fixes (libapl.cc, ScalarFunction.cc)
 build/                    scratch (tarball + extracted source)  [generated]
 dist/                     apl.mjs + apl.wasm                     [generated]
-repl/                     static playground + learning site (runtime + dev files)
+repl/                     TypeScript playground + learning site
+  src/                    source modules (engine, glyphs, blocks/, repl, learn, …)
+  static/                 repl.html, learn.html, style.css
+  content/                curriculum JSON (one file per topic + _manifest.json)
+  build.mjs               tsc + static-asset copy → dist/
+  serve.mjs               local static server for dist/
+  dist/                   self-contained deployable site         [generated]
 ```
 
 ## Credits
