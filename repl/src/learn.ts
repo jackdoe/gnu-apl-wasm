@@ -11,7 +11,7 @@ const progressEl = $('progress');
 const glyphbar = $('glyphbar');
 
 const focus = trackFocus();
-mountKeyboard(glyphbar, g => { const t = focus.current(); if (t) insert(t, g); }, { storageKey: 'apl-learn-kbmode', defaultMode: 'collapsed' });
+mountKeyboard(glyphbar, g => { const t = focus.current(); if (t) insert(t, g); });
 
 const KB = 'apl-learn-kb';
 const kbtoggle = $('kbtoggle');

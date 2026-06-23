@@ -15,9 +15,14 @@ test('glyph token renders the glyph with its prefix key tooltip', () => {
   assert.match(out, /<code class="glyph" title="prefix: `i">⍳<\/code>/);
 });
 
+test('shifted glyph token renders the shifted prefix key tooltip', () => {
+  const out = md('the tally [[≢]] glyph');
+  assert.match(out, /<code class="glyph" title="prefix: `Shift\+'">≢<\/code>/);
+});
+
 test('glyph token with no mapped key still renders the glyph', () => {
-  const out = md('[[≡]]');
-  assert.match(out, /<code class="glyph">≡<\/code>/);
+  const out = md('[[⍡]]');
+  assert.match(out, /<code class="glyph">⍡<\/code>/);
 });
 
 test('consecutive dash lines become a single list', () => {

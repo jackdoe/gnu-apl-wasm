@@ -14,7 +14,7 @@ const prefbox = $('prefbox');
 const focus = trackFocus();
 attach(src, armed => prefbox.classList.toggle('arm', armed));
 
-mountKeyboard($('kbmount'), g => insert(focus.current() ?? src, g), { storageKey: 'apl-repl-kbmode', defaultMode: 'expanded' });
+mountKeyboard($('kbmount'), g => insert(focus.current() ?? src, g));
 
 const persist = $<HTMLInputElement>('persist');
 persist.checked = localStorage.getItem('apl-repl-persist') === '1';
