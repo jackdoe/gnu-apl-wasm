@@ -99,6 +99,17 @@
       "expected": "3 4 5 6",
       "hint": "monadic | is absolute value",
       "requires": "|"
+    },
+    {
+      "type": "exercise",
+      "id": "scalar-min-clamp",
+      "prompt": "Clamp `3 8 1 9 2` so no item is above 6. The result should be `3 6 1 6 2`.",
+      "solution": "6 ⌊ 3 8 1 9 2",
+      "test": "",
+      "inputs": [],
+      "expected": "3 6 1 6 2",
+      "hint": "dyadic ⌊ takes the smaller value, element by element",
+      "requires": "⌊"
     }
   ]
 }

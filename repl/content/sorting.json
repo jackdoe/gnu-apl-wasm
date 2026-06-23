@@ -69,6 +69,17 @@
       "expected": "alp",
       "hint": "grade the characters, then index the string by that grade",
       "requires": "⍋"
+    },
+    {
+      "type": "exercise",
+      "id": "sort-parallel-labels",
+      "prompt": "Ages are `30 20 40` and their labels are `'abc'`. Return the labels in ascending age order. The result should be `bac`.",
+      "solution": "ages←30 20 40 ⋄ labels←'abc' ⋄ labels[⍋ages]",
+      "test": "",
+      "inputs": [],
+      "expected": "bac",
+      "hint": "grade the ages, then use that grade to index the labels",
+      "requires": "⍋"
     }
   ]
 }

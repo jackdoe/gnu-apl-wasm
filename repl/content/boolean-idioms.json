@@ -72,6 +72,26 @@
       "inputs": [],
       "expected": "1",
       "hint": "make an evenness mask, then reduce it with ∧/"
+    },
+    {
+      "type": "exercise",
+      "id": "bool-mask-multiples3",
+      "prompt": "Build a mask for the integers from 1 through 12, marking multiples of 3 with 1.",
+      "solution": "0 = 3 | ⍳12",
+      "test": "",
+      "inputs": [],
+      "expected": "0 0 1 0 0 1 0 0 1 0 0 1",
+      "hint": "a multiple of 3 has residue 0 modulo 3"
+    },
+    {
+      "type": "exercise",
+      "id": "bool-select-multiples3",
+      "prompt": "Keep only the multiples of 3 from the integers 1 through 12. The result should be `3 6 9 12`.",
+      "solution": "(0 = 3 | ⍳12) / ⍳12",
+      "test": "",
+      "inputs": [],
+      "expected": "3 6 9 12",
+      "hint": "use the divisibility mask as the left argument of /"
     }
   ]
 }

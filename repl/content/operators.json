@@ -71,6 +71,17 @@
       "expected": "6",
       "hint": "read +/ ≢¨ ⍳¨ 1 2 3 from right to left",
       "requires": "¨"
+    },
+    {
+      "type": "exercise",
+      "id": "operators-each-sum",
+      "prompt": "For `(1 2 3)(10 20)(4)`, sum each item separately. The result should be `6 30 4`.",
+      "solution": "+/¨ (1 2 3)(10 20)(4)",
+      "test": "",
+      "inputs": [],
+      "expected": "6 30 4",
+      "hint": "derive sum-each with +/¨",
+      "requires": "¨"
     }
   ]
 }

@@ -96,6 +96,17 @@
       "expected": "11 12 13 14 15",
       "hint": "add 10 to the vector ⍳5",
       "requires": "⍳"
+    },
+    {
+      "type": "exercise",
+      "id": "vectors-shape",
+      "prompt": "Report the shape of the vector `4 8 15 16 23 42`. The result should be 6.",
+      "solution": "⍴ 4 8 15 16 23 42",
+      "test": "",
+      "inputs": [],
+      "expected": "6",
+      "hint": "for a vector, shape is its length",
+      "requires": "⍴"
     }
   ]
 }

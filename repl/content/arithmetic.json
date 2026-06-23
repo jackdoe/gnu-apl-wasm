@@ -93,6 +93,17 @@
       "expected": "30",
       "hint": "parentheses make the grouped expression become one argument",
       "requires": "("
+    },
+    {
+      "type": "exercise",
+      "id": "arith-rtl-chain",
+      "prompt": "Use right-to-left evaluation to compute `20 - (3 × 4)` without parentheses. The result should be 8.",
+      "solution": "20 - 3 × 4",
+      "test": "",
+      "inputs": [],
+      "expected": "8",
+      "hint": "write the multiplication on the right so it is evaluated first",
+      "requires": "×"
     }
   ]
 }

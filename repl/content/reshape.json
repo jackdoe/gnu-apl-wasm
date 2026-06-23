@@ -72,6 +72,17 @@
       "inputs": [],
       "expected": "2",
       "hint": "⍴⍴A gives the length of the shape of A"
+    },
+    {
+      "type": "exercise",
+      "id": "reshape-shape",
+      "prompt": "Report the shape of a 4 by 2 matrix made from `⍳8`. The result should be `4 2`.",
+      "solution": "⍴ 4 2 ⍴ ⍳8",
+      "test": "",
+      "inputs": [],
+      "expected": "4 2",
+      "hint": "make the matrix first, then ask for its shape",
+      "requires": "⍴"
     }
   ]
 }

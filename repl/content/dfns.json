@@ -64,6 +64,16 @@
       "inputs": [],
       "expected": "55",
       "hint": "build the range with ⍳⍵, then sum it with +/"
+    },
+    {
+      "type": "exercise",
+      "id": "dfns-evens",
+      "prompt": "Define `evens`, a function that keeps only the even items of its argument. It will be tested on `⍳10`.",
+      "solution": "evens ← {(0=2|⍵)/⍵}",
+      "test": "evens ⍳10",
+      "inputs": [],
+      "expected": "2 4 6 8 10",
+      "hint": "build an evenness mask from ⍵, then compress ⍵"
     }
   ]
 }

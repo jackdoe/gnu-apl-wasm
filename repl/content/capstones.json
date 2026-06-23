@@ -90,6 +90,16 @@
       "inputs": [],
       "expected": "3 5 6 9 10 12 15 18 20",
       "hint": "build the divisibility masks for 3 and 5, combine them with ∨, then compress ⍳⍵"
+    },
+    {
+      "type": "exercise",
+      "id": "cap-running-average",
+      "prompt": "Define `ravg`, a running-average function. It will be tested on `3 6 9` and should give `3 4.5 6`.",
+      "solution": "ravg←{(+\\⍵)÷⍳≢⍵}",
+      "test": "ravg 3 6 9",
+      "inputs": [],
+      "expected": "3 4.5 6",
+      "hint": "divide the running sums by the running counts"
     }
   ]
 }

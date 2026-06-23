@@ -104,6 +104,16 @@
       "inputs": [],
       "expected": "5 7 9",
       "hint": "+⌿ reduces along the first axis"
+    },
+    {
+      "type": "exercise",
+      "id": "reduce-running-product",
+      "prompt": "Produce the running products of `1 2 3 4 5`. The result should be `1 2 6 24 120`.",
+      "solution": "×\\ 1 2 3 4 5",
+      "test": "",
+      "inputs": [],
+      "expected": "1 2 6 24 120",
+      "hint": "scan with × so every intermediate product is kept"
     }
   ]
 }

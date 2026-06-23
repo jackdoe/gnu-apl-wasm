@@ -128,6 +128,17 @@
       "expected": "0 1 0 1 0",
       "hint": "left ∊ right tests membership item by item",
       "requires": "∊"
+    },
+    {
+      "type": "exercise",
+      "id": "structural-take-tail",
+      "prompt": "Take the last three integers from `⍳10`. The result should be `8 9 10`.",
+      "solution": "¯3 ↑ ⍳10",
+      "test": "",
+      "inputs": [],
+      "expected": "8 9 10",
+      "hint": "a negative left argument to ↑ takes from the end",
+      "requires": "↑"
     }
   ]
 }
