@@ -27,14 +27,7 @@ export function mountKeyboard(
   host: HTMLElement,
   onInsert: (glyph: string) => void,
 ): HTMLElement {
-  const shiftBtn = el('button', { className: 'hintbtn shiftbtn', textContent: 'shift' });
-  const ctl = el('div', { className: 'kbd-ctl' }, [shiftBtn]);
   const kbd = makeKeyboard(onInsert);
-  host.append(ctl, kbd);
-  shiftBtn.addEventListener('click', () => {
-    const on = !kbd.classList.contains('shifted');
-    kbd.classList.toggle('shifted', on);
-    shiftBtn.classList.toggle('on', on);
-  });
+  host.append(kbd);
   return kbd;
 }

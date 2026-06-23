@@ -29,6 +29,12 @@ const keyLabels = LAYOUT.flatMap(row => row.flatMap(([key, glyph, shiftedGlyph])
 
 export const KEYOF: Record<string, string> = Object.fromEntries(keyLabels);
 
+const SHIFT_EVENT = 'apl-keyboard-shift';
+
+const emitShift = (shifted: boolean): void => {
+  document.dispatchEvent(new CustomEvent<boolean>(SHIFT_EVENT, { detail: shifted }));
+};
+
 export function insert(textarea: HTMLTextAreaElement, text: string): void {
   const s = textarea.selectionStart, e = textarea.selectionEnd;
   textarea.value = textarea.value.slice(0, s) + text + textarea.value.slice(e);
@@ -39,9 +45,36 @@ export function insert(textarea: HTMLTextAreaElement, text: string): void {
 export function makeKeyboard(onInsert: (glyph: string) => void): HTMLElement {
   const kbd = document.createElement('div');
   kbd.className = 'kbd';
-  for (const row of LAYOUT) {
+  const shiftKeys: HTMLElement[] = [];
+  let stickyShift = false;
+  let physicalShift = false;
+  const renderShift = (): void => {
+    const shifted = stickyShift || physicalShift;
+    kbd.classList.toggle('shifted', shifted);
+    for (const key of shiftKeys) key.classList.toggle('on', shifted);
+  };
+  const shiftKey = (): HTMLElement => {
+    const key = document.createElement('button');
+    key.className = 'shiftkey';
+    key.type = 'button';
+    key.ariaLabel = 'shift';
+    key.textContent = '⇧';
+    key.addEventListener('mousedown', e => {
+      e.preventDefault();
+      stickyShift = !stickyShift;
+      renderShift();
+    });
+    shiftKeys.push(key);
+    return key;
+  };
+  document.addEventListener(SHIFT_EVENT, e => {
+    physicalShift = (e as CustomEvent<boolean>).detail;
+    renderShift();
+  });
+  for (const [rowIndex, row] of LAYOUT.entries()) {
     const r = document.createElement('div');
     r.className = 'krow';
+    if (rowIndex === LAYOUT.length - 1) r.appendChild(shiftKey());
     for (const [k, g, sg] of row) {
       const key = document.createElement('div');
       key.className = 'key';
@@ -56,6 +89,7 @@ export function makeKeyboard(onInsert: (glyph: string) => void): HTMLElement {
       });
       r.appendChild(key);
     }
+    if (rowIndex === LAYOUT.length - 1) r.appendChild(shiftKey());
     kbd.appendChild(r);
   }
   return kbd;
@@ -65,10 +99,21 @@ export function attach(
   textarea: HTMLTextAreaElement,
   onArmed?: (armed: boolean) => void,
 ): { insert(text: string): void } {
-  const setArmed = (v: boolean) => { armed = v; onArmed?.(v); };
   let armed = false;
+  let physicalShift = false;
+  const setShift = (v: boolean): void => {
+    if (physicalShift === v) return;
+    physicalShift = v;
+    emitShift(v);
+  };
+  const setArmed = (v: boolean): void => {
+    armed = v;
+    if (!v) setShift(false);
+    onArmed?.(v);
+  };
   textarea.addEventListener('keydown', e => {
     if (armed) {
+      if (e.key === 'Shift') { e.preventDefault(); setShift(true); return; }
       if (e.key === 'Escape') { setArmed(false); e.preventDefault(); return; }
       if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
         e.preventDefault(); setArmed(false); insert(textarea, MAP[e.key] ?? ('`' + e.key)); return;
@@ -76,6 +121,9 @@ export function attach(
       return;
     }
     if (e.key === '`' && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); setArmed(true); }
+  });
+  textarea.addEventListener('keyup', e => {
+    if (armed && e.key === 'Shift') setShift(false);
   });
   textarea.addEventListener('blur', () => setArmed(false));
   return { insert: (text: string) => insert(textarea, text) };
