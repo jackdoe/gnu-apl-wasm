@@ -34,7 +34,7 @@ patch -p0 -d "$BUILD" < "$HERE/patches/scalarfunction.cc.patch"
 echo "[4/5] build     libapl.a  (minimal core, single-threaded, wasm exceptions — a few minutes)"
 cd "$SRC"
 CORE_COUNT_WANTED=0 emconfigure ./configure \
-  --with-libapl --without-optional_libs \
+  --with-libapl --without-optional_libs --disable-shared \
   --without-sqlite3 --without-postgresql --without-pcre \
   --without-gtk3 --without-x --without-python --without-erlang \
   >/dev/null
