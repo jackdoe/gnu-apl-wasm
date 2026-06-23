@@ -59,7 +59,12 @@
       "test": "primes 40",
       "inputs": [],
       "expected": "2 3 5 7 11 13 17 19 23 29 31 37",
-      "hint": "for a←⍳⍵, select a where 2=+⌿0=a∘.|a"
+      "hints": [
+        "Let a be the candidate vector ⍳⍵.",
+        "Use a∘.|a to make divisor residues for every candidate.",
+        "Count zero residues down the columns with +⌿, then keep candidates whose count is 2."
+      ],
+      "explain": "Each column tests one candidate against every possible divisor. A prime has exactly two zero residues, for 1 and itself, and compress keeps those candidates."
     },
     {
       "type": "exercise",
@@ -69,7 +74,12 @@
       "test": "pascal 8",
       "inputs": [],
       "expected": "1 8 28 56 70 56 28 8 1",
-      "hint": "use the binomial coefficients (0,⍳⍵)!⍵"
+      "hints": [
+        "APL has binomial coefficient as !.",
+        "The k values for row n are 0,⍳⍵.",
+        "Use those k values as the left argument of ! with ⍵ on the right."
+      ],
+      "explain": "k!n gives each binomial coefficient. The vector 0,⍳⍵ supplies every k from 0 through n, producing the whole row."
     },
     {
       "type": "exercise",
@@ -79,7 +89,12 @@
       "test": "hbar 2 5 3 1 4",
       "inputs": [],
       "expected": "**\n*****\n***\n*\n****",
-      "hint": "reshape '*' to each count with ⍴¨, then disclose with ⊃"
+      "hints": [
+        "Each count should reshape a star.",
+        "Use ⍴¨ so each count gets its own reshape.",
+        "Disclose the nested bars with ⊃."
+      ],
+      "explain": "⍵⍴¨⊂'*' creates one nested character vector per count. ⊃ discloses those bars into the printed histogram."
     },
     {
       "type": "exercise",
@@ -89,7 +104,12 @@
       "test": "fizz 20",
       "inputs": [],
       "expected": "3 5 6 9 10 12 15 18 20",
-      "hint": "build the divisibility masks for 3 and 5, combine them with ∨, then compress ⍳⍵"
+      "hints": [
+        "Make two divisibility masks over ⍳⍵.",
+        "Combine the masks with ∨.",
+        "Compress the original range by the combined mask."
+      ],
+      "explain": "The two residue tests mark multiples of 3 and 5. Or-reducing the masks keeps numbers marked by either condition."
     },
     {
       "type": "exercise",
@@ -99,7 +119,18 @@
       "test": "ravg 3 6 9",
       "inputs": [],
       "expected": "3 4.5 6",
-      "hint": "divide the running sums by the running counts"
+      "hints": [
+        "Running averages need running sums.",
+        "The denominator is the running count ⍳≢⍵.",
+        "Divide +\\⍵ by ⍳≢⍵."
+      ],
+      "explain": "+\\⍵ gives each prefix sum. Dividing by the matching prefix counts produces each average in place.",
+      "misses": [
+        {
+          "pattern": "+/",
+          "message": "Use +\\ for running sums; +/ gives one total."
+        }
+      ]
     }
   ]
 }

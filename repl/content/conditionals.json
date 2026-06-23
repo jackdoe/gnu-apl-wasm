@@ -33,7 +33,11 @@
       "test": "sign 5",
       "inputs": [],
       "expected": "pos",
-      "hint": "1 + ⍵ > 0 produces index 1 or 2 for the pair 'neg' 'pos'"
+      "hints": [
+        "The comparison must become an index.",
+        "1+⍵>0 chooses item 1 for false and item 2 for true."
+      ],
+      "explain": "The comparison returns 1 for a positive number. Adding 1 selects the second string, pos."
     },
     {
       "type": "exercise",
@@ -43,7 +47,11 @@
       "test": "",
       "inputs": [],
       "expected": "0 4 0 6 0",
-      "hint": "multiply each value by its > 0 Boolean",
+      "hints": [
+        "Make a Boolean mask for positive values.",
+        "Multiply the original vector by that mask."
+      ],
+      "explain": "Positive values are multiplied by 1 and stay unchanged. Nonpositive values are multiplied by 0.",
       "requires": ">"
     },
     {
@@ -54,7 +62,11 @@
       "test": "",
       "inputs": [],
       "expected": "0 1 1 1 1 1",
-      "hint": "use the word as the left argument and the guessed letters as the right argument",
+      "hints": [
+        "Use ∊ in the expression.",
+        "use the word as the left argument and the guessed letters as the right argument"
+      ],
+      "explain": "The key move is: use the word as the left argument and the guessed letters as the right argument. The expression then produces the requested result directly.",
       "requires": "∊"
     },
     {
@@ -65,7 +77,11 @@
       "test": "",
       "inputs": [],
       "expected": "0 1 1 0 1 0",
-      "hint": "left ∊ right tests each left item against the whole right argument",
+      "hints": [
+        "Use ∊ in the expression.",
+        "left ∊ right tests each left item against the whole right argument"
+      ],
+      "explain": "The key move is: left ∊ right tests each left item against the whole right argument. The expression then produces the requested result directly.",
       "requires": "∊"
     }
   ]

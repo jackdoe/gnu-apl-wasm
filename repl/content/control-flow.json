@@ -33,7 +33,11 @@
       "test": "dbl 21",
       "inputs": [],
       "expected": "42",
-      "hint": "pass the header string first, then the body string"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "pass the header string first, then the body string"
+      ],
+      "explain": "The key move is: pass the header string first, then the body string. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -43,7 +47,11 @@
       "test": "fact 6",
       "inputs": [],
       "expected": "720",
-      "hint": "set R←1; if N≤1, exit; otherwise set R←N×fact N-1"
+      "hints": [
+        "Set the result for the base case first.",
+        "Branch out when N≤1; otherwise multiply N by fact N-1."
+      ],
+      "explain": "The function exits with 1 for the base case. For larger N it multiplies by the factorial of the previous integer."
     },
     {
       "type": "exercise",
@@ -53,7 +61,11 @@
       "test": "fib 12",
       "inputs": [],
       "expected": "144",
-      "hint": "start with R←N; if N<2, exit; otherwise sum the two previous calls"
+      "hints": [
+        "The base cases are 0 and 1.",
+        "Start with R←N, branch out for N<2, otherwise sum the two recursive calls."
+      ],
+      "explain": "For 0 or 1 the initial result is already correct. Larger inputs recurse to the two previous Fibonacci numbers and add them."
     },
     {
       "type": "exercise",
@@ -63,7 +75,11 @@
       "test": "3 mymax 8",
       "inputs": [],
       "expected": "8",
-      "hint": "start with R←A; if A≥B, exit; otherwise set R←B"
+      "hints": [
+        "Start by assuming A is the result.",
+        "If A≥B, exit; otherwise replace R with B."
+      ],
+      "explain": "The branch exits when A is at least B. If it does not exit, B is larger and becomes the result."
     }
   ]
 }

@@ -41,6 +41,9 @@ const setOpen = (v: TopicView, open: boolean): void => {
   const engine = await loadEngine();
   const topics = await loadCurriculum();
   const totalEx = topics.reduce((n, t) => n + exerciseIds(t).length, 0);
+  const allIds = topics.flatMap(exerciseIds);
+  const exerciseEls = new Map<string, HTMLElement>();
+  const exerciseViews = new Map<string, TopicView>();
 
   const views: TopicView[] = [];
   const badgeText = (ids: string[]): string => {
@@ -54,6 +57,28 @@ const setOpen = (v: TopicView, open: boolean): void => {
       v.badge.textContent = badgeText(v.ids);
       v.badge.classList.toggle('done', v.ids.length > 0 && v.ids.every(id => passed.has(id)));
     }
+    for (const el of exerciseEls.values()) el.classList.remove('current');
+    for (const v of views.filter(v => !v.section.classList.contains('collapsed'))) {
+      const id = v.ids.find(id => !passed.has(id));
+      if (id) exerciseEls.get(id)?.classList.add('current');
+    }
+  };
+  const nextIncomplete = (id: string): string | null => {
+    const at = allIds.indexOf(id);
+    const ordered = [...allIds.slice(at + 1), ...allIds.slice(0, Math.max(0, at))];
+    return ordered.find(id => !passed.has(id)) ?? null;
+  };
+  const goNext = (id: string): void => {
+    const next = nextIncomplete(id);
+    if (!next) return;
+    const view = exerciseViews.get(next);
+    if (view) setOpen(view, true);
+    refresh();
+    requestAnimationFrame(() => {
+      const target = exerciseEls.get(next);
+      target?.scrollIntoView({ block: 'center' });
+      (target?.querySelector('textarea') as HTMLTextAreaElement | null)?.focus();
+    });
   };
 
   const ctx: BlockCtx = {
@@ -62,6 +87,10 @@ const setOpen = (v: TopicView, open: boolean): void => {
     progress: {
       has: id => passed.has(id),
       pass: id => { passed.add(id); savePassed(passed); refresh(); },
+    },
+    navigation: {
+      hasNext: id => nextIncomplete(id) !== null,
+      next: goNext,
     },
   };
 
@@ -80,11 +109,13 @@ const setOpen = (v: TopicView, open: boolean): void => {
     for (const block of topic.blocks) {
       const { el: bel, run } = renderBlock(block, ctx);
       body.appendChild(bel);
+      if (block.type === 'exercise') exerciseEls.set(block.id, bel);
       if (run) runnable.push(run);
     }
     const section = el('section', { className: 'lesson collapsed' }, [head, body]);
     const view: TopicView = { section, twisty, badge, ids };
-    head.addEventListener('click', () => setOpen(view, section.classList.contains('collapsed')));
+    for (const id of ids) exerciseViews.set(id, view);
+    head.addEventListener('click', () => { setOpen(view, section.classList.contains('collapsed')); refresh(); });
     wrap.appendChild(section);
     views.push(view);
   }
@@ -94,6 +125,7 @@ const setOpen = (v: TopicView, open: boolean): void => {
   let current = views.findIndex(v => v.ids.some(id => !passed.has(id)));
   if (current < 0) current = 0;
   views.forEach((v, i) => setOpen(v, i === current));
+  refresh();
 
   const cur = views[current];
   if (cur) {

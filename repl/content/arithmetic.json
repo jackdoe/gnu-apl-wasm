@@ -58,7 +58,11 @@
       "test": "",
       "inputs": [],
       "expected": "14",
-      "hint": "with no parentheses, the rightmost function is evaluated first",
+      "hints": [
+        "Use × in the expression.",
+        "with no parentheses, the rightmost function is evaluated first"
+      ],
+      "explain": "The key move is: with no parentheses, the rightmost function is evaluated first. The expression then produces the requested result directly.",
       "requires": "×"
     },
     {
@@ -69,7 +73,11 @@
       "test": "",
       "inputs": [],
       "expected": "7",
-      "hint": "¯ belongs to the number; it is not the subtract function",
+      "hints": [
+        "Use ¯ in the expression.",
+        "¯ belongs to the number; it is not the subtract function"
+      ],
+      "explain": "The key move is: ¯ belongs to the number; it is not the subtract function. The expression then produces the requested result directly.",
       "requires": "¯"
     },
     {
@@ -80,7 +88,11 @@
       "test": "",
       "inputs": [],
       "expected": "81",
-      "hint": "dyadic * is power",
+      "hints": [
+        "Use * in the expression.",
+        "dyadic * is power"
+      ],
+      "explain": "The key move is: dyadic * is power. The expression then produces the requested result directly.",
       "requires": "*"
     },
     {
@@ -91,7 +103,11 @@
       "test": "",
       "inputs": [],
       "expected": "30",
-      "hint": "parentheses make the grouped expression become one argument",
+      "hints": [
+        "Use ( in the expression.",
+        "parentheses make the grouped expression become one argument"
+      ],
+      "explain": "The key move is: parentheses make the grouped expression become one argument. The expression then produces the requested result directly.",
       "requires": "("
     },
     {
@@ -102,7 +118,11 @@
       "test": "",
       "inputs": [],
       "expected": "8",
-      "hint": "write the multiplication on the right so it is evaluated first",
+      "hints": [
+        "Use × in the expression.",
+        "write the multiplication on the right so it is evaluated first"
+      ],
+      "explain": "The key move is: write the multiplication on the right so it is evaluated first. The expression then produces the requested result directly.",
       "requires": "×"
     }
   ]

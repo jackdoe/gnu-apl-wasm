@@ -49,7 +49,11 @@
       "test": "",
       "inputs": [],
       "expected": "11",
-      "hint": "≢ tallies items of a character vector"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "≢ tallies items of a character vector"
+      ],
+      "explain": "The key move is: ≢ tallies items of a character vector. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -59,7 +63,11 @@
       "test": "",
       "inputs": [],
       "expected": "stressed",
-      "hint": "a character vector is still a vector"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "a character vector is still a vector"
+      ],
+      "explain": "The key move is: a character vector is still a vector. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -69,7 +77,11 @@
       "test": "",
       "inputs": [],
       "expected": "4",
-      "hint": "compare the text with 's', then sum the Boolean mask"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "compare the text with 's', then sum the Boolean mask"
+      ],
+      "explain": "The key move is: compare the text with 's', then sum the Boolean mask. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -79,7 +91,11 @@
       "test": "",
       "inputs": [],
       "expected": "14",
-      "hint": "⍎ executes the character vector as APL"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "⍎ executes the character vector as APL"
+      ],
+      "explain": "The key move is: ⍎ executes the character vector as APL. The expression then produces the requested result directly."
     }
   ]
 }

@@ -42,7 +42,11 @@
         "21"
       ],
       "expected": "⎕:\n      21\n42",
-      "hint": "⎕ evaluates the input line and supplies that value"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "⎕ evaluates the input line and supplies that value"
+      ],
+      "explain": "The key move is: ⎕ evaluates the input line and supplies that value. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -54,7 +58,11 @@
         "9"
       ],
       "expected": "⎕:\n      9\n81",
-      "hint": "use the input value as the left argument of dyadic *"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "use the input value as the left argument of dyadic *"
+      ],
+      "explain": "The key move is: use the input value as the left argument of dyadic *. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -66,7 +74,11 @@
         "stressed"
       ],
       "expected": "stressed\ndesserts",
-      "hint": "⍞ supplies a character vector; ⌽ reverses a vector"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "⍞ supplies a character vector; ⌽ reverses a vector"
+      ],
+      "explain": "The key move is: ⍞ supplies a character vector; ⌽ reverses a vector. The expression then produces the requested result directly."
     }
   ]
 }

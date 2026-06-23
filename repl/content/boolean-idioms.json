@@ -41,7 +41,11 @@
       "test": "",
       "inputs": [],
       "expected": "5",
-      "hint": "make an evenness mask with 0 = 2 | ..., then sum it"
+      "hints": [
+        "First build a Boolean mask for even values.",
+        "Then sum the mask with +/."
+      ],
+      "explain": "0 = 2 | ⍳10 marks even numbers with 1. Summing that Boolean mask counts the marked positions."
     },
     {
       "type": "exercise",
@@ -51,7 +55,11 @@
       "test": "",
       "inputs": [],
       "expected": "7 8 9 10",
-      "hint": "build the mask with >, then use it as the left argument of /"
+      "hints": [
+        "Build a mask with > 6.",
+        "Use that mask as the left argument of / to compress ⍳10."
+      ],
+      "explain": "The comparison marks values greater than 6. Compress keeps exactly the positions where the mask is 1."
     },
     {
       "type": "exercise",
@@ -61,7 +69,11 @@
       "test": "",
       "inputs": [],
       "expected": "1 3 5 7 9",
-      "hint": "2 | ⍳10 is already a mask for odd numbers"
+      "hints": [
+        "2 | ⍳10 already gives 1 for odd positions.",
+        "Use that residue vector as the compress mask."
+      ],
+      "explain": "The odd residues are 1, so the residue vector can directly select the odd values from ⍳10."
     },
     {
       "type": "exercise",
@@ -71,7 +83,11 @@
       "test": "",
       "inputs": [],
       "expected": "1",
-      "hint": "make an evenness mask, then reduce it with ∧/"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "make an evenness mask, then reduce it with ∧/"
+      ],
+      "explain": "The key move is: make an evenness mask, then reduce it with ∧/. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -81,7 +97,11 @@
       "test": "",
       "inputs": [],
       "expected": "0 0 1 0 0 1 0 0 1 0 0 1",
-      "hint": "a multiple of 3 has residue 0 modulo 3"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "a multiple of 3 has residue 0 modulo 3"
+      ],
+      "explain": "The key move is: a multiple of 3 has residue 0 modulo 3. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -91,7 +111,11 @@
       "test": "",
       "inputs": [],
       "expected": "3 6 9 12",
-      "hint": "use the divisibility mask as the left argument of /"
+      "hints": [
+        "Reuse the multiple-of-3 mask.",
+        "Put the mask on the left of / and the original range on the right."
+      ],
+      "explain": "0 = 3 | ⍳12 marks multiples of 3. Compress uses that mask to keep only 3 6 9 12."
     }
   ]
 }

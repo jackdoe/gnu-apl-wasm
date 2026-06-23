@@ -45,7 +45,11 @@
       "test": "",
       "inputs": [],
       "expected": "2",
-      "hint": "the outer vector has vector items"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "the outer vector has vector items"
+      ],
+      "explain": "The key move is: the outer vector has vector items. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -55,7 +59,11 @@
       "test": "",
       "inputs": [],
       "expected": "10 20 30",
-      "hint": "monadic ↑ discloses the first item"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "monadic ↑ discloses the first item"
+      ],
+      "explain": "The key move is: monadic ↑ discloses the first item. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -65,7 +73,11 @@
       "test": "",
       "inputs": [],
       "expected": "40 50",
-      "hint": "2⊃ picks the second item"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "2⊃ picks the second item"
+      ],
+      "explain": "The key move is: 2⊃ picks the second item. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -75,7 +87,11 @@
       "test": "",
       "inputs": [],
       "expected": "9",
-      "hint": "use ≢¨ for the lengths, then +/ for their sum"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "use ≢¨ for the lengths, then +/ for their sum"
+      ],
+      "explain": "The key move is: use ≢¨ for the lengths, then +/ for their sum. The expression then produces the requested result directly."
     }
   ]
 }

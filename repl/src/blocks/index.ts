@@ -12,6 +12,7 @@ export type BlockCtx = {
   engine: Engine;
   focus: ReturnType<typeof trackFocus>;
   progress: { pass(id: string): void; has(id: string): boolean };
+  navigation?: { hasNext(id: string): boolean; next(id: string): void };
 };
 export type Rendered = { el: HTMLElement; run?: () => void };
 

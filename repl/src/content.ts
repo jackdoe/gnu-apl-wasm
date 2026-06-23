@@ -10,9 +10,12 @@ export type Block =
       prompt: string;
       solution: string;
       test?: string;
+      shapeTest?: string;
       inputs?: string[];
       expected: string;
-      hint: string;
+      hints: string[];
+      explain: string;
+      misses?: { pattern: string; message: string; regex?: boolean; target?: 'answer' | 'output' }[];
       requires?: string;
     };
 

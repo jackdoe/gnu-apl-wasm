@@ -33,7 +33,11 @@
       "test": "sq 12",
       "inputs": [],
       "expected": "144",
-      "hint": "inside the dfn, multiply ⍵ by itself"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "inside the dfn, multiply ⍵ by itself"
+      ],
+      "explain": "The key move is: inside the dfn, multiply ⍵ by itself. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -43,7 +47,11 @@
       "test": "mean 10 20 30 40",
       "inputs": [],
       "expected": "25",
-      "hint": "sum with +/⍵; count with ≢⍵; divide the two"
+      "hints": [
+        "Inside the dfn, ⍵ is the whole vector.",
+        "Compute +/⍵ and divide by ≢⍵."
+      ],
+      "explain": "+/⍵ sums all values and ≢⍵ counts them. Dividing the sum by the count gives the mean."
     },
     {
       "type": "exercise",
@@ -53,7 +61,11 @@
       "test": "30 pct 200",
       "inputs": [],
       "expected": "15",
-      "hint": "use ⍺ for the left argument and ⍵ for the right argument"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "use ⍺ for the left argument and ⍵ for the right argument"
+      ],
+      "explain": "The key move is: use ⍺ for the left argument and ⍵ for the right argument. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -63,7 +75,11 @@
       "test": "tri 10",
       "inputs": [],
       "expected": "55",
-      "hint": "build the range with ⍳⍵, then sum it with +/"
+      "hints": [
+        "The argument is the upper bound.",
+        "Make ⍳⍵, then reduce it with +/."
+      ],
+      "explain": "⍳⍵ builds the first ⍵ integers. +/ sums that range into the triangular number."
     },
     {
       "type": "exercise",
@@ -73,7 +89,11 @@
       "test": "evens ⍳10",
       "inputs": [],
       "expected": "2 4 6 8 10",
-      "hint": "build an evenness mask from ⍵, then compress ⍵"
+      "hints": [
+        "Build a Boolean mask from ⍵.",
+        "0=2|⍵ marks even items; use that mask to compress ⍵."
+      ],
+      "explain": "The residue test creates a 1 exactly where an item is even. Compressing ⍵ by that mask keeps only those items."
     }
   ]
 }

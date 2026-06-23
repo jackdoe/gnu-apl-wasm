@@ -25,7 +25,12 @@
       "test": "'apple' reveal 'pe'",
       "inputs": [],
       "expected": "_pp_e",
-      "hint": "make blanks, compute ⍺∊⍵, then assign m/⍺ into positions m/⍳≢⍺"
+      "hints": [
+        "Start with blanks shaped like the word.",
+        "m←⍺∊⍵ marks guessed letters.",
+        "Assign m/⍺ into positions m/⍳≢⍺."
+      ],
+      "explain": "The mask marks visible letters and their positions. Compressing both the positions and letters by the same mask lets assignment reveal only guessed letters."
     },
     {
       "type": "exercise",
@@ -35,7 +40,12 @@
       "test": "'apple' wrong 'xpz'",
       "inputs": [],
       "expected": "2",
-      "hint": "⍵∊⍺ marks hits; ~ turns hits into misses; +/ counts them"
+      "hints": [
+        "Start by testing guessed letters against the word.",
+        "~ flips hits into misses.",
+        "+/ counts the misses."
+      ],
+      "explain": "⍵∊⍺ marks guessed letters that are in the word. Negating that mask and summing counts only wrong guesses."
     },
     {
       "type": "prose",
@@ -84,7 +94,11 @@
       "test": "",
       "inputs": [],
       "expected": "X..\n.O.\n...",
-      "hint": "reshape '.' into shape 3 3, then assign cells with b[row;column]←"
+      "hints": [
+        "Make b as a 3 by 3 character matrix.",
+        "Use b[row;column]← for the two moves, then show b."
+      ],
+      "explain": "The board is just a character matrix. Indexed assignment changes the selected cells and leaves the remaining dots untouched."
     },
     {
       "type": "exercise",
@@ -94,7 +108,12 @@
       "test": "wins 'XXX...OO.'",
       "inputs": [],
       "expected": "1",
-      "hint": "index the X-mask by the 8 by 3 line matrix, reduce each line with ∧/, then reduce the line results with ∨/"
+      "hints": [
+        "Make an X mask from the board.",
+        "Gather each winning line by indexing the mask with L.",
+        "Use ∧/ for each line and ∨/ across the line results."
+      ],
+      "explain": "m[L] turns the eight winning triples into rows of Boolean values. ∧/ finds complete rows, and ∨/ asks whether any complete row exists."
     }
   ]
 }

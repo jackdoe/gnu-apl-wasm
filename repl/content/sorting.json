@@ -45,7 +45,18 @@
       "test": "",
       "inputs": [],
       "expected": "1 1 3 4 5",
-      "hint": "compute the grade, then use it as the index",
+      "hints": [
+        "⍋ gives positions, not sorted values.",
+        "Use the grade as an index into the same vector."
+      ],
+      "explain": "⍋ computes the order of positions. Indexing the original vector by that order returns the values in ascending order.",
+      "misses": [
+        {
+          "pattern": "^\\s*⍋",
+          "regex": true,
+          "message": "⍋ gives positions; use those positions to index the original values."
+        }
+      ],
       "requires": "⍋"
     },
     {
@@ -56,7 +67,17 @@
       "test": "",
       "inputs": [],
       "expected": "2 3 1",
-      "hint": "⍒ returns positions, largest first",
+      "hints": [
+        "This task asks for positions.",
+        "Use ⍒ directly on the vector; do not index by it."
+      ],
+      "explain": "⍒ reports the positions that would read the data largest first, so 40 at position 2 comes before 20 at position 3 and 10 at position 1.",
+      "misses": [
+        {
+          "pattern": "[",
+          "message": "This asks for the grade positions themselves, not the sorted values."
+        }
+      ],
       "requires": "⍒"
     },
     {
@@ -67,7 +88,19 @@
       "test": "",
       "inputs": [],
       "expected": "alp",
-      "hint": "grade the characters, then index the string by that grade",
+      "hints": [
+        "Grade the character vector.",
+        "Use the grade as the index back into the same text."
+      ],
+      "explain": "The grade orders the character positions; indexing the string by those positions returns the letters in sorted order.",
+      "misses": [
+        {
+          "pattern": "^\\s*\\d+( +\\d+)*\\s*$",
+          "regex": true,
+          "target": "output",
+          "message": "Those are grade positions; index the text by them to get sorted letters."
+        }
+      ],
       "requires": "⍋"
     },
     {
@@ -78,7 +111,11 @@
       "test": "",
       "inputs": [],
       "expected": "bac",
-      "hint": "grade the ages, then use that grade to index the labels",
+      "hints": [
+        "The ages decide the order.",
+        "Use ⍋ages as the index for labels, not for ages."
+      ],
+      "explain": "The grade of ages gives the order 20, 30, 40. Applying that order to labels keeps the labels aligned with their ages.",
       "requires": "⍋"
     }
   ]

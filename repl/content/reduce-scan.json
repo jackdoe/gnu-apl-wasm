@@ -53,7 +53,11 @@
       "test": "",
       "inputs": [],
       "expected": "5050",
-      "hint": "make the range with ⍳100, then reduce it with +/"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "make the range with ⍳100, then reduce it with +/"
+      ],
+      "explain": "The key move is: make the range with ⍳100, then reduce it with +/. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -63,7 +67,11 @@
       "test": "",
       "inputs": [],
       "expected": "120",
-      "hint": "multiply all items of ⍳5 with ×/"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "multiply all items of ⍳5 with ×/"
+      ],
+      "explain": "The key move is: multiply all items of ⍳5 with ×/. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -73,7 +81,11 @@
       "test": "",
       "inputs": [],
       "expected": "9",
-      "hint": "use maximum as the reducing function"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "use maximum as the reducing function"
+      ],
+      "explain": "The key move is: use maximum as the reducing function. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -83,7 +95,17 @@
       "test": "",
       "inputs": [],
       "expected": "1 3 6 10 15",
-      "hint": "scan with +, not reduce with +"
+      "hints": [
+        "The prompt asks for every intermediate total, not one total.",
+        "Use scan with plus: +\\ keeps the running totals."
+      ],
+      "explain": "+\\ applies addition cumulatively and returns each partial sum, so the vector keeps the same length as the input.",
+      "misses": [
+        {
+          "pattern": "+/",
+          "message": "Use scan +\\ to keep every running total; +/ reduces everything to one total."
+        }
+      ]
     },
     {
       "type": "exercise",
@@ -93,7 +115,11 @@
       "test": "",
       "inputs": [],
       "expected": "6 15",
-      "hint": "+/ reduces along the last axis"
+      "hints": [
+        "Make the 2 by 3 matrix first.",
+        "+/ reduces along the last axis, giving one result per row."
+      ],
+      "explain": "+/ sees each row as the last-axis vector and sums across it, so the two row totals are 6 and 15."
     },
     {
       "type": "exercise",
@@ -103,7 +129,11 @@
       "test": "",
       "inputs": [],
       "expected": "5 7 9",
-      "hint": "+⌿ reduces along the first axis"
+      "hints": [
+        "Make the 2 by 3 matrix first.",
+        "+⌿ reduces along the first axis, giving one result per column."
+      ],
+      "explain": "+⌿ sums down the rows for each column, producing the column totals 5 7 9."
     },
     {
       "type": "exercise",
@@ -113,7 +143,17 @@
       "test": "",
       "inputs": [],
       "expected": "1 2 6 24 120",
-      "hint": "scan with × so every intermediate product is kept"
+      "hints": [
+        "The prompt asks for every intermediate product.",
+        "Use scan with times: ×\\ keeps the running products."
+      ],
+      "explain": "×\\ multiplies cumulatively and returns each partial product, ending at 120 while preserving the intermediate products.",
+      "misses": [
+        {
+          "pattern": "×/",
+          "message": "Use scan ×\\ to keep every running product; ×/ reduces everything to one product."
+        }
+      ]
     }
   ]
 }

@@ -50,7 +50,11 @@
       "test": "",
       "inputs": [],
       "expected": "1 2 3 4 5 6 7",
-      "hint": "⍳ n gives the first n integers",
+      "hints": [
+        "Use ⍳ in the expression.",
+        "⍳ n gives the first n integers"
+      ],
+      "explain": "The key move is: ⍳ n gives the first n integers. The expression then produces the requested result directly.",
       "requires": "⍳"
     },
     {
@@ -61,7 +65,11 @@
       "test": "",
       "inputs": [],
       "expected": "2 4 6 8",
-      "hint": "a scalar function applies to each element of the vector",
+      "hints": [
+        "Use × in the expression.",
+        "a scalar function applies to each element of the vector"
+      ],
+      "explain": "The key move is: a scalar function applies to each element of the vector. The expression then produces the requested result directly.",
       "requires": "×"
     },
     {
@@ -72,7 +80,11 @@
       "test": "",
       "inputs": [],
       "expected": "1 4 9 16 25",
-      "hint": "raise the vector ⍳5 to power 2; use parentheses so the vector is the left argument",
+      "hints": [
+        "Use * in the expression.",
+        "raise the vector ⍳5 to power 2; use parentheses so the vector is the left argument"
+      ],
+      "explain": "The key move is: raise the vector ⍳5 to power 2; use parentheses so the vector is the left argument. The expression then produces the requested result directly.",
       "requires": "*"
     },
     {
@@ -83,7 +95,11 @@
       "test": "",
       "inputs": [],
       "expected": "50",
-      "hint": "≢ tallies the vector produced by ⍳50",
+      "hints": [
+        "Use ≢ in the expression.",
+        "≢ tallies the vector produced by ⍳50"
+      ],
+      "explain": "The key move is: ≢ tallies the vector produced by ⍳50. The expression then produces the requested result directly.",
       "requires": "≢"
     },
     {
@@ -94,7 +110,11 @@
       "test": "",
       "inputs": [],
       "expected": "11 12 13 14 15",
-      "hint": "add 10 to the vector ⍳5",
+      "hints": [
+        "Use ⍳ in the expression.",
+        "add 10 to the vector ⍳5"
+      ],
+      "explain": "The key move is: add 10 to the vector ⍳5. The expression then produces the requested result directly.",
       "requires": "⍳"
     },
     {
@@ -105,7 +125,11 @@
       "test": "",
       "inputs": [],
       "expected": "6",
-      "hint": "for a vector, shape is its length",
+      "hints": [
+        "Use ⍴ in the expression.",
+        "for a vector, shape is its length"
+      ],
+      "explain": "The key move is: for a vector, shape is its length. The expression then produces the requested result directly.",
       "requires": "⍴"
     }
   ]

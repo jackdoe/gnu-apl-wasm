@@ -41,7 +41,11 @@
       "test": "",
       "inputs": [],
       "expected": "1 2 3\n4 5 6\n7 8 9",
-      "hint": "the left argument is the shape, 3 3; the right argument is the data, ⍳9"
+      "hints": [
+        "The left argument to ⍴ is the target shape.",
+        "Use shape 3 3 with data ⍳9."
+      ],
+      "explain": "Dyadic ⍴ lays the nine values into the requested 3 by 3 shape, filling rows in order."
     },
     {
       "type": "exercise",
@@ -51,7 +55,11 @@
       "test": "",
       "inputs": [],
       "expected": "0 0 0 0 0\n0 0 0 0 0",
-      "hint": "a single zero is reused until the requested shape is full"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "a single zero is reused until the requested shape is full"
+      ],
+      "explain": "The key move is: a single zero is reused until the requested shape is full. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -61,7 +69,11 @@
       "test": "",
       "inputs": [],
       "expected": "1 2 3 4 5 6",
-      "hint": "the two-number shape 1 6 makes a rank-2 array"
+      "hints": [
+        "A row matrix needs a two-number shape.",
+        "Use 1 6 as the shape, not just the vector ⍳6."
+      ],
+      "explain": "1 6 is a rank-2 shape, so the values print like one row while still being a matrix."
     },
     {
       "type": "exercise",
@@ -71,7 +83,11 @@
       "test": "",
       "inputs": [],
       "expected": "2",
-      "hint": "⍴⍴A gives the length of the shape of A"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "⍴⍴A gives the length of the shape of A"
+      ],
+      "explain": "The key move is: ⍴⍴A gives the length of the shape of A. The expression then produces the requested result directly."
     },
     {
       "type": "exercise",
@@ -81,7 +97,11 @@
       "test": "",
       "inputs": [],
       "expected": "4 2",
-      "hint": "make the matrix first, then ask for its shape",
+      "hints": [
+        "Build the matrix first.",
+        "Put monadic ⍴ to the left of the whole reshape expression."
+      ],
+      "explain": "The inner reshape creates a 4 by 2 matrix. Monadic ⍴ reports that shape as 4 2.",
       "requires": "⍴"
     }
   ]

@@ -37,7 +37,11 @@
       "test": "",
       "inputs": [],
       "expected": "1  2  3  4  5\n2  4  6  8 10\n3  6  9 12 15\n4  8 12 16 20\n5 10 15 20 25",
-      "hint": "use outer product with multiplication"
+      "hints": [
+        "A table is an outer product.",
+        "Use ⍳5 on both sides of ∘.×."
+      ],
+      "explain": "Outer product pairs every row value with every column value. With ×, those pairings form the multiplication table."
     },
     {
       "type": "exercise",
@@ -47,7 +51,11 @@
       "test": "",
       "inputs": [],
       "expected": "1 0 0 0\n0 1 0 0\n0 0 1 0\n0 0 0 1",
-      "hint": "compare the row index vector with the column index vector"
+      "hints": [
+        "Use the same index vector for rows and columns.",
+        "Outer product equality marks where the row and column numbers match."
+      ],
+      "explain": "The row and column indices are equal only on the diagonal, so ∘.= produces 1 on the diagonal and 0 elsewhere."
     },
     {
       "type": "exercise",
@@ -57,7 +65,11 @@
       "test": "",
       "inputs": [],
       "expected": "32",
-      "hint": "+.× means multiply corresponding items, then sum"
+      "hints": [
+        "Inner product combines two functions.",
+        "+.× multiplies pairs, then sums the products."
+      ],
+      "explain": "The × part forms 1×4, 2×5, and 3×6. The + part reduces those products to 32."
     },
     {
       "type": "exercise",
@@ -67,7 +79,11 @@
       "test": "",
       "inputs": [],
       "expected": "2 3 4\n3 4 5\n4 5 6",
-      "hint": "use outer product with addition"
+      "hints": [
+        "Start from the value or array named in the prompt.",
+        "use outer product with addition"
+      ],
+      "explain": "The key move is: use outer product with addition. The expression then produces the requested result directly."
     }
   ]
 }

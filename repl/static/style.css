@@ -181,12 +181,14 @@ html,body{overflow-x:clip}
   font-size:11px;letter-spacing:.18em;text-transform:uppercase;padding:9px 16px;cursor:pointer}
 .row button:last-child{border-right:1px solid var(--line2)}
 .row button:hover{background:#fff;color:#000}
+.row button.secondary{color:var(--dim)}
 .exercise{border-left:2px solid var(--fg);padding-left:18px}
+.exercise.current{box-shadow:inset 3px 0 0 var(--fg)}
 .prompt{margin-bottom:10px}
 .verdict{margin-top:8px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;min-height:1em}
 .verdict.ok{color:#fff}
 .verdict.miss{color:var(--dim)}
-.hint,.reveal{margin-top:8px;color:var(--dim);white-space:pre-wrap}
+.hint,.reveal,.explain{margin-top:8px;color:var(--dim);white-space:pre-wrap}
 .progress{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
 .progress b{color:var(--fg);font-weight:400}
 

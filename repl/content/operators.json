@@ -47,7 +47,11 @@
       "test": "",
       "inputs": [],
       "expected": "4 2 3",
-      "hint": "derive ≢¨, tally-each",
+      "hints": [
+        "Use ¨ in the expression.",
+        "derive ≢¨, tally-each"
+      ],
+      "explain": "The key move is: derive ≢¨, tally-each. The expression then produces the requested result directly.",
       "requires": "¨"
     },
     {
@@ -58,7 +62,11 @@
       "test": "",
       "inputs": [],
       "expected": "5 4 3 2 1",
-      "hint": "⌽⍣5 derives a function that applies reverse five times",
+      "hints": [
+        "Use ⍣ in the expression.",
+        "⌽⍣5 derives a function that applies reverse five times"
+      ],
+      "explain": "The key move is: ⌽⍣5 derives a function that applies reverse five times. The expression then produces the requested result directly.",
       "requires": "⍣"
     },
     {
@@ -69,7 +77,11 @@
       "test": "",
       "inputs": [],
       "expected": "6",
-      "hint": "read +/ ≢¨ ⍳¨ 1 2 3 from right to left",
+      "hints": [
+        "Use ¨ in the expression.",
+        "Make the three ranges with each, tally each range, then sum the tallies."
+      ],
+      "explain": "The range-each step makes three vectors. Tally-each measures them, and +/ sums those lengths into the total count.",
       "requires": "¨"
     },
     {
@@ -80,7 +92,11 @@
       "test": "",
       "inputs": [],
       "expected": "6 30 4",
-      "hint": "derive sum-each with +/¨",
+      "hints": [
+        "Use ¨ in the expression.",
+        "derive sum-each with +/¨"
+      ],
+      "explain": "The key move is: derive sum-each with +/¨. The expression then produces the requested result directly.",
       "requires": "¨"
     }
   ]

@@ -64,7 +64,11 @@
       "test": "",
       "inputs": [],
       "expected": "4 8 4 9 4",
-      "hint": "dyadic ⌈ takes the larger value, element by element",
+      "hints": [
+        "Use ⌈ in the expression.",
+        "dyadic ⌈ takes the larger value, element by element"
+      ],
+      "explain": "The key move is: dyadic ⌈ takes the larger value, element by element. The expression then produces the requested result directly.",
       "requires": "⌈"
     },
     {
@@ -75,7 +79,11 @@
       "test": "",
       "inputs": [],
       "expected": "1 0 1 0 1 0 1 0",
-      "hint": "a number is odd exactly when its residue modulo 2 is 1",
+      "hints": [
+        "Use | in the expression.",
+        "a number is odd exactly when its residue modulo 2 is 1"
+      ],
+      "explain": "The key move is: a number is odd exactly when its residue modulo 2 is 1. The expression then produces the requested result directly.",
       "requires": "|"
     },
     {
@@ -86,7 +94,11 @@
       "test": "",
       "inputs": [],
       "expected": "0 0 0 1 1 1",
-      "hint": "> returns a Boolean vector",
+      "hints": [
+        "Use > in the expression.",
+        "> returns a Boolean vector"
+      ],
+      "explain": "The key move is: > returns a Boolean vector. The expression then produces the requested result directly.",
       "requires": ">"
     },
     {
@@ -97,7 +109,11 @@
       "test": "",
       "inputs": [],
       "expected": "3 4 5 6",
-      "hint": "monadic | is absolute value",
+      "hints": [
+        "Use | in the expression.",
+        "monadic | is absolute value"
+      ],
+      "explain": "The key move is: monadic | is absolute value. The expression then produces the requested result directly.",
       "requires": "|"
     },
     {
@@ -108,7 +124,11 @@
       "test": "",
       "inputs": [],
       "expected": "3 6 1 6 2",
-      "hint": "dyadic ⌊ takes the smaller value, element by element",
+      "hints": [
+        "Use ⌊ in the expression.",
+        "dyadic ⌊ takes the smaller value, element by element"
+      ],
+      "explain": "The key move is: dyadic ⌊ takes the smaller value, element by element. The expression then produces the requested result directly.",
       "requires": "⌊"
     }
   ]

@@ -60,7 +60,11 @@
       "test": "",
       "inputs": [],
       "expected": "5 4 3 2 1",
-      "hint": "monadic ⌽ reverses a vector",
+      "hints": [
+        "Use ⌽ in the expression.",
+        "monadic ⌽ reverses a vector"
+      ],
+      "explain": "The key move is: monadic ⌽ reverses a vector. The expression then produces the requested result directly.",
       "requires": "⌽"
     },
     {
@@ -71,7 +75,11 @@
       "test": "",
       "inputs": [],
       "expected": "1 2 3",
-      "hint": "n ↑ v keeps the first n items of v",
+      "hints": [
+        "Use ↑ in the expression.",
+        "n ↑ v keeps the first n items of v"
+      ],
+      "explain": "The key move is: n ↑ v keeps the first n items of v. The expression then produces the requested result directly.",
       "requires": "↑"
     },
     {
@@ -82,7 +90,11 @@
       "test": "",
       "inputs": [],
       "expected": "3 4 5 6",
-      "hint": "n ↓ v removes the first n items of v",
+      "hints": [
+        "Use ↓ in the expression.",
+        "n ↓ v removes the first n items of v"
+      ],
+      "explain": "The key move is: n ↓ v removes the first n items of v. The expression then produces the requested result directly.",
       "requires": "↓"
     },
     {
@@ -93,7 +105,11 @@
       "test": "",
       "inputs": [],
       "expected": "1 2 3 4 5 6",
-      "hint": "dyadic , catenates",
+      "hints": [
+        "Use , in the expression.",
+        "dyadic , catenates"
+      ],
+      "explain": "The key move is: dyadic , catenates. The expression then produces the requested result directly.",
       "requires": ","
     },
     {
@@ -104,7 +120,11 @@
       "test": "",
       "inputs": [],
       "expected": "1 4\n2 5\n3 6",
-      "hint": "⍉ swaps the axes of a matrix",
+      "hints": [
+        "Make the 2 by 3 matrix first.",
+        "Apply ⍉ to swap rows and columns."
+      ],
+      "explain": "Transpose exchanges the two axes, turning the 2 by 3 matrix into a 3 by 2 matrix.",
       "requires": "⍉"
     },
     {
@@ -115,7 +135,11 @@
       "test": "",
       "inputs": [],
       "expected": "3",
-      "hint": "dyadic ⍳ searches the left argument",
+      "hints": [
+        "Use ⍳ in the expression.",
+        "dyadic ⍳ searches the left argument"
+      ],
+      "explain": "The key move is: dyadic ⍳ searches the left argument. The expression then produces the requested result directly.",
       "requires": "⍳"
     },
     {
@@ -126,7 +150,11 @@
       "test": "",
       "inputs": [],
       "expected": "0 1 0 1 0",
-      "hint": "left ∊ right tests membership item by item",
+      "hints": [
+        "Use ∊ in the expression.",
+        "left ∊ right tests membership item by item"
+      ],
+      "explain": "The key move is: left ∊ right tests membership item by item. The expression then produces the requested result directly.",
       "requires": "∊"
     },
     {
@@ -137,7 +165,11 @@
       "test": "",
       "inputs": [],
       "expected": "8 9 10",
-      "hint": "a negative left argument to ↑ takes from the end",
+      "hints": [
+        "Use take, not drop.",
+        "A negative left argument to ↑ takes from the end."
+      ],
+      "explain": "¯3 ↑ keeps the last three items of the vector, so the tail of ⍳10 is 8 9 10.",
       "requires": "↑"
     }
   ]
