@@ -3,7 +3,7 @@
   "blocks": [
     {
       "type": "prose",
-      "md": "Welcome. You type an expression, press **run**, and APL prints the result. Start with plain arithmetic — `+ - × ÷` are the four basics (note `×` and `÷`, not `*` and `/`)."
+      "md": "An APL session is direct: enter an expression, run it, read the result. Start with the four arithmetic functions: `+ - × ÷`. Multiplication is `×`; division is `÷`."
     },
     {
       "type": "cell",
@@ -15,7 +15,7 @@
     },
     {
       "type": "prose",
-      "md": "The single most important rule in APL: **there is no operator precedence**. Everything evaluates **right to left**. So `2 × 3 + 4` is `2 × (3 + 4)`, which is `14` — not `10`."
+      "md": "APL has no precedence table. In a simple expression, evaluation proceeds right to left. So `2 × 3 + 4` is `2 × (3 + 4)`, which gives `14`, not `10`."
     },
     {
       "type": "cell",
@@ -23,7 +23,7 @@
     },
     {
       "type": "prose",
-      "md": "A negative number is written with a high minus [[¯]], which is part of the number. The `-` glyph is the *subtract* function. `¯3` is negative three; `-3` is *negate* three. They print the same but read differently."
+      "md": "Negative numbers use high minus [[¯]]. It is part of the number. The ordinary `-` is a function: subtract with a left argument, negate without one. `¯3` and `-3` can print the same value, but they are not written for the same reason."
     },
     {
       "type": "cell",
@@ -31,7 +31,7 @@
     },
     {
       "type": "predict",
-      "prompt": "Right to left, no precedence. What does this print?",
+      "prompt": "Evaluate from the right. What does this print?",
       "code": "10 - 2 × 3"
     },
     {
@@ -40,7 +40,7 @@
     },
     {
       "type": "prose",
-      "md": "Power is `*`, and `*` with no left argument is *e to the power* (the exponential). Magnitude (absolute value) is `|`."
+      "md": "Dyadic `*` is power: `2 * 10` means two to the tenth. Monadic `*` is the exponential function. Monadic `|` is magnitude, or absolute value."
     },
     {
       "type": "cell",
@@ -53,45 +53,45 @@
     {
       "type": "exercise",
       "id": "arith-rtl",
-      "prompt": "Relying on right-to-left order, write a single expression with no parentheses that computes 2 plus 3 times 4, giving 14.",
+      "prompt": "Write one expression, with no parentheses, for `2 + (3 × 4)`. It should give 14.",
       "solution": "2 + 3 × 4",
       "test": "",
       "inputs": [],
       "expected": "14",
-      "hint": "the rightmost operation happens first",
+      "hint": "with no parentheses, the rightmost function is evaluated first",
       "requires": "×"
     },
     {
       "type": "exercise",
       "id": "arith-negative",
-      "prompt": "Add negative five to twelve using the high-minus sign. Expect 7.",
+      "prompt": "Use high minus to write negative five, then add it to twelve. The result should be 7.",
       "solution": "¯5 + 12",
       "test": "",
       "inputs": [],
       "expected": "7",
-      "hint": "¯ is backtick-2; it sticks to the number",
+      "hint": "¯ belongs to the number; it is not the subtract function",
       "requires": "¯"
     },
     {
       "type": "exercise",
       "id": "arith-power",
-      "prompt": "Compute three to the fourth power. Expect 81.",
+      "prompt": "Compute three to the fourth power. The result should be 81.",
       "solution": "3 * 4",
       "test": "",
       "inputs": [],
       "expected": "81",
-      "hint": "* is power in APL, not ×",
+      "hint": "dyadic * is power",
       "requires": "*"
     },
     {
       "type": "exercise",
       "id": "arith-parens",
-      "prompt": "Use parentheses to force the subtraction first: compute (10 minus 4) times 5. Expect 30.",
+      "prompt": "Use parentheses so the subtraction happens before multiplication: `(10 - 4) × 5`. The result should be 30.",
       "solution": "(10 - 4) × 5",
       "test": "",
       "inputs": [],
       "expected": "30",
-      "hint": "parentheses override the right-to-left default",
+      "hint": "parentheses make the grouped expression become one argument",
       "requires": "("
     }
   ]

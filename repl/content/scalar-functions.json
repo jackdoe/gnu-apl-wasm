@@ -3,7 +3,7 @@
   "blocks": [
     {
       "type": "prose",
-      "md": "A **scalar function** applies independently to each element and threads through arrays of any shape. You have already used `+ - × ÷ *`. Here are more: `⌈` maximum, `⌊` minimum, `|` residue/magnitude, `○` is pi-times (monadic) and trig (dyadic)."
+      "md": "A scalar function acts independently on simple values, and APL extends it across arrays of any shape. You have used `+ - × ÷ *`. More scalar functions: `⌈` maximum, `⌊` minimum, `|` residue or magnitude, and `○` pi-times or trigonometry."
     },
     {
       "type": "cell",
@@ -15,7 +15,7 @@
     },
     {
       "type": "prose",
-      "md": "Dyadic `|` is **residue** — the remainder of the right argument divided by the left. `2 | n` is the classic even/odd test."
+      "md": "Dyadic `|` is residue. `a | b` gives the remainder after dividing `b` by `a`. So `2 | n` tells you whether `n` is odd or even."
     },
     {
       "type": "cell",
@@ -27,7 +27,7 @@
     },
     {
       "type": "prose",
-      "md": "Comparisons (`< ≤ = ≥ > ≠`) are scalar functions too. They return **1 for true and 0 for false** — Boolean arrays you can compute with."
+      "md": "Comparisons are scalar functions too: `< ≤ = ≥ > ≠`. They return `1` for true and `0` for false. The result is a Boolean array, and it can be used in later computation."
     },
     {
       "type": "cell",
@@ -39,7 +39,7 @@
     },
     {
       "type": "prose",
-      "md": "[[○]] alone (monadic) multiplies by π — useful for turning revolutions into radians. Dyadic `k ○ x` picks a trig function by the left number `k`:\n- `1 ○ x` is sine\n- `2 ○ x` is cosine\n- `3 ○ x` is tangent"
+      "md": "Monadic [[○]] multiplies by π. Dyadic `k ○ x` selects a trigonometric function by the left argument:\n- `1 ○ x` is sine\n- `2 ○ x` is cosine\n- `3 ○ x` is tangent"
     },
     {
       "type": "cell",
@@ -59,45 +59,45 @@
     {
       "type": "exercise",
       "id": "scalar-max",
-      "prompt": "Clamp the vector 3 8 1 9 2 so nothing is below 4: replace each element with the larger of itself and 4. Expect 4 8 4 9 4.",
+      "prompt": "Clamp `3 8 1 9 2` so no item is below 4. Replace each item with the larger of that item and 4. The result should be `4 8 4 9 4`.",
       "solution": "4 ⌈ 3 8 1 9 2",
       "test": "",
       "inputs": [],
       "expected": "4 8 4 9 4",
-      "hint": "⌈ is dyadic maximum, element by element",
+      "hint": "dyadic ⌈ takes the larger value, element by element",
       "requires": "⌈"
     },
     {
       "type": "exercise",
       "id": "scalar-parity",
-      "prompt": "Produce a Boolean vector marking the odd numbers among 1 to 8 (1 for odd, 0 for even).",
+      "prompt": "Mark the odd numbers from 1 through 8. Use `1` for odd and `0` for even.",
       "solution": "2 | ⍳8",
       "test": "",
       "inputs": [],
       "expected": "1 0 1 0 1 0 1 0",
-      "hint": "remainder mod 2 is 1 exactly for odd numbers",
+      "hint": "a number is odd exactly when its residue modulo 2 is 1",
       "requires": "|"
     },
     {
       "type": "exercise",
       "id": "scalar-threshold",
-      "prompt": "From the first six integers, mark which are strictly greater than 3 (1 for yes, 0 for no).",
+      "prompt": "From the first six integers, mark which ones are greater than 3. Use `1` for yes and `0` for no.",
       "solution": "(⍳6) > 3",
       "test": "",
       "inputs": [],
       "expected": "0 0 0 1 1 1",
-      "hint": "comparison returns 1s and 0s",
+      "hint": "> returns a Boolean vector",
       "requires": ">"
     },
     {
       "type": "exercise",
       "id": "scalar-abs",
-      "prompt": "Take the magnitudes (absolute values) of ¯3 4 ¯5 6. Expect 3 4 5 6.",
+      "prompt": "Take the magnitudes of `¯3 4 ¯5 6`. The result should be `3 4 5 6`.",
       "solution": "| ¯3 4 ¯5 6",
       "test": "",
       "inputs": [],
       "expected": "3 4 5 6",
-      "hint": "monadic | is magnitude",
+      "hint": "monadic | is absolute value",
       "requires": "|"
     }
   ]

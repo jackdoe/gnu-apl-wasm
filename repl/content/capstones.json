@@ -3,11 +3,11 @@
   "blocks": [
     {
       "type": "prose",
-      "md": "Before the games, a gallery of one-liners. Each solves a real problem in a single line — no loops, no recursion, just arrays. Read them slowly; you now know every glyph in them."
+      "md": "These one-liners combine the ideas from earlier lessons. Each one solves a concrete problem by shaping, comparing, reducing, and selecting arrays."
     },
     {
       "type": "prose",
-      "md": "**Primes.** This one rewards taking apart. Watch it grow on `1..5` before reading the whole line:\n- `(⍳5)∘.|⍳5` is the residue table — every number mod every number\n- `0=` marks the exact divisors\n- `+⌿` counts divisors per column\n- a prime has exactly two (1 and itself)"
+      "md": "**Primes.** Read the expression by columns. Each column is one candidate number:\n- `(⍳5)∘.|⍳5` builds a residue table: each possible divisor against each candidate\n- `0=` marks exact divisibility\n- `+⌿` counts divisors for each candidate\n- a prime has exactly two divisors, 1 and itself"
     },
     {
       "type": "cell",
@@ -24,7 +24,7 @@
     },
     {
       "type": "prose",
-      "md": "**Pascal's triangle row.** The binomials `k!n` for `k` from 0 to `n` are one row of Pascal's triangle."
+      "md": "**Pascal's triangle row.** In APL, `k ! n` is the binomial coefficient. Taking `k` from 0 through `n` gives one row of Pascal's triangle."
     },
     {
       "type": "cell",
@@ -32,7 +32,7 @@
     },
     {
       "type": "prose",
-      "md": "**Histogram.** The trick: reshaping `'*'` to a length gives a bar of stars. Do that to *each* count with `⍴¨`, then `⊃` discloses the ragged rows into one character matrix."
+      "md": "**Histogram.** Reshaping `'*'` to a length gives one bar. Apply reshape to each count with `⍴¨`, then disclose the nested character vectors with `⊃`."
     },
     {
       "type": "cell",
@@ -45,7 +45,7 @@
     },
     {
       "type": "prose",
-      "md": "**Running average.** A cumulative sum `+\\⍵` divided by the running count `⍳≢⍵`."
+      "md": "**Running average.** The numerator is the running sum `+\\⍵`. The denominator is the running count `⍳≢⍵`."
     },
     {
       "type": "cell",
@@ -54,42 +54,42 @@
     {
       "type": "exercise",
       "id": "cap-primes",
-      "prompt": "Define primes (using the divisor-counting idea above) and list every prime up to 40.",
+      "prompt": "Define `primes` using the divisor-counting method above. It will be tested by listing the primes up to 40.",
       "solution": "primes←{a←⍳⍵ ⋄ (2=+⌿0=a∘.|a)/a}",
       "test": "primes 40",
       "inputs": [],
       "expected": "2 3 5 7 11 13 17 19 23 29 31 37",
-      "hint": "a number is prime when +⌿0=a∘.|a equals 2"
+      "hint": "for a←⍳⍵, select a where 2=+⌿0=a∘.|a"
     },
     {
       "type": "exercise",
       "id": "cap-pascal",
-      "prompt": "Define pascal and produce the row of Pascal's triangle for n = 8 (nine numbers, 1 8 28 … 28 8 1).",
+      "prompt": "Define `pascal`, returning row `n` of Pascal's triangle. It will be tested for `n=8`.",
       "solution": "pascal←{(0,⍳⍵)!⍵}",
       "test": "pascal 8",
       "inputs": [],
       "expected": "1 8 28 56 70 56 28 8 1",
-      "hint": "the row is the binomials (0,⍳⍵)!⍵"
+      "hint": "use the binomial coefficients (0,⍳⍵)!⍵"
     },
     {
       "type": "exercise",
       "id": "cap-histogram",
-      "prompt": "Define hbar and draw a star histogram for the counts 2 5 3 1 4.",
+      "prompt": "Define `hbar`, a star-bar histogram function. It will be tested on the counts `2 5 3 1 4`.",
       "solution": "hbar←{⊃⍵⍴¨⊂'*'}",
       "test": "hbar 2 5 3 1 4",
       "inputs": [],
       "expected": "**\n*****\n***\n*\n****",
-      "hint": "reshape '*' to each count, then ⊃ to disclose into a matrix"
+      "hint": "reshape '*' to each count with ⍴¨, then disclose with ⊃"
     },
     {
       "type": "exercise",
       "id": "cap-fizz",
-      "prompt": "Define a function that keeps the numbers from 1 to ⍵ that are divisible by 3 or 5, then run it on 20. Expect 3 5 6 9 10 12 15 18 20.",
+      "prompt": "Define a function that keeps numbers from 1 through `⍵` when they are divisible by 3 or by 5. It will be tested on 20.",
       "solution": "fizz←{((0=3|⍳⍵)∨(0=5|⍳⍵))/⍳⍵}",
       "test": "fizz 20",
       "inputs": [],
       "expected": "3 5 6 9 10 12 15 18 20",
-      "hint": "build two divisibility masks, combine with ∨, then compress ⍳⍵"
+      "hint": "build the divisibility masks for 3 and 5, combine them with ∨, then compress ⍳⍵"
     }
   ]
 }

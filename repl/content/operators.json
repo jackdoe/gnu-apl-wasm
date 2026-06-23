@@ -3,11 +3,11 @@
   "blocks": [
     {
       "type": "prose",
-      "md": "A **function** acts on data. An **operator** acts on a *function* to build a new one. You have already used `/` (reduce) and `∘.` (outer product) — both operators. Two more carry you a long way."
+      "md": "A function acts on data. An operator acts on a function and produces a derived function. You have already used `/` for reduce and `∘.` for outer product. Both are operators."
     },
     {
       "type": "prose",
-      "md": "`¨` (each) applies its function to every item separately. Given a list of lists, `≢¨` tallies each one."
+      "md": "`¨` (each) applies its operand function to every item separately. If the data is a list of vectors, `≢¨` tallies each vector."
     },
     {
       "type": "cell",
@@ -15,7 +15,7 @@
     },
     {
       "type": "prose",
-      "md": "`⍣` (power) applies its function a given number of times. `(⌽⍣2)` reverses twice (back to the start); `(⌽⍣3)` reverses three times."
+      "md": "`⍣` (power) applies its operand function a given number of times. `(⌽⍣2)` reverses twice. `(⌽⍣3)` reverses three times."
     },
     {
       "type": "cell",
@@ -27,7 +27,7 @@
     },
     {
       "type": "prose",
-      "md": "Operators **compose** — build a chain one layer at a time and read it right to left. To total the lengths of `⍳1`, `⍳2`, `⍳3`:\n- `⍳¨ 1 2 3` makes three vectors\n- `≢¨` measures each\n- `+/` adds the measurements"
+      "md": "Operators compose. Build the expression in layers and read it right to left. To total the lengths of `⍳1`, `⍳2`, and `⍳3`:\n- `⍳¨ 1 2 3` makes three vectors\n- `≢¨` measures each vector\n- `+/` sums the measurements"
     },
     {
       "type": "cell",
@@ -36,40 +36,40 @@
     },
     {
       "type": "predict",
-      "prompt": "One more layer: what does folding + over those lengths give?",
+      "prompt": "One more layer: what does `+/` give when applied to those lengths?",
       "code": "+/ ≢¨ ⍳¨ 1 2 3"
     },
     {
       "type": "exercise",
       "id": "operators-each-len",
-      "prompt": "Given the list of lists (1 2 3 4)(5 6)(7 8 9), report the length of each, giving 4 2 3.",
+      "prompt": "For `(1 2 3 4)(5 6)(7 8 9)`, report the length of each item. The result should be `4 2 3`.",
       "solution": "≢¨ (1 2 3 4)(5 6)(7 8 9)",
       "test": "",
       "inputs": [],
       "expected": "4 2 3",
-      "hint": "apply tally ≢ to each item",
+      "hint": "derive ≢¨, tally-each",
       "requires": "¨"
     },
     {
       "type": "exercise",
       "id": "operators-power-rev",
-      "prompt": "Reverse the vector 1 2 3 4 5 an odd number of times (say five) using the power operator, giving 5 4 3 2 1.",
+      "prompt": "Use the power operator to reverse `1 2 3 4 5` five times. The result should be `5 4 3 2 1`.",
       "solution": "(⌽⍣5) 1 2 3 4 5",
       "test": "",
       "inputs": [],
       "expected": "5 4 3 2 1",
-      "hint": "⌽⍣5 applies reverse five times",
+      "hint": "⌽⍣5 derives a function that applies reverse five times",
       "requires": "⍣"
     },
     {
       "type": "exercise",
       "id": "operators-each-iota",
-      "prompt": "Using the chain you just built, report the total count of numbers in ⍳1, ⍳2 and ⍳3 combined. Expect 6.",
+      "prompt": "Use the chain above to count all numbers contained in `⍳1`, `⍳2`, and `⍳3`. The result should be 6.",
       "solution": "+/ ≢¨ ⍳¨ 1 2 3",
       "test": "",
       "inputs": [],
       "expected": "6",
-      "hint": "+/ ≢¨ ⍳¨ 1 2 3 — read it right to left",
+      "hint": "read +/ ≢¨ ⍳¨ 1 2 3 from right to left",
       "requires": "¨"
     }
   ]

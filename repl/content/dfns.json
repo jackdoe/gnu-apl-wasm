@@ -3,7 +3,7 @@
   "blocks": [
     {
       "type": "prose",
-      "md": "A **dfn** is a function written in braces. Inside, `⍵` (omega) is the right argument and `⍺` (alpha) is the left. The value of the last expression is the result."
+      "md": "A dfn is a direct function written in braces. Inside the braces, `⍵` is the right argument and `⍺` is the left argument. The last executed expression is the result."
     },
     {
       "type": "cell",
@@ -11,7 +11,7 @@
     },
     {
       "type": "prose",
-      "md": "Use a dfn with no `⍺` as a one-argument (monadic) function, and with `⍺` as a two-argument (dyadic) one. Give it a name with `←` and call it like any built-in."
+      "md": "A dfn that uses only `⍵` is monadic. A dfn that uses `⍺` and `⍵` is dyadic. Assign it with `←`, then call it like any other function."
     },
     {
       "type": "cell",
@@ -23,47 +23,47 @@
     },
     {
       "type": "prose",
-      "md": "Because the argument is an array, your function is automatically vectorised — `dbl` doubled the whole vector with no loop. This is the APL way: write the operation once, let it apply to everything."
+      "md": "The argument can be a whole array. If the body uses scalar functions, they apply across that array. `dbl` doubled every item without a loop because `×` already knows how to act on arrays."
     },
     {
       "type": "exercise",
       "id": "dfns-square",
-      "prompt": "Define a function sq that squares its argument, then square 12. Expect 144.",
+      "prompt": "Define `sq`, a function that squares its argument. It will be tested on 12 and should give 144.",
       "solution": "sq ← {⍵ × ⍵}",
       "test": "sq 12",
       "inputs": [],
       "expected": "144",
-      "hint": "result is the last expression; multiply ⍵ by itself"
+      "hint": "inside the dfn, multiply ⍵ by itself"
     },
     {
       "type": "exercise",
       "id": "dfns-mean",
-      "prompt": "Define mean as sum divided by count, then take the mean of 10 20 30 40. Expect 25.",
+      "prompt": "Define `mean` as sum divided by count. It will be tested on `10 20 30 40` and should give 25.",
       "solution": "mean ← {(+/⍵) ÷ ≢⍵}",
       "test": "mean 10 20 30 40",
       "inputs": [],
       "expected": "25",
-      "hint": "(+/⍵) ÷ ≢⍵"
+      "hint": "sum with +/⍵; count with ≢⍵; divide the two"
     },
     {
       "type": "exercise",
       "id": "dfns-dyadic",
-      "prompt": "Define a dyadic function pct that returns ⍺ as a percentage of ⍵ (100 × ⍺ ÷ ⍵), then compute 30 pct 200. Expect 15.",
+      "prompt": "Define dyadic `pct`, where `A pct B` returns `A` as a percentage of `B`. It will be tested as `30 pct 200` and should give 15.",
       "solution": "pct ← {100 × ⍺ ÷ ⍵}",
       "test": "30 pct 200",
       "inputs": [],
       "expected": "15",
-      "hint": "⍺ is the left argument, ⍵ the right"
+      "hint": "use ⍺ for the left argument and ⍵ for the right argument"
     },
     {
       "type": "exercise",
       "id": "dfns-range-sum",
-      "prompt": "Define a function that sums the first ⍵ integers, then apply it to 10. Expect 55.",
+      "prompt": "Define a function that sums the first `⍵` integers. It will be tested on 10 and should give 55.",
       "solution": "tri ← {+/⍳⍵}",
       "test": "tri 10",
       "inputs": [],
       "expected": "55",
-      "hint": "+/⍳⍵"
+      "hint": "build the range with ⍳⍵, then sum it with +/"
     }
   ]
 }

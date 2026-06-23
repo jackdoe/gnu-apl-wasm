@@ -3,7 +3,7 @@
   "blocks": [
     {
       "type": "prose",
-      "md": "These functions rearrange and reshape without doing arithmetic. `⌽` reverses a vector (or each row of a matrix); `⊖` flips a matrix top-to-bottom; `⍉` transposes (swaps rows and columns)."
+      "md": "Structural functions change arrangement without changing the arithmetic values. `⌽` reverses a vector, or each row of a matrix. `⊖` flips a matrix top to bottom. `⍉` transposes, swapping rows and columns."
     },
     {
       "type": "cell",
@@ -15,7 +15,7 @@
     },
     {
       "type": "prose",
-      "md": "`↑` (take) keeps the first n items; a negative n takes from the end. `↓` (drop) removes the first n items."
+      "md": "Dyadic `↑` is take: `n ↑ v` keeps the first `n` items. A negative `n` takes from the end. Dyadic `↓` is drop: `n ↓ v` removes the first `n` items."
     },
     {
       "type": "cell",
@@ -31,7 +31,7 @@
     },
     {
       "type": "prose",
-      "md": "`,` (catenate) joins arrays end to end."
+      "md": "Dyadic `,` is catenate. It joins arrays end to end."
     },
     {
       "type": "cell",
@@ -40,7 +40,7 @@
     },
     {
       "type": "prose",
-      "md": "Two lookups round out the toolkit:\n- dyadic [[⍳]] is **index-of**: `set ⍳ x` reports the position where `x` first appears\n- [[∊]] is **membership**: for each left item, is it somewhere on the right?"
+      "md": "Two lookup functions are used constantly:\n- dyadic [[⍳]] is index-of: `set ⍳ x` reports the first position of `x` in `set`\n- [[∊]] is membership: each left item is tested for presence in the right argument"
     },
     {
       "type": "cell",
@@ -55,78 +55,78 @@
     {
       "type": "exercise",
       "id": "structural-reverse",
-      "prompt": "Reverse the vector 1 2 3 4 5, giving 5 4 3 2 1.",
+      "prompt": "Reverse the vector `1 2 3 4 5`. The result should be `5 4 3 2 1`.",
       "solution": "⌽ 1 2 3 4 5",
       "test": "",
       "inputs": [],
       "expected": "5 4 3 2 1",
-      "hint": "⌽ is reverse",
+      "hint": "monadic ⌽ reverses a vector",
       "requires": "⌽"
     },
     {
       "type": "exercise",
       "id": "structural-take",
-      "prompt": "Take the first three integers from ⍳10, giving 1 2 3.",
+      "prompt": "Take the first three integers from `⍳10`. The result should be `1 2 3`.",
       "solution": "3 ↑ ⍳10",
       "test": "",
       "inputs": [],
       "expected": "1 2 3",
-      "hint": "n ↑ keeps the first n",
+      "hint": "n ↑ v keeps the first n items of v",
       "requires": "↑"
     },
     {
       "type": "exercise",
       "id": "structural-drop",
-      "prompt": "Drop the first two elements of ⍳6, leaving 3 4 5 6.",
+      "prompt": "Drop the first two items of `⍳6`. The result should be `3 4 5 6`.",
       "solution": "2 ↓ ⍳6",
       "test": "",
       "inputs": [],
       "expected": "3 4 5 6",
-      "hint": "n ↓ removes the first n",
+      "hint": "n ↓ v removes the first n items of v",
       "requires": "↓"
     },
     {
       "type": "exercise",
       "id": "structural-catenate",
-      "prompt": "Join 1 2 3 and 4 5 6 into one vector 1 2 3 4 5 6.",
+      "prompt": "Join `1 2 3` and `4 5 6` into one vector.",
       "solution": "1 2 3 , 4 5 6",
       "test": "",
       "inputs": [],
       "expected": "1 2 3 4 5 6",
-      "hint": ", catenates",
+      "hint": "dyadic , catenates",
       "requires": ","
     },
     {
       "type": "exercise",
       "id": "structural-transpose",
-      "prompt": "Transpose the 2×3 matrix made from ⍳6 into a 3×2 matrix.",
+      "prompt": "Transpose the 2 by 3 matrix made from `⍳6` into a 3 by 2 matrix.",
       "solution": "⍉ 2 3 ⍴ ⍳6",
       "test": "",
       "inputs": [],
       "expected": "1 4\n2 5\n3 6",
-      "hint": "⍉ swaps rows and columns",
+      "hint": "⍉ swaps the axes of a matrix",
       "requires": "⍉"
     },
     {
       "type": "exercise",
       "id": "structural-indexof",
-      "prompt": "In the vector 2 4 6 8, find the position of the value 6. Expect 3.",
+      "prompt": "In the vector `2 4 6 8`, find the position of the value 6. The result should be 3.",
       "solution": "2 4 6 8 ⍳ 6",
       "test": "",
       "inputs": [],
       "expected": "3",
-      "hint": "dyadic ⍳ is index-of",
+      "hint": "dyadic ⍳ searches the left argument",
       "requires": "⍳"
     },
     {
       "type": "exercise",
       "id": "structural-member",
-      "prompt": "Of the numbers 1 2 3 4 5, mark which belong to the set 2 4 (1 for member, 0 for not). Expect 0 1 0 1 0.",
+      "prompt": "For `1 2 3 4 5`, mark which items are members of `2 4`. Use `1` for member and `0` for not. The result should be `0 1 0 1 0`.",
       "solution": "1 2 3 4 5 ∊ 2 4",
       "test": "",
       "inputs": [],
       "expected": "0 1 0 1 0",
-      "hint": "left ∊ right tests each left item for membership",
+      "hint": "left ∊ right tests membership item by item",
       "requires": "∊"
     }
   ]

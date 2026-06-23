@@ -3,7 +3,7 @@
   "blocks": [
     {
       "type": "prose",
-      "md": "APL is built on **arrays**. The simplest is a vector: just write numbers separated by spaces."
+      "md": "APL is built on arrays. A vector is a one-dimensional array. To write one, put values next to each other with spaces between them."
     },
     {
       "type": "cell",
@@ -11,7 +11,7 @@
     },
     {
       "type": "prose",
-      "md": "Arithmetic works on whole vectors at once, element by element. This is the heart of APL — no loops needed."
+      "md": "Scalar arithmetic extends across a vector element by element. One expression acts on the whole array."
     },
     {
       "type": "cell",
@@ -23,7 +23,7 @@
     },
     {
       "type": "prose",
-      "md": "[[⍳]] (iota) generates the first `n` integers: `1 2 3 … n`. It is how you make a range."
+      "md": "[[⍳]] (iota) gives the first `n` integers. `⍳10` is the vector `1 2 3 4 5 6 7 8 9 10`."
     },
     {
       "type": "cell",
@@ -32,7 +32,7 @@
     },
     {
       "type": "prose",
-      "md": "`≢` (tally) counts how many items a vector has. `⍴` (rho, backtick-r) gives its shape as a vector."
+      "md": "`≢` (tally) counts items. `⍴` (rho) gives the shape. For a vector, the shape is its length."
     },
     {
       "type": "cell",
@@ -45,56 +45,56 @@
     {
       "type": "exercise",
       "id": "vectors-range",
-      "prompt": "Generate the integers from 1 to 7.",
+      "prompt": "Generate the vector of integers from 1 through 7.",
       "solution": "⍳7",
       "test": "",
       "inputs": [],
       "expected": "1 2 3 4 5 6 7",
-      "hint": "⍳ is backtick-i",
+      "hint": "⍳ n gives the first n integers",
       "requires": "⍳"
     },
     {
       "type": "exercise",
       "id": "vectors-scale",
-      "prompt": "Take the vector 1 2 3 4 and double every element, giving 2 4 6 8.",
+      "prompt": "Double every element of `1 2 3 4`. The result should be `2 4 6 8`.",
       "solution": "2 × 1 2 3 4",
       "test": "",
       "inputs": [],
       "expected": "2 4 6 8",
-      "hint": "a scalar applies to every element",
+      "hint": "a scalar function applies to each element of the vector",
       "requires": "×"
     },
     {
       "type": "exercise",
       "id": "vectors-squares",
-      "prompt": "Produce the squares of the first five integers: 1 4 9 16 25.",
+      "prompt": "Square the first five integers. The result should be `1 4 9 16 25`.",
       "solution": "(⍳5) * 2",
       "test": "",
       "inputs": [],
       "expected": "1 4 9 16 25",
-      "hint": "raise ⍳5 to the power 2; parenthesise ⍳5",
+      "hint": "raise the vector ⍳5 to power 2; use parentheses so the vector is the left argument",
       "requires": "*"
     },
     {
       "type": "exercise",
       "id": "vectors-count",
-      "prompt": "How many integers are in the range 1 to 50? Use a function that counts the items of ⍳50.",
+      "prompt": "Count how many items are in `⍳50`.",
       "solution": "≢⍳50",
       "test": "",
       "inputs": [],
       "expected": "50",
-      "hint": "≢ tallies; it reads right to left so it counts ⍳50",
+      "hint": "≢ tallies the vector produced by ⍳50",
       "requires": "≢"
     },
     {
       "type": "exercise",
       "id": "vectors-shifted",
-      "prompt": "Make the vector 11 12 13 14 15 by adding 10 to the first five integers.",
+      "prompt": "Make `11 12 13 14 15` by adding 10 to the first five integers.",
       "solution": "10 + ⍳5",
       "test": "",
       "inputs": [],
       "expected": "11 12 13 14 15",
-      "hint": "add a scalar to ⍳5",
+      "hint": "add 10 to the vector ⍳5",
       "requires": "⍳"
     }
   ]

@@ -3,70 +3,70 @@
   "blocks": [
     {
       "type": "prose",
-      "md": "`⎕` (quad) is a value that **reads what you type and evaluates it as APL**. Wherever `⎕` appears, your input drops in. Type a number below and run — `⎕` becomes that number."
+      "md": "`⎕` (quad) reads a line of input and evaluates it as APL. Wherever `⎕` appears, the evaluated input becomes the value used by the expression."
     },
     {
       "type": "tryinput",
       "code": "2 × ⎕",
-      "ask": "type a number, then Enter"
+      "ask": "enter a number"
     },
     {
       "type": "prose",
-      "md": "Because `⎕` *evaluates* what you type, you can enter a whole expression — try `3 + 4`, or a vector like `1 2 3`."
+      "md": "Because `⎕` evaluates the input, the input can be a number, a vector, or a whole expression such as `3 + 4`."
     },
     {
       "type": "tryinput",
       "code": "10 + ⎕",
-      "ask": "type a number or expression"
+      "ask": "enter a value or expression"
     },
     {
       "type": "prose",
-      "md": "`⍞` (quote-quad) is the same idea but reads **raw characters** — no evaluation. Type a word and watch it come back reversed."
+      "md": "`⍞` (quote-quad) reads raw characters. It does not evaluate them as APL."
     },
     {
       "type": "tryinput",
       "code": "⌽ ⍞",
-      "ask": "type a word"
+      "ask": "enter text"
     },
     {
       "type": "prose",
-      "md": "That is all input is: a place your data enters. The exercises below are graded by running your expression on one fixed input, shown in each task."
+      "md": "Input is a value supplied from outside the expression. These exercises are graded with fixed input lines, shown in each task."
     },
     {
       "type": "exercise",
       "id": "io-double",
-      "prompt": "Write an expression that reads a number with ⎕ and prints its double. (Graded with the input 21 → 42.)",
+      "prompt": "Write an expression that reads a number with `⎕` and prints its double. It is graded with input 21 and should print 42.",
       "solution": "2 × ⎕",
       "test": "",
       "inputs": [
         "21"
       ],
       "expected": "⎕:\n      21\n42",
-      "hint": "⎕ stands for whatever value is typed in"
+      "hint": "⎕ evaluates the input line and supplies that value"
     },
     {
       "type": "exercise",
       "id": "io-square",
-      "prompt": "Write an expression that reads a number with ⎕ and prints its square. (Graded with the input 9 → 81.)",
+      "prompt": "Write an expression that reads a number with `⎕` and prints its square. It is graded with input 9 and should print 81.",
       "solution": "⎕ * 2",
       "test": "",
       "inputs": [
         "9"
       ],
       "expected": "⎕:\n      9\n81",
-      "hint": "raise the input to the power 2"
+      "hint": "use the input value as the left argument of dyadic *"
     },
     {
       "type": "exercise",
       "id": "io-charrev",
-      "prompt": "Write an expression that reads a word with ⍞ and prints it reversed. (Graded with the input 'stressed' → desserts.)",
+      "prompt": "Write an expression that reads text with `⍞` and prints it reversed. It is graded with input `stressed` and should print `desserts`.",
       "solution": "⌽ ⍞",
       "test": "",
       "inputs": [
         "stressed"
       ],
       "expected": "stressed\ndesserts",
-      "hint": "⍞ reads raw characters; ⌽ reverses them"
+      "hint": "⍞ supplies a character vector; ⌽ reverses a vector"
     }
   ]
 }

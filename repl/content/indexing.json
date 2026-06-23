@@ -3,7 +3,7 @@
   "blocks": [
     {
       "type": "prose",
-      "md": "Square brackets select elements. `v[i]` picks item `i` (counting from 1 by default). The index can itself be a vector, picking several items at once."
+      "md": "Square brackets select by position. APL counts from 1 by default, so `v[3]` selects the third item. The index can be a vector, so one selection can pick several items."
     },
     {
       "type": "cell",
@@ -15,7 +15,7 @@
     },
     {
       "type": "prose",
-      "md": "A matrix is indexed with a semicolon separating the axes: `M[row;col]`. Leave one side blank to take a whole row or column."
+      "md": "A matrix has two axes. Use a semicolon between them: `M[row;column]`. Leave an axis blank to take every item along that axis."
     },
     {
       "type": "cell",
@@ -31,7 +31,7 @@
     },
     {
       "type": "prose",
-      "md": "You can also **assign through** an index to change selected elements in place. The `⋄` (diamond) separates two statements on one line so we can change then show."
+      "md": "Indexing can also be used on the left of assignment. `v[2 4]←9` changes positions 2 and 4. `⋄` separates statements on one line, so the example can change `v` and then show `v`."
     },
     {
       "type": "cell",
@@ -40,52 +40,52 @@
     {
       "type": "exercise",
       "id": "index-third",
-      "prompt": "Select the third element of 10 20 30 40 50. Expect 30.",
+      "prompt": "Select the third item of `10 20 30 40 50`. The result should be 30.",
       "solution": "(10 20 30 40 50)[3]",
       "test": "",
       "inputs": [],
       "expected": "30",
-      "hint": "indices start at 1"
+      "hint": "APL indexes from 1 by default"
     },
     {
       "type": "exercise",
       "id": "index-odds",
-      "prompt": "From the first ten integers, pick the elements at positions 1 3 5 7 9, giving 1 3 5 7 9.",
+      "prompt": "From the first ten integers, select positions `1 3 5 7 9`. The result should be `1 3 5 7 9`.",
       "solution": "(⍳10)[1 3 5 7 9]",
       "test": "",
       "inputs": [],
       "expected": "1 3 5 7 9",
-      "hint": "the index can be a vector"
+      "hint": "put the vector of positions inside the brackets"
     },
     {
       "type": "exercise",
       "id": "index-cell",
-      "prompt": "From the 3×3 grid of 1 to 9, select the element in row 2, column 3. Expect 6.",
+      "prompt": "From the 3 by 3 matrix of 1 through 9, select row 2, column 3. The result should be 6.",
       "solution": "(3 3 ⍴ ⍳9)[2;3]",
       "test": "",
       "inputs": [],
       "expected": "6",
-      "hint": "M[row;col]"
+      "hint": "use M[row;column]"
     },
     {
       "type": "exercise",
       "id": "index-row",
-      "prompt": "From the 3×3 grid of 1 to 9, take the whole second row, giving 4 5 6.",
+      "prompt": "From the 3 by 3 matrix of 1 through 9, select the whole second row. The result should be `4 5 6`.",
       "solution": "(3 3 ⍴ ⍳9)[2;]",
       "test": "",
       "inputs": [],
       "expected": "4 5 6",
-      "hint": "leave the column side of the semicolon empty"
+      "hint": "write the row before the semicolon and leave the column axis blank"
     },
     {
       "type": "exercise",
       "id": "index-assign",
-      "prompt": "Start from a vector of five zeros, set positions 2 and 4 to 9, and show the result 0 9 0 9 0. Use ⋄ to separate statements.",
+      "prompt": "Start with five zeros. Set positions 2 and 4 to 9, then show the vector. The result should be `0 9 0 9 0`.",
       "solution": "v←5⍴0 ⋄ v[2 4]←9 ⋄ v",
       "test": "",
       "inputs": [],
       "expected": "0 9 0 9 0",
-      "hint": "assign into v[2 4] then evaluate v"
+      "hint": "use ⋄ to assign into v[2 4] and then evaluate v"
     }
   ]
 }

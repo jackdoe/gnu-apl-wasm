@@ -3,7 +3,7 @@
   "blocks": [
     {
       "type": "prose",
-      "md": "A comparison gives 1 or 0. To *choose between two values* on a condition, the cleanest idiom is **pick**: index a two-item list with `1 + condition`. When the condition is 0 you get the first item, when it is 1 you get the second."
+      "md": "A comparison gives `1` or `0`. To choose between two values, index a two-item list with `1 + condition`. If the condition is `0`, the index is 1. If the condition is `1`, the index is 2."
     },
     {
       "type": "cell",
@@ -11,7 +11,7 @@
     },
     {
       "type": "prose",
-      "md": "The other idiom is plain arithmetic: multiply by the mask. `⍵ × ⍵ > 0` keeps positives and zeroes everything else — a one-line clamp, no branch in sight."
+      "md": "Another idiom uses arithmetic on a mask. `⍵ × ⍵ > 0` keeps positive values and turns the others into zero."
     },
     {
       "type": "cell",
@@ -19,7 +19,7 @@
     },
     {
       "type": "prose",
-      "md": "`∊` (membership) asks *is each of these in that set?* — and it is the backbone of selection. `'hangman' ∊ 'an'` marks every letter of the word that has been guessed."
+      "md": "`∊` (membership) asks whether each left item appears in the right argument. `'hangman' ∊ 'an'` marks the letters of the word that have been guessed."
     },
     {
       "type": "cell",
@@ -28,44 +28,44 @@
     {
       "type": "exercise",
       "id": "cond-sign",
-      "prompt": "Define sign so that a positive ⍵ gives 'pos' and anything else 'neg', then evaluate sign 5. Use the pick idiom. Expect pos.",
+      "prompt": "Define `sign` so a positive argument gives `'pos'` and anything else gives `'neg'`. Use the pick idiom. It will be tested on 5 and should give `pos`.",
       "solution": "sign ← {⊃(1+⍵>0)⌷'neg' 'pos'}",
       "test": "sign 5",
       "inputs": [],
       "expected": "pos",
-      "hint": "1+(⍵>0) is 1 or 2; index the pair 'neg' 'pos'"
+      "hint": "1 + ⍵ > 0 produces index 1 or 2 for the pair 'neg' 'pos'"
     },
     {
       "type": "exercise",
       "id": "cond-clamp",
-      "prompt": "Using a mask (no ⌈), turn the vector ¯3 4 ¯1 6 ¯2 into 0 4 0 6 0 — keep positives, zero the rest.",
+      "prompt": "Use a mask, not `⌈`, to turn `¯3 4 ¯1 6 ¯2` into `0 4 0 6 0`. Keep positives and zero the rest.",
       "solution": "{⍵ × ⍵ > 0} ¯3 4 ¯1 6 ¯2",
       "test": "",
       "inputs": [],
       "expected": "0 4 0 6 0",
-      "hint": "multiply each element by whether it is greater than 0",
+      "hint": "multiply each value by its > 0 Boolean",
       "requires": ">"
     },
     {
       "type": "exercise",
       "id": "cond-member",
-      "prompt": "Mark which letters of 'banana' appear in the guessed set 'an' (1 for guessed, 0 for not).",
+      "prompt": "Mark which letters of `'banana'` appear in the guessed set `'an'`. Use `1` for guessed and `0` for not.",
       "solution": "'banana' ∊ 'an'",
       "test": "",
       "inputs": [],
       "expected": "0 1 1 1 1 1",
-      "hint": "∊ tests membership letter by letter",
+      "hint": "use the word as the left argument and the guessed letters as the right argument",
       "requires": "∊"
     },
     {
       "type": "exercise",
       "id": "cond-among",
-      "prompt": "Of the numbers 1 2 3 4 5 6, mark which are members of the set 2 3 5 (the primes below 6).",
+      "prompt": "For `1 2 3 4 5 6`, mark which items are members of `2 3 5`.",
       "solution": "(1 2 3 4 5 6) ∊ 2 3 5",
       "test": "",
       "inputs": [],
       "expected": "0 1 1 0 1 0",
-      "hint": "left ∊ right tests each left element for membership in right",
+      "hint": "left ∊ right tests each left item against the whole right argument",
       "requires": "∊"
     }
   ]

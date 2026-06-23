@@ -3,7 +3,7 @@
   "blocks": [
     {
       "type": "prose",
-      "md": "You met `⍴` as *shape* (monadic). With a left argument it becomes **reshape** (dyadic): `rows cols ⍴ data` pours the data into a grid of that shape, filling left to right, top to bottom."
+      "md": "Monadic `⍴` reports shape. Dyadic `⍴` makes a shape. The left argument is the new shape; the right argument is the data. `2 3 ⍴ ⍳6` makes a matrix with 2 rows and 3 columns."
     },
     {
       "type": "cell",
@@ -11,7 +11,7 @@
     },
     {
       "type": "prose",
-      "md": "If there is less data than the shape needs, APL **recycles** it. This is the easy way to make a constant grid."
+      "md": "If the shape needs more items than the data provides, APL reuses the data from the start. One value can fill a whole matrix."
     },
     {
       "type": "cell",
@@ -23,7 +23,7 @@
     },
     {
       "type": "prose",
-      "md": "The **rank** of an array is how many dimensions it has — the length of its shape. A vector has rank 1, a matrix rank 2. `⍴⍴` (shape of the shape) gives the rank."
+      "md": "Rank is the number of dimensions: the length of the shape. A vector has rank 1. A matrix has rank 2. In APL, `⍴⍴A` gives the shape of the shape of `A`, which is its rank."
     },
     {
       "type": "cell",
@@ -36,42 +36,42 @@
     {
       "type": "exercise",
       "id": "reshape-3x3",
-      "prompt": "Make a 3×3 grid of the numbers 1 to 9.",
+      "prompt": "Make a 3 by 3 matrix from the numbers 1 through 9.",
       "solution": "3 3 ⍴ ⍳9",
       "test": "",
       "inputs": [],
       "expected": "1 2 3\n4 5 6\n7 8 9",
-      "hint": "rows then columns, then the data ⍳9"
+      "hint": "the left argument is the shape, 3 3; the right argument is the data, ⍳9"
     },
     {
       "type": "exercise",
       "id": "reshape-zeros",
-      "prompt": "Build a 2×5 grid filled entirely with zeros.",
+      "prompt": "Build a 2 by 5 matrix filled with zeros.",
       "solution": "2 5 ⍴ 0",
       "test": "",
       "inputs": [],
       "expected": "0 0 0 0 0\n0 0 0 0 0",
-      "hint": "one value gets recycled to fill the whole shape"
+      "hint": "a single zero is reused until the requested shape is full"
     },
     {
       "type": "exercise",
       "id": "reshape-row",
-      "prompt": "Reshape the numbers 1 to 6 into a single row of 6 (a 1×6 matrix, not a plain vector).",
+      "prompt": "Reshape the numbers 1 through 6 into a 1 by 6 matrix, not a plain vector.",
       "solution": "1 6 ⍴ ⍳6",
       "test": "",
       "inputs": [],
       "expected": "1 2 3 4 5 6",
-      "hint": "a two-element left argument 1 6 forces a matrix"
+      "hint": "the two-number shape 1 6 makes a rank-2 array"
     },
     {
       "type": "exercise",
       "id": "reshape-rank",
-      "prompt": "Report the rank (number of dimensions) of a 2×3 matrix built from ⍳6.",
+      "prompt": "Report the rank of a 2 by 3 matrix made from `⍳6`.",
       "solution": "⍴⍴ 2 3 ⍴ ⍳6",
       "test": "",
       "inputs": [],
       "expected": "2",
-      "hint": "rank is the shape of the shape"
+      "hint": "⍴⍴A gives the length of the shape of A"
     }
   ]
 }

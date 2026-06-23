@@ -3,7 +3,7 @@
   "blocks": [
     {
       "type": "prose",
-      "md": "A dfn is one expression. Real programs need several steps, decisions, and repetition — that is a **traditional function**. You build one here with `⎕FX`, handing it a list of lines: the **header** first (result, name, arguments), then the body."
+      "md": "A traditional function is a named multi-line function. Here it is built with `⎕FX`, which takes character vectors as source lines. The first line is the header: result variable, function name, and arguments. The remaining lines are the body."
     },
     {
       "type": "cell",
@@ -11,11 +11,11 @@
     },
     {
       "type": "prose",
-      "md": "(In a desktop APL you would open the `∇` editor; this in-browser engine cannot, so `⎕FX` is how we define multi-line functions here.)"
+      "md": "In a desktop APL session, traditional functions are often edited with `∇`. In this browser, `⎕FX` is the direct way to define them."
     },
     {
       "type": "prose",
-      "md": "Inside the body, `→(condition)/label` jumps to a label when the condition is true, and `→0` ends the function. That is all you need for branching and for **recursion** — a function that calls itself, like factorial."
+      "md": "Inside the body, `→label` branches. The form `→(condition)/label` branches only when the condition is true. `→0` exits the function. A function can also call itself; that is recursion."
     },
     {
       "type": "cell",
@@ -28,42 +28,42 @@
     {
       "type": "exercise",
       "id": "flow-dbl",
-      "prompt": "Use ⎕FX to define a traditional function dbl with header R←dbl N that returns twice N, then evaluate dbl 21. Expect 42.",
+      "prompt": "Use `⎕FX` to define `dbl` with header `R←dbl N`. It should set `R` to twice `N`. It will be tested as `dbl 21` and should give 42.",
       "solution": "⎕FX 'R←dbl N' 'R←2×N'",
       "test": "dbl 21",
       "inputs": [],
       "expected": "42",
-      "hint": "⎕FX takes the header line then each body line as separate strings"
+      "hint": "pass the header string first, then the body string"
     },
     {
       "type": "exercise",
       "id": "flow-fact",
-      "prompt": "Define a recursive factorial with ⎕FX (base case →(N≤1)/0), then compute fact 6. Expect 720.",
+      "prompt": "Define recursive `fact` with `⎕FX`. The base case should exit when `N≤1`. It will be tested as `fact 6` and should give 720.",
       "solution": "⎕FX 'R←fact N' 'R←1' '→(N≤1)/0' 'R←N×fact N-1'",
       "test": "fact 6",
       "inputs": [],
       "expected": "720",
-      "hint": "set R←1, return early when N≤1, otherwise R←N×fact N-1"
+      "hint": "set R←1; if N≤1, exit; otherwise set R←N×fact N-1"
     },
     {
       "type": "exercise",
       "id": "flow-fib",
-      "prompt": "Define a recursive Fibonacci with ⎕FX (fib 0 is 0, fib 1 is 1), then compute fib 12. Expect 144.",
+      "prompt": "Define recursive `fib` with `⎕FX`, where `fib 0` is 0 and `fib 1` is 1. It will be tested as `fib 12` and should give 144.",
       "solution": "⎕FX 'R←fib N' 'R←N' '→(N<2)/0' 'R←(fib N-1)+fib N-2'",
       "test": "fib 12",
       "inputs": [],
       "expected": "144",
-      "hint": "return N when N<2, otherwise sum the two previous"
+      "hint": "start with R←N; if N<2, exit; otherwise sum the two previous calls"
     },
     {
       "type": "exercise",
       "id": "flow-max",
-      "prompt": "Define a dyadic function mymax (header R←A mymax B) using a branch so that 3 mymax 8 gives 8 — without using ⌈.",
+      "prompt": "Define dyadic `mymax` with header `R←A mymax B`. Use a branch, not `⌈`. It will be tested as `3 mymax 8` and should give 8.",
       "solution": "⎕FX 'R←A mymax B' 'R←A' '→(A≥B)/0' 'R←B'",
       "test": "3 mymax 8",
       "inputs": [],
       "expected": "8",
-      "hint": "start R←A, return if A≥B, otherwise R←B"
+      "hint": "start with R←A; if A≥B, exit; otherwise set R←B"
     }
   ]
 }

@@ -3,11 +3,11 @@
   "blocks": [
     {
       "type": "prose",
-      "md": "Time to put it all together. A game is just **state** (a word, a board) plus **selection** (what is revealed, who won) plus a **loop** (keep asking until it's over). You now have every piece."
+      "md": "A game has state, selection, and repetition. State is the word or board. Selection decides what is visible or who has won. Repetition asks for the next move until the state is final."
     },
     {
       "type": "prose",
-      "md": "**Hangman — the reveal.** Start with a row of `_`, find which letters of the word were guessed with `∊`, and drop those letters into their positions by masked indexed-assignment."
+      "md": "**Hangman reveal.** Start with a row of `_`. Use `∊` to mark which letters have been guessed. Compress the positions and letters by that mask, then assign the guessed letters into the blank board."
     },
     {
       "type": "cell",
@@ -20,36 +20,36 @@
     {
       "type": "exercise",
       "id": "game-reveal",
-      "prompt": "Define reveal (blanks for unguessed letters) and show 'apple' revealed with the guesses 'pe'. Expect _pp_e.",
+      "prompt": "Define `reveal`, which shows guessed letters and `_` for the rest. It will be tested as `'apple' reveal 'pe'` and should give `_pp_e`.",
       "solution": "reveal←{b←(≢⍺)⍴'_' ⋄ m←⍺∊⍵ ⋄ b[m/⍳≢⍺]←m/⍺ ⋄ b}",
       "test": "'apple' reveal 'pe'",
       "inputs": [],
       "expected": "_pp_e",
-      "hint": "make a '_' row, mask with ⍺∊⍵, assign the guessed letters into their slots"
+      "hint": "make blanks, compute ⍺∊⍵, then assign m/⍺ into positions m/⍳≢⍺"
     },
     {
       "type": "exercise",
       "id": "game-wrong",
-      "prompt": "Define wrong, which counts how many of the guessed letters ⍵ are NOT in the word ⍺, then evaluate 'apple' wrong 'xpz'. Expect 2.",
+      "prompt": "Define `wrong`, which counts how many guessed letters `⍵` are not in word `⍺`. It will be tested as `'apple' wrong 'xpz'` and should give 2.",
       "solution": "wrong←{+/~⍵∊⍺}",
       "test": "'apple' wrong 'xpz'",
       "inputs": [],
       "expected": "2",
-      "hint": "~⍵∊⍺ marks guesses that miss; sum them"
+      "hint": "⍵∊⍺ marks hits; ~ turns hits into misses; +/ counts them"
     },
     {
       "type": "prose",
-      "md": "**Hangman — play it.** The board below is driven by exactly the `reveal` function above: every time you guess, your letters are handed to `reveal` and the result is drawn. Type a letter and press Enter."
+      "md": "**Hangman play.** The board below uses the same `reveal` definition. Each guess changes the guessed-letter set, then `reveal` draws the visible word."
     },
     {
       "type": "hangman",
-      "label": "Hangman — guess the hidden word, six lives.",
+      "label": "Hangman: guess the hidden word, six lives.",
       "word": "wizard",
       "lives": 6
     },
     {
       "type": "prose",
-      "md": "**Tic-tac-toe — the board.** A 3×3 character matrix of `.`, with moves dropped in by indexed assignment."
+      "md": "**Tic-tac-toe board.** The board is a 3 by 3 character matrix of `.`. A move is indexed assignment into one cell."
     },
     {
       "type": "cell",
@@ -57,7 +57,7 @@
     },
     {
       "type": "prose",
-      "md": "**Tic-tac-toe — the win check.** Number the cells 1–9. There are eight ways to win — three rows, three columns, two diagonals — so list them as an 8×3 matrix of positions. That matrix `L` is the heart of the check; here it is on its own:"
+      "md": "**Tic-tac-toe win check.** Number the cells 1 through 9. There are eight winning lines: three rows, three columns, two diagonals. Store them as an 8 by 3 matrix of positions named `L`."
     },
     {
       "type": "cell",
@@ -66,7 +66,7 @@
     },
     {
       "type": "prose",
-      "md": "Now mask the board with `⍵='X'`, index that mask by `L` to gather each line's three cells, `∧/` to ask *is this whole line X?*, and `∨/` to ask *did any line win?*"
+      "md": "Now make a mask with `⍵='X'`. Index that mask by `L` to gather the three cells of each line. `∧/` tests each line. `∨/` tests whether any line won."
     },
     {
       "type": "cell",
@@ -79,22 +79,22 @@
     {
       "type": "exercise",
       "id": "game-ttt-place",
-      "prompt": "Build a tic-tac-toe board: a 3×3 grid of '.', then place X at the top-left and O in the centre, and show it. Expect X on the first row and O in the middle.",
+      "prompt": "Build a tic-tac-toe board: a 3 by 3 matrix of `.`. Place `X` at the top left and `O` in the centre, then show the board.",
       "solution": "b←3 3⍴'.' ⋄ b[1;1]←'X' ⋄ b[2;2]←'O' ⋄ b",
       "test": "",
       "inputs": [],
       "expected": "X..\n.O.\n...",
-      "hint": "reshape '.' into 3 3, then assign single cells with b[r;c]←"
+      "hint": "reshape '.' into shape 3 3, then assign cells with b[row;column]←"
     },
     {
       "type": "exercise",
       "id": "game-ttt-win",
-      "prompt": "Define wins (does X hold a full line on a 9-character board?) and test it on 'XXX...OO.'. Expect 1.",
+      "prompt": "Define `wins`, which reports whether `X` has a complete line on a 9-character board. It will be tested on `'XXX...OO.'` and should give 1.",
       "solution": "wins←{m←⍵='X' ⋄ L←8 3⍴1 2 3 4 5 6 7 8 9 1 4 7 2 5 8 3 6 9 1 5 9 3 5 7 ⋄ ∨/∧/m[L]}",
       "test": "wins 'XXX...OO.'",
       "inputs": [],
       "expected": "1",
-      "hint": "index the X-mask by the 8×3 line matrix, ∧/ each line, ∨/ the results"
+      "hint": "index the X-mask by the 8 by 3 line matrix, reduce each line with ∧/, then reduce the line results with ∨/"
     }
   ]
 }

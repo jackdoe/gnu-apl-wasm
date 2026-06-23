@@ -3,7 +3,7 @@
   "blocks": [
     {
       "type": "prose",
-      "md": "Comparisons return 1s and 0s, and those Boolean vectors are the engine of selection in APL. Summing a mask **counts**: `+/ v>3` is *how many elements exceed 3*."
+      "md": "Comparisons return Boolean arrays: `1` for true, `0` for false. Such an array is a mask. Summing a mask counts how many positions are true."
     },
     {
       "type": "cell",
@@ -11,7 +11,7 @@
     },
     {
       "type": "prose",
-      "md": "`/` with a Boolean left argument is **compress**: it keeps the elements where the mask is 1. (Same glyph as reduce — APL tells them apart by what is on the left.)"
+      "md": "`/` with a Boolean left argument is compress. It keeps the right-argument items whose mask value is `1`. This is the same glyph as reduce; the left argument changes its role."
     },
     {
       "type": "cell",
@@ -23,7 +23,7 @@
     },
     {
       "type": "prose",
-      "md": "`∧/` (and-reduce) asks *are they all true?*; `∨/` (or-reduce) asks *is any true?*"
+      "md": "`∧/` is and-reduce: are all items true? `∨/` is or-reduce: is any item true?"
     },
     {
       "type": "cell",
@@ -36,42 +36,42 @@
     {
       "type": "exercise",
       "id": "bool-count-even",
-      "prompt": "Count how many of the integers 1 to 10 are even. Expect 5.",
+      "prompt": "Count how many integers from 1 through 10 are even. The result should be 5.",
       "solution": "+/ 0 = 2 | ⍳10",
       "test": "",
       "inputs": [],
       "expected": "5",
-      "hint": "even means residue mod 2 equals 0; sum the mask"
+      "hint": "make an evenness mask with 0 = 2 | ..., then sum it"
     },
     {
       "type": "exercise",
       "id": "bool-select-gt",
-      "prompt": "Keep only the integers from 1 to 10 that are greater than 6, giving 7 8 9 10.",
+      "prompt": "Keep only the integers from 1 through 10 that are greater than 6. The result should be `7 8 9 10`.",
       "solution": "((⍳10) > 6) / ⍳10",
       "test": "",
       "inputs": [],
       "expected": "7 8 9 10",
-      "hint": "build a mask with >, then compress with /"
+      "hint": "build the mask with >, then use it as the left argument of /"
     },
     {
       "type": "exercise",
       "id": "bool-keep-odd",
-      "prompt": "Keep only the odd integers from 1 to 10, giving 1 3 5 7 9.",
+      "prompt": "Keep only the odd integers from 1 through 10. The result should be `1 3 5 7 9`.",
       "solution": "(2 | ⍳10) / ⍳10",
       "test": "",
       "inputs": [],
       "expected": "1 3 5 7 9",
-      "hint": "2|⍳10 is already 1 for odd numbers — use it as the mask"
+      "hint": "2 | ⍳10 is already a mask for odd numbers"
     },
     {
       "type": "exercise",
       "id": "bool-all-even",
-      "prompt": "Test whether every number in 2 4 6 8 is even, giving 1 (true).",
+      "prompt": "Test whether every number in `2 4 6 8` is even. The result should be 1.",
       "solution": "∧/ 0 = 2 | 2 4 6 8",
       "test": "",
       "inputs": [],
       "expected": "1",
-      "hint": "make an evenness mask, then and-reduce it"
+      "hint": "make an evenness mask, then reduce it with ∧/"
     }
   ]
 }
