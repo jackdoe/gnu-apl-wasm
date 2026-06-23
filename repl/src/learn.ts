@@ -15,11 +15,21 @@ mountKeyboard(glyphbar, g => { const t = focus.current(); if (t) insert(t, g); }
 
 const KB = 'apl-learn-kb';
 const kbtoggle = $('kbtoggle');
+const setKbSpace = (): void => {
+  const height = document.body.classList.contains('kb-on')
+    ? Math.ceil(glyphbar.getBoundingClientRect().height)
+    : 0;
+  document.documentElement.style.setProperty('--glyphbar-height', `${height}px`);
+};
+new ResizeObserver(() => setKbSpace()).observe(glyphbar);
+window.addEventListener('resize', setKbSpace);
 const applyKb = (): void => {
   const on = localStorage.getItem(KB) === 'on';
   glyphbar.style.display = on ? '' : 'none';
   document.body.classList.toggle('kb-on', on);
   kbtoggle.classList.toggle('on', on);
+  if (on) requestAnimationFrame(setKbSpace);
+  else setKbSpace();
 };
 kbtoggle.addEventListener('click', () => {
   localStorage.setItem(KB, localStorage.getItem(KB) === 'on' ? 'off' : 'on');

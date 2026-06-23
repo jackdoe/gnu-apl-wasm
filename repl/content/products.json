@@ -30,6 +30,107 @@
       "code": "1 2 3 +.× 4 5 6"
     },
     {
+      "type": "prose",
+      "md": "The dot in `f.g` is not decimal point syntax. It means: use `g` to combine matching items, then reduce those combined values with `f`. For vectors, `1 2 3 +.× 4 5 6` means the same result as `+/ 1 2 3 × 4 5 6`."
+    },
+    {
+      "type": "cell",
+      "code": "1 2 3 × 4 5 6",
+      "expect": "4 10 18"
+    },
+    {
+      "type": "cell",
+      "code": "+/ 1 2 3 × 4 5 6",
+      "expect": "32"
+    },
+    {
+      "type": "prose",
+      "md": "With a matrix on the left and a vector on the right, `+.×` does one dot product per row. Each row of `A` is matched against the vector."
+    },
+    {
+      "type": "cell",
+      "code": "A←2 3⍴1 2 3 4 5 6 ⋄ A +.× 2 4 6",
+      "expect": "28 64"
+    },
+    {
+      "type": "prose",
+      "md": "With two matrices, `+.×` is matrix multiplication. Rows of the left matrix meet columns of the right matrix. A 2 by 3 matrix times a 3 by 2 matrix becomes a 2 by 2 matrix."
+    },
+    {
+      "type": "cell",
+      "code": "A←2 3⍴1 2 3 4 5 6 ⋄ B←3 2⍴10 20 30 40 50 60 ⋄ A +.× B",
+      "expect": "220 280\n490 640"
+    },
+    {
+      "type": "prose",
+      "md": "The functions do not have to be `+` and `×`. `∨.∧` asks whether two Boolean vectors have a shared 1: pair with `∧`, then reduce with `∨`."
+    },
+    {
+      "type": "cell",
+      "code": "1 0 1 ∨.∧ 0 1 1",
+      "expect": "1"
+    },
+    {
+      "type": "cell",
+      "code": "1 0 0 ∨.∧ 0 1 1",
+      "expect": "0"
+    },
+    {
+      "type": "prose",
+      "md": "So inner product is not only for matrices. It is a pattern: **pair with the right function, combine with the left function**. Change the two functions and the meaning changes."
+    },
+    {
+      "type": "prose",
+      "md": "`⌈.+` adds matching numbers, then keeps the largest sum. `⌊.+` adds matching numbers, then keeps the smallest sum."
+    },
+    {
+      "type": "cell",
+      "code": "1 2 3 ⌈.+ 10 20 30",
+      "expect": "33"
+    },
+    {
+      "type": "cell",
+      "code": "1 2 3 ⌊.+ 10 20 30",
+      "expect": "11"
+    },
+    {
+      "type": "prose",
+      "md": "`∨.=` asks whether any matching positions are equal. `∧.=` asks whether all matching positions are equal."
+    },
+    {
+      "type": "cell",
+      "code": "'APL' ∨.= 'AXE'",
+      "expect": "1"
+    },
+    {
+      "type": "cell",
+      "code": "'APL' ∧.= 'AXE'",
+      "expect": "0"
+    },
+    {
+      "type": "prose",
+      "md": "`+.=` counts equal positions, because `=` makes a Boolean vector and `+` adds the 1s. `+.≠` counts different positions."
+    },
+    {
+      "type": "cell",
+      "code": "1 2 3 +.= 1 0 3",
+      "expect": "2"
+    },
+    {
+      "type": "cell",
+      "code": "1 2 3 +.≠ 1 0 3",
+      "expect": "1"
+    },
+    {
+      "type": "prose",
+      "md": "The same Boolean inner product works row by row. A matrix on the left and a vector on the right gives one answer per row."
+    },
+    {
+      "type": "cell",
+      "code": "(2 3⍴1 0 0 1 1 0) ∨.∧ 1 0 1",
+      "expect": "1 1"
+    },
+    {
       "type": "exercise",
       "id": "products-times-table",
       "prompt": "Build the 5 by 5 multiplication table from the first five integers.",
@@ -70,6 +171,96 @@
         "+.× multiplies pairs, then sums the products."
       ],
       "explain": "The × part forms 1×4, 2×5, and 3×6. The + part reduces those products to 32."
+    },
+    {
+      "type": "exercise",
+      "id": "products-row-dots",
+      "prompt": "Let `A←2 3⍴1 2 3 4 5 6`. Use inner product to dot each row of `A` with `2 4 6`. The result should be `28 64`.",
+      "solution": "A←2 3⍴1 2 3 4 5 6 ⋄ A +.× 2 4 6",
+      "test": "",
+      "inputs": [],
+      "expected": "28 64",
+      "hints": [
+        "Use +.× in the expression.",
+        "A has two rows, so the result has two dot products."
+      ],
+      "explain": "The first row gives 1×2 + 2×4 + 3×6, which is 28. The second row gives 4×2 + 5×4 + 6×6, which is 64.",
+      "requires": "+.×"
+    },
+    {
+      "type": "exercise",
+      "id": "products-matrix-multiply",
+      "prompt": "Let `A←2 3⍴1 2 3 4 5 6` and `B←3 2⍴10 20 30 40 50 60`. Multiply `A` by `B` with inner product.",
+      "solution": "A←2 3⍴1 2 3 4 5 6 ⋄ B←3 2⍴10 20 30 40 50 60 ⋄ A +.× B",
+      "test": "",
+      "inputs": [],
+      "expected": "220 280\n490 640",
+      "hints": [
+        "Use +.× in the expression.",
+        "The 3 columns of A's rows match the 3 rows of B."
+      ],
+      "explain": "Each result cell is one row-column dot product. The output shape is 2 by 2 because A has 2 rows and B has 2 columns.",
+      "requires": "+.×"
+    },
+    {
+      "type": "exercise",
+      "id": "products-any-shared-one",
+      "prompt": "Use Boolean inner product to ask whether `1 0 1` and `0 1 1` share a 1. The result should be 1.",
+      "solution": "1 0 1 ∨.∧ 0 1 1",
+      "test": "",
+      "inputs": [],
+      "expected": "1",
+      "hints": [
+        "Use ∨.∧ in the expression.",
+        "Pair the Booleans with ∧, then ask if any pair is 1 with ∨."
+      ],
+      "explain": "The paired ∧ results are 0 0 1. Reducing them with ∨ reports that at least one shared 1 exists.",
+      "requires": "∨.∧"
+    },
+    {
+      "type": "exercise",
+      "id": "products-any-char-match",
+      "prompt": "Use inner product to ask whether `'APL'` and `'AXE'` have any equal positions. The result should be 1.",
+      "solution": "'APL' ∨.= 'AXE'",
+      "test": "",
+      "inputs": [],
+      "expected": "1",
+      "hints": [
+        "Use ∨.= in the expression.",
+        "= compares matching characters; ∨ asks whether any comparison is true."
+      ],
+      "explain": "The first characters match, so the equality vector contains a 1. Reducing with ∨ reports that at least one position matched.",
+      "requires": "∨.="
+    },
+    {
+      "type": "exercise",
+      "id": "products-count-matches",
+      "prompt": "Use inner product to count equal positions between `1 2 3` and `1 0 3`. The result should be 2.",
+      "solution": "1 2 3 +.= 1 0 3",
+      "test": "",
+      "inputs": [],
+      "expected": "2",
+      "hints": [
+        "Use +.= in the expression.",
+        "= makes 1 for equal positions; + adds those 1s."
+      ],
+      "explain": "The equality comparison gives 1 0 1. Reducing with + counts the two matching positions.",
+      "requires": "+.="
+    },
+    {
+      "type": "exercise",
+      "id": "products-largest-pair-sum",
+      "prompt": "Use inner product to add matching items of `1 2 3` and `10 20 30`, then keep the largest sum. The result should be 33.",
+      "solution": "1 2 3 ⌈.+ 10 20 30",
+      "test": "",
+      "inputs": [],
+      "expected": "33",
+      "hints": [
+        "Use ⌈.+ in the expression.",
+        "+ makes the matching sums; ⌈ keeps the maximum."
+      ],
+      "explain": "The matching sums are 11 22 33. Reducing with ⌈ keeps the largest value, 33.",
+      "requires": "⌈.+"
     },
     {
       "type": "exercise",
