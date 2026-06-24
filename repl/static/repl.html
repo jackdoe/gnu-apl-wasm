@@ -16,6 +16,14 @@
     <section class="col left">
       <div class="label">[ EDITOR ]<span class="hint">PREFIX <span class="prefix" id="prefbox">`</span> + KEY → GLYPH</span></div>
       <div class="editwrap">
+        <div class="filebar">
+          <select id="filepick" aria-label="Saved files"></select>
+          <input id="filename" aria-label="File name" spellcheck="false" autocomplete="off">
+          <button id="newfile" class="iconbtn" title="New file" aria-label="New file">＋</button>
+          <button id="savefile" class="iconbtn" title="Save file (Ctrl+S)" aria-label="Save file">▣</button>
+          <button id="downloadfile" class="iconbtn" title="Download .apl" aria-label="Download .apl">⇩</button>
+          <button id="deletefile" class="iconbtn" title="Delete file" aria-label="Delete file">×</button>
+        </div>
         <textarea id="src" spellcheck="false" autocomplete="off" autocapitalize="off">2 3⍴⍳6
 +/⍳100
 mean ← {(+/⍵)÷≢⍵}
