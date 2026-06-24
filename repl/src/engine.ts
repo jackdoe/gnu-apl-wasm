@@ -2,6 +2,8 @@ import createModule from './apl.mjs';
 
 const ANSI = /\x1b?\[[0-9;]*[A-Za-z]/g;
 const strip = (s: string): string => s.replace(ANSI, '');
+const EVAL_INPUT = /⎕(?![A-Za-z←])/u;
+const INPUT_READ = /[⎕⍞]/u;
 
 export const normalize = (s: string): string =>
   strip(s).split('\n').map(l => l.replace(/\s+$/, '')).join('\n').replace(/\n+$/, '');
@@ -13,6 +15,18 @@ export type Engine = {
   run(opts: RunOpts): Result;
   line(code: string): Result;
   reset(inputs?: string[]): void;
+};
+
+export const describeThrown = (err: unknown): string => {
+  if (err instanceof Error) return `${err.name}: ${err.message}`;
+  if (typeof err !== 'object' || err === null) return String(err);
+  const v = err as Record<string, unknown>;
+  const parts = ['name', 'message', 'status', 'code']
+    .filter(k => v[k] !== undefined)
+    .map(k => `${k}: ${String(v[k])}`);
+  if (parts.length) return parts.join(', ');
+  try { return JSON.stringify(err); }
+  catch { return String(err); }
 };
 
 export async function loadEngine(): Promise<Engine> {
@@ -30,7 +44,7 @@ export async function loadEngine(): Promise<Engine> {
   const feed = (inputs: string[]): void => {
     queue = Array.from(enc.encode(inputs.length ? inputs.join('\n') + '\n' : ''));
   };
-  const command = (c: string): void => { mod.ccall('apl_command', 'string', ['string'], [c]); };
+  const command = (c: string): void => { queue = []; mod.ccall('apl_command', 'string', ['string'], [c]); };
 
   const exec = (src: string): Result => {
     out.length = 0;
@@ -43,6 +57,12 @@ export async function loadEngine(): Promise<Engine> {
   };
 
   const run = ({ setup = '', code = '', test = '', inputs = [] }: RunOpts): Result => {
+    if (EVAL_INPUT.test(`${setup}\n${code}\n${test}`) && inputs.some(input => INPUT_READ.test(input))) {
+      return {
+        text: 'Nested input is not supported here. For ⎕, enter a concrete value like 21 or 3+4.',
+        error: { code: -1 },
+      };
+    }
     command(')CLEAR');
     feed(inputs);
     if (setup) exec(setup);

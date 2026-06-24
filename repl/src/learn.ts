@@ -1,4 +1,4 @@
-import { loadEngine } from './engine.js';
+import { describeThrown, loadEngine, type Engine, type Result, type RunOpts } from './engine.js';
 import { loadCurriculum, type Topic } from './content.js';
 import { renderBlock, type BlockCtx } from './blocks/index.js';
 import { trackFocus, mountKeyboard, el, esc } from './dom.js';
@@ -9,6 +9,8 @@ const $ = <T extends HTMLElement>(id: string): T => document.getElementById(id) 
 const wrap = $('wrap');
 const progressEl = $('progress');
 const glyphbar = $('glyphbar');
+const BUILD = 'learn-check-debug-2026-06-24b';
+console.info(`[APL learn] ${BUILD}`);
 
 const focus = trackFocus();
 mountKeyboard(glyphbar, g => { const t = focus.current(); if (t) insert(t, g); });
@@ -47,8 +49,57 @@ const setOpen = (v: TopicView, open: boolean): void => {
   v.twisty.textContent = open ? '▾' : '▸';
 };
 
+const loadRecoveringEngine = async (): Promise<Engine> => {
+  const engines = await Promise.all([loadEngine(), loadEngine()]);
+  let current = engines[0]!;
+  let spare: Engine | null = engines[1]!;
+  let loading: Promise<void> | null = null;
+  const refill = (): void => {
+    loading ??= loadEngine()
+      .then(engine => { spare = engine; })
+      .catch(err => console.warn('[APL learn] spare engine failed', describeThrown(err)))
+      .finally(() => { loading = null; });
+  };
+  const recover = (err: unknown): boolean => {
+    console.warn('[APL learn] replacing crashed engine', describeThrown(err));
+    if (!spare) { refill(); return false; }
+    current = spare;
+    spare = null;
+    refill();
+    return true;
+  };
+  const crash = (err: unknown): Result => ({
+    text: `APL engine runner error: ${describeThrown(err)}`,
+    error: { code: -2 },
+  });
+  return {
+    run(opts: RunOpts): Result {
+      try { return current.run(opts); }
+      catch (err) {
+        if (!recover(err)) return crash(err);
+        try { return current.run(opts); }
+        catch (err2) { return crash(err2); }
+      }
+    },
+    line(code: string): Result {
+      try { return current.line(code); }
+      catch (err) {
+        if (!recover(err)) return crash(err);
+        try { return current.line(code); }
+        catch (err2) { return crash(err2); }
+      }
+    },
+    reset(inputs: string[] = []): void {
+      try { current.reset(inputs); }
+      catch (err) {
+        if (recover(err)) current.reset(inputs);
+      }
+    },
+  };
+};
+
 (async () => {
-  const engine = await loadEngine();
+  const engine = await loadRecoveringEngine();
   const topics = await loadCurriculum();
   const totalEx = topics.reduce((n, t) => n + exerciseIds(t).length, 0);
   const allIds = topics.flatMap(exerciseIds);

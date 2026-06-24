@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { loadEngine, normalize } from './engine.js';
+import { describeThrown, loadEngine, normalize } from './engine.js';
 
 const engine = await loadEngine();
 
@@ -34,6 +34,19 @@ test('inputs feed ⎕ via stdin', () => {
   assert.equal(engine.run({ code: '2×⎕', inputs: ['21'] }).text.includes('42'), true);
 });
 
+test('nested input supplied to ⎕ is rejected without killing the engine', () => {
+  const r = engine.run({ code: '2×⎕', inputs: ['2×⎕'] });
+  assert.ok(r.error);
+  assert.match(r.text, /Nested input/);
+  assert.equal(engine.run({ code: '2×⎕', inputs: ['21'] }).text.includes('42'), true);
+});
+
+test('⍞ accepts input glyphs as raw text', () => {
+  const r = engine.run({ code: '⌽⍞', inputs: ['2×⎕'] });
+  assert.equal(r.error, null);
+  assert.equal(r.text, '2×⎕\n⎕×2');
+});
+
 test('errors carry a nonzero code and the diagnostic appears in text', () => {
   const r = engine.run({ code: '÷0' });
   assert.ok(r.error);
@@ -49,4 +62,8 @@ test('a result containing the word ERROR is not a false positive', () => {
 
 test('normalize strips trailing whitespace and blank lines, keeps leading', () => {
   assert.equal(normalize('  a  \nb\n\n'), '  a\nb');
+});
+
+test('describeThrown formats wasm exit-like objects', () => {
+  assert.equal(describeThrown({ name: 'ExitStatus', message: 'Program terminated with exit(2)', status: 2 }), 'name: ExitStatus, message: Program terminated with exit(2), status: 2');
 });

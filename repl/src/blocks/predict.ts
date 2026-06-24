@@ -3,6 +3,7 @@ import type { BlockCtx, Rendered } from './index.js';
 import { normalize } from '../engine.js';
 import { esc } from '../dom.js';
 import { md } from '../md.js';
+import { attach } from '../glyphs.js';
 
 export function renderPredict(block: Extract<Block, { type: 'predict' }>, ctx: BlockCtx): Rendered {
   const el = document.createElement('div');
@@ -17,6 +18,7 @@ export function renderPredict(block: Extract<Block, { type: 'predict' }>, ctx: B
     <div class="out ghost">your guess is checked against the real result</div>`;
   const outEl = el.querySelector('.out') as HTMLElement;
   const input = el.querySelector('.tryin') as HTMLInputElement;
+  attach(input);
 
   const reveal = (): void => {
     const { text } = ctx.engine.run({ setup: block.setup ?? '', code: block.code, inputs: block.inputs ?? [] });

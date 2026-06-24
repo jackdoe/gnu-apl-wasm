@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { MAP, KEYOF, LAYOUT } from './glyphs.js';
+import { MAP, KEYOF, LAYOUT, insert } from './glyphs.js';
 
 test('MAP derives core glyphs from LAYOUT', () => {
   assert.equal(MAP['i'], '⍳');
@@ -37,4 +37,17 @@ test('KEYOF inverts MAP', () => {
   assert.equal(KEYOF['⍵'], 'w');
   assert.equal(KEYOF['≢'], "Shift+'");
   assert.equal(KEYOF['⍞'], 'Shift+[');
+});
+
+test('insert works with input-like text controls', () => {
+  const input = {
+    value: '10 + ',
+    selectionStart: 5,
+    selectionEnd: 5,
+    focus() {},
+  } as HTMLInputElement;
+  insert(input, '⍳');
+  assert.equal(input.value, '10 + ⍳');
+  assert.equal(input.selectionStart, 6);
+  assert.equal(input.selectionEnd, 6);
 });

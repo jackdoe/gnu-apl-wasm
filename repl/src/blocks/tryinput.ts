@@ -2,6 +2,7 @@ import type { Block } from '../content.js';
 import type { BlockCtx, Rendered } from './index.js';
 import { esc } from '../dom.js';
 import { md } from '../md.js';
+import { attach } from '../glyphs.js';
 
 export function renderTryInput(block: Extract<Block, { type: 'tryinput' }>, ctx: BlockCtx): Rendered {
   const el = document.createElement('div');
@@ -16,6 +17,7 @@ export function renderTryInput(block: Extract<Block, { type: 'tryinput' }>, ctx:
     <div class="out ghost">type something above and run</div>`;
   const outEl = el.querySelector('.out') as HTMLElement;
   const input = el.querySelector('.tryin') as HTMLInputElement;
+  attach(input);
   const go = (): void => {
     outEl.classList.remove('flash', 'err', 'ghost');
     outEl.textContent = '';

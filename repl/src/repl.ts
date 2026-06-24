@@ -4,6 +4,11 @@ import { esc, trackFocus, mountKeyboard } from './dom.js';
 import { needsInput, askInput } from './input-modal.js';
 import { encodeProgram, decodeProgram } from './share.js';
 
+const BUILD = 'repl-input-debug-2026-06-24d';
+console.info(`[APL playground] ${BUILD}`);
+const EVAL_INPUT = /⎕(?![A-Za-z←])/u;
+const INPUT_READ = /[⎕⍞]/u;
+
 const $ = <T extends HTMLElement>(id: string): T => document.getElementById(id) as T;
 const src = $<HTMLTextAreaElement>('src');
 const out = $('out');
@@ -125,9 +130,17 @@ let running = false;
 async function run(): Promise<void> {
   if (!engine || running) return;
   let inputs: string[] = [];
-  if (needsInput(src.value)) {
+  const inputNeeded = needsInput(src.value);
+  console.info('[APL playground] run', { build: BUILD, inputNeeded, chars: src.value.length });
+  if (inputNeeded) {
+    if (!persist.checked) out.innerHTML = '';
+    append('<span class="ghost">Input required. Fill the modal to continue.</span>\n');
     const got = await askInput();
-    if (got === null) return;
+    if (got === null) { append('<span class="ghost">Run cancelled.</span>\n'); return; }
+    if (EVAL_INPUT.test(src.value) && got.some(input => INPUT_READ.test(input))) {
+      append('<span class="err">Nested input is not supported here. For ⎕, enter a concrete value like 21 or 3+4.</span>\n');
+      return;
+    }
     inputs = got;
   }
   running = true;
@@ -138,8 +151,13 @@ async function run(): Promise<void> {
       const line = raw.replace(/\s+$/, '');
       if (line.trim() === '') continue;
       append(`<span class="in">${esc(line)}</span>\n`);
-      const { text, error } = engine.line(line);
-      if (text.length) append(`<span class="${error ? 'err' : 'res'}">${esc(text)}</span>\n`);
+      try {
+        const { text, error } = engine.line(line);
+        if (text.length) append(`<span class="${error ? 'err' : 'res'}">${esc(text)}</span>\n`);
+      } catch (err) {
+        append(`<span class="err">${esc(String(err))}</span>\n`);
+        break;
+      }
     }
     if (persist.checked) append(`<span class="sep">${'─'.repeat(48)}</span>\n`);
   } finally { running = false; }

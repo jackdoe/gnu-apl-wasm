@@ -10,6 +10,11 @@ test('detects ⍞ used as a read', () => {
   assert.equal(needsInput('⍞'), true);
 });
 
+test('detects assignment from ⍞ as a read', () => {
+  assert.equal(needsInput('m ← ⍞'), true);
+  assert.equal(needsInput('m←⍞'), true);
+});
+
 test('does not flag ⎕ assignment (⎕←) as a read', () => {
   assert.equal(needsInput('⎕←42'), false);
 });

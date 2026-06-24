@@ -1,4 +1,5 @@
 type KeySpec = readonly [key: string, glyph: string, shiftedGlyph?: string];
+export type TextControl = HTMLTextAreaElement | HTMLInputElement;
 
 export const LAYOUT: ReadonlyArray<ReadonlyArray<KeySpec>> = [
   [['`','⋄','⌺'],['1','¨','⌶'],['2','¯','⍫'],['3','<','⍒'],['4','≤','⍋'],['5','=','⌽'],['6','≥','⍉'],['7','>','⊖'],['8','≠','⍟'],['9','∨','⍱'],['0','∧','⍲'],['-','×','!'],['=','÷','⌹']],
@@ -35,11 +36,12 @@ const emitShift = (shifted: boolean): void => {
   document.dispatchEvent(new CustomEvent<boolean>(SHIFT_EVENT, { detail: shifted }));
 };
 
-export function insert(textarea: HTMLTextAreaElement, text: string): void {
-  const s = textarea.selectionStart, e = textarea.selectionEnd;
-  textarea.value = textarea.value.slice(0, s) + text + textarea.value.slice(e);
-  textarea.selectionStart = textarea.selectionEnd = s + text.length;
-  textarea.focus();
+export function insert(target: TextControl, text: string): void {
+  const s = target.selectionStart ?? target.value.length;
+  const e = target.selectionEnd ?? s;
+  target.value = target.value.slice(0, s) + text + target.value.slice(e);
+  target.selectionStart = target.selectionEnd = s + text.length;
+  target.focus();
 }
 
 export function makeKeyboard(onInsert: (glyph: string) => void): HTMLElement {
@@ -96,7 +98,7 @@ export function makeKeyboard(onInsert: (glyph: string) => void): HTMLElement {
 }
 
 export function attach(
-  textarea: HTMLTextAreaElement,
+  textarea: TextControl,
   onArmed?: (armed: boolean) => void,
 ): { insert(text: string): void } {
   let armed = false;
@@ -111,7 +113,8 @@ export function attach(
     if (!v) setShift(false);
     onArmed?.(v);
   };
-  textarea.addEventListener('keydown', e => {
+  textarea.addEventListener('keydown', event => {
+    const e = event as KeyboardEvent;
     if (armed) {
       if (e.key === 'Shift') { e.preventDefault(); setShift(true); return; }
       if (e.key === 'Escape') { setArmed(false); e.preventDefault(); return; }
@@ -122,7 +125,8 @@ export function attach(
     }
     if (e.key === '`' && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); setArmed(true); }
   });
-  textarea.addEventListener('keyup', e => {
+  textarea.addEventListener('keyup', event => {
+    const e = event as KeyboardEvent;
     if (armed && e.key === 'Shift') setShift(false);
   });
   textarea.addEventListener('blur', () => setArmed(false));

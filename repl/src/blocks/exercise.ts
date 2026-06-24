@@ -1,6 +1,7 @@
 import type { Block } from '../content.js';
 import type { BlockCtx, Rendered } from './index.js';
-import { normalize, type Engine } from '../engine.js';
+import { describeThrown, normalize, type Engine } from '../engine.js';
+import { esc } from '../dom.js';
 import { attach } from '../glyphs.js';
 import { md } from '../md.js';
 import { clearDraft, loadDraft, saveDraft } from '../drafts.js';
@@ -55,8 +56,12 @@ export function renderExercise(block: Exercise, ctx: BlockCtx): Rendered {
   const el = document.createElement('div');
   el.className = 'block exercise';
   el.dataset.exerciseId = block.id;
+  const inputs = block.inputs?.length
+    ? `<div class="exercise-input">graded input: <code>${esc(block.inputs.join('\\n'))}</code></div>`
+    : '';
   el.innerHTML = `
     <div class="prompt prose">${md(block.prompt)}</div>
+    ${inputs}
     <textarea spellcheck="false" rows="2"></textarea>
     <div class="row">
       <button class="check">check</button>
@@ -98,29 +103,37 @@ export function renderExercise(block: Exercise, ctx: BlockCtx): Rendered {
   const check = (): void => {
     diff.hidden = true;
     verdict.classList.remove('flash');
-    const sourceMiss = missMessage(block, ta.value, '');
-    if (sourceMiss) { miss('✗ ' + sourceMiss); return; }
-    if (block.requires && !ta.value.includes(block.requires)) {
-      miss(`✗ use ${block.requires} in your answer`);
-      return;
-    }
-    const { text, error } = ctx.engine.run({ setup: '', code: ta.value, test: block.test ?? '', inputs: block.inputs ?? [] });
-    if (normalize(text) === normalize(block.expected)) {
-      verdict.textContent = '✓ correct'; verdict.className = 'verdict ok';
-      clearDraft(block.id);
-      ctx.progress.pass(block.id);
-      explain.hidden = false;
-      nextBtn.hidden = !ctx.navigation?.hasNext(block.id);
-    } else {
-      const got = error ? text : (text || '(no output)');
-      const yourShape = error ? null : shapeOf(ctx.engine, block, ta.value);
-      const expectedShape = shapeOf(ctx.engine, block, block.solution);
-      const shape = yourShape || expectedShape
-        ? `\n\nyour shape:\n${yourShape ?? 'unknown'}\n\nexpected shape:\n${expectedShape ?? 'unknown'}`
-        : '';
-      verdict.textContent = '✗ ' + (missMessage(block, ta.value, got) ?? matrixRavelMiss(got, block.expected) ?? 'not yet; check the hint');
+    try {
+      const sourceMiss = missMessage(block, ta.value, '');
+      if (sourceMiss) { miss('✗ ' + sourceMiss); return; }
+      if (block.requires && !ta.value.includes(block.requires)) {
+        miss(`✗ use ${block.requires} in your answer`);
+        return;
+      }
+      const { text, error } = ctx.engine.run({ setup: '', code: ta.value, test: block.test ?? '', inputs: block.inputs ?? [] });
+      if (normalize(text) === normalize(block.expected)) {
+        verdict.textContent = '✓ correct'; verdict.className = 'verdict ok';
+        clearDraft(block.id);
+        ctx.progress.pass(block.id);
+        explain.hidden = false;
+        nextBtn.hidden = !ctx.navigation?.hasNext(block.id);
+      } else {
+        const got = error ? text : (text || '(no output)');
+        const yourShape = error ? null : shapeOf(ctx.engine, block, ta.value);
+        const expectedShape = shapeOf(ctx.engine, block, block.solution);
+        const shape = yourShape || expectedShape
+          ? `\n\nyour shape:\n${yourShape ?? 'unknown'}\n\nexpected shape:\n${expectedShape ?? 'unknown'}`
+          : '';
+        verdict.textContent = '✗ ' + (missMessage(block, ta.value, got) ?? matrixRavelMiss(got, block.expected) ?? 'not yet; check the hint');
+        verdict.className = 'verdict miss';
+        diff.textContent = `your output:\n${got}\n\nexpected:\n${block.expected}${shape}`;
+        diff.hidden = false;
+        ta.focus();
+      }
+    } catch (err) {
+      verdict.textContent = '✗ runner error';
       verdict.className = 'verdict miss';
-      diff.textContent = `your output:\n${got}\n\nexpected:\n${block.expected}${shape}`;
+      diff.textContent = describeThrown(err);
       diff.hidden = false;
       ta.focus();
     }
