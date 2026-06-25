@@ -41,6 +41,15 @@ test('nested input supplied to ⎕ is rejected without killing the engine', () =
   assert.equal(engine.run({ code: '2×⎕', inputs: ['21'] }).text.includes('42'), true);
 });
 
+test('traditional function editor is rejected before wasm exit', () => {
+  const r = engine.run({ code: '2+2\n∇ move n;c' });
+  assert.equal(r.error?.code, -3);
+  assert.match(r.text, /^4\n/);
+  assert.match(r.text, /∇ function editor/);
+  assert.match(r.text, /⎕FX/);
+  assert.equal(engine.run({ code: '2+2' }).text, '4');
+});
+
 test('⍞ accepts input glyphs as raw text', () => {
   const r = engine.run({ code: '⌽⍞', inputs: ['2×⎕'] });
   assert.equal(r.error, null);

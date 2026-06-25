@@ -1,10 +1,10 @@
-import { loadEngine, type Engine } from './engine.js';
+import { describeThrown, loadEngine, type Engine } from './engine.js';
 import { attach, insert } from './glyphs.js';
 import { esc, trackFocus, mountKeyboard } from './dom.js';
 import { needsInput, askInput } from './input-modal.js';
 import { encodeProgram, decodeProgram } from './share.js';
 
-const BUILD = 'repl-input-debug-2026-06-24d';
+const BUILD = 'repl-error-debug-2026-06-25a';
 console.info(`[APL playground] ${BUILD}`);
 const EVAL_INPUT = /⎕(?![A-Za-z←])/u;
 const INPUT_READ = /[⎕⍞]/u;
@@ -155,7 +155,7 @@ async function run(): Promise<void> {
         const { text, error } = engine.line(line);
         if (text.length) append(`<span class="${error ? 'err' : 'res'}">${esc(text)}</span>\n`);
       } catch (err) {
-        append(`<span class="err">${esc(String(err))}</span>\n`);
+        append(`<span class="err">${esc(describeThrown(err))}</span>\n`);
         break;
       }
     }
@@ -223,5 +223,5 @@ loadEngine().then(e => {
   src.focus();
 }).catch(err => {
   statustxt.textContent = 'ENGINE FAILED';
-  out.innerHTML = '<span class="err">' + esc(String(err)) + '</span>';
+  out.innerHTML = '<span class="err">' + esc(describeThrown(err)) + '</span>';
 });

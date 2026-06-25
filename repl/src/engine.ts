@@ -4,6 +4,8 @@ const ANSI = /\x1b?\[[0-9;]*[A-Za-z]/g;
 const strip = (s: string): string => s.replace(ANSI, '');
 const EVAL_INPUT = /⎕(?![A-Za-z←])/u;
 const INPUT_READ = /[⎕⍞]/u;
+const FUNCTION_EDITOR = /^\s*∇/u;
+const FUNCTION_EDITOR_MESSAGE = 'The ∇ function editor is not supported in this browser. Use ⎕FX to define traditional functions.';
 
 export const normalize = (s: string): string =>
   strip(s).split('\n').map(l => l.replace(/\s+$/, '')).join('\n').replace(/\n+$/, '');
@@ -50,6 +52,11 @@ export async function loadEngine(): Promise<Engine> {
     out.length = 0;
     let err = 0;
     for (const ln of src.split('\n')) {
+      if (FUNCTION_EDITOR.test(ln)) {
+        out.push(FUNCTION_EDITOR_MESSAGE);
+        err = -3;
+        break;
+      }
       const c = mod.ccall('apl_exec', 'number', ['string'], [ln]) as number;
       if (c !== 0) err = c;
     }
