@@ -1,4 +1,4 @@
-import { loadEngine, normalize } from './engine.js';
+import { loadEngine } from './engine.js';
 import { readFile, writeFile } from 'node:fs/promises';
 import type { Block, Topic } from './content.js';
 
@@ -14,13 +14,12 @@ for (const id of manifest) {
   for (const b of topic.blocks) {
     if (b.type !== 'exercise') continue;
     const ex: Extract<Block, { type: 'exercise' }> = b;
-    const { text } = engine.run({ setup: '', code: ex.solution, test: ex.test ?? '', inputs: ex.inputs ?? [] });
-    const got = normalize(text);
+    const { text: got } = engine.run({ setup: '', code: ex.solution, test: ex.test ?? '', inputs: ex.inputs ?? [] });
     if (ex.expected === undefined || ex.expected === '') {
       ex.expected = got; changed = true; filled++; continue;
     }
     checked++;
-    if (normalize(ex.expected) !== got) {
+    if (ex.expected !== got) {
       fail++;
       console.error(`MISMATCH ${id}/${ex.id}\n  solution: ${ex.solution}\n  expected: ${JSON.stringify(ex.expected)}\n  got:      ${JSON.stringify(got)}`);
     }

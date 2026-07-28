@@ -1,6 +1,6 @@
 import { describeThrown, loadEngine, type Engine } from './engine.js';
 import { attach, insert } from './glyphs.js';
-import { esc, trackFocus, mountKeyboard } from './dom.js';
+import { esc, trackFocus, mountKeyboard, keyboardToggle } from './dom.js';
 import { needsInput, askInput } from './input-modal.js';
 import { encodeProgram, decodeProgram } from './share.js';
 
@@ -26,6 +26,7 @@ const focus = trackFocus();
 attach(src, armed => prefbox.classList.toggle('arm', armed));
 
 mountKeyboard($('kbmount'), g => insert(focus.current() ?? src, g));
+keyboardToggle($('keys'), $('kbtoggle'), 'apl-repl-kb', () => window.matchMedia('(min-width: 821px)').matches);
 
 type ReplFile = { id: string; name: string; code: string };
 type ReplFiles = { activeId: string; files: ReplFile[] };

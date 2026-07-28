@@ -1,6 +1,6 @@
 import createModule from './apl.mjs';
 
-const ANSI = /\x1b?\[[0-9;]*[A-Za-z]/g;
+const ANSI = /\x1b\[[0-9;]*[A-Za-z]/g;
 const strip = (s: string): string => s.replace(ANSI, '');
 const EVAL_INPUT = /⎕(?![A-Za-z←])/u;
 const INPUT_READ = /[⎕⍞]/u;
@@ -34,25 +34,45 @@ export const describeThrown = (err: unknown): string => {
 export async function loadEngine(): Promise<Engine> {
   const out: string[] = [];
   let queue: number[] = [];
+  let pending: number[] = [];
   const enc = new TextEncoder();
+  const dec = new TextDecoder();
+
+  const flush = (): void => {
+    if (!pending.length) return;
+    out.push(dec.decode(new Uint8Array(pending)));
+    pending = [];
+  };
+  const sink = (byte: number | null): void => {
+    if (byte === null) flush();
+    else if (byte === 10) { out.push(dec.decode(new Uint8Array(pending))); pending = []; }
+    else pending.push(byte);
+  };
 
   const mod = await createModule({
-    print: s => out.push(s),
-    printErr: s => out.push(s),
+    stdout: sink,
+    stderr: sink,
     stdin: () => (queue.length ? queue.shift()! : null),
   });
   mod.ccall('init_libapl', 'void', ['string', 'number'], ['apl', 0]);
+  flush();
+  out.length = 0;
 
   const feed = (inputs: string[]): void => {
     queue = Array.from(enc.encode(inputs.length ? inputs.join('\n') + '\n' : ''));
   };
-  const command = (c: string): void => { queue = []; mod.ccall('apl_command', 'string', ['string'], [c]); };
+  const command = (c: string): void => {
+    queue = [];
+    mod.ccall('apl_command', 'string', ['string'], [c]);
+    flush();
+  };
 
   const exec = (src: string): Result => {
     out.length = 0;
     let err = 0;
     for (const ln of src.split('\n')) {
       if (FUNCTION_EDITOR.test(ln)) {
+        flush();
         out.push(FUNCTION_EDITOR_MESSAGE);
         err = -3;
         break;
@@ -60,6 +80,7 @@ export async function loadEngine(): Promise<Engine> {
       const c = mod.ccall('apl_exec', 'number', ['string'], [ln]) as number;
       if (c !== 0) err = c;
     }
+    flush();
     return { text: normalize(out.join('\n')), error: err !== 0 ? { code: err } : null };
   };
 

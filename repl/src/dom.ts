@@ -31,3 +31,36 @@ export function mountKeyboard(
   host.append(kbd);
   return kbd;
 }
+
+export function keyboardToggle(
+  bar: HTMLElement,
+  button: HTMLElement,
+  key: string,
+  defaultOn: () => boolean,
+): void {
+  const measure = (): void => {
+    const height = document.body.classList.contains('kb-on')
+      ? Math.ceil(bar.getBoundingClientRect().height)
+      : 0;
+    document.documentElement.style.setProperty('--glyphbar-height', `${height}px`);
+  };
+  const state = (): boolean => {
+    const stored = localStorage.getItem(key);
+    return stored === null ? defaultOn() : stored === 'on';
+  };
+  const apply = (): void => {
+    const on = state();
+    bar.style.display = on ? '' : 'none';
+    document.body.classList.toggle('kb-on', on);
+    button.classList.toggle('on', on);
+    if (on) requestAnimationFrame(measure);
+    else measure();
+  };
+  new ResizeObserver(measure).observe(bar);
+  window.addEventListener('resize', measure);
+  button.addEventListener('click', () => {
+    localStorage.setItem(key, state() ? 'off' : 'on');
+    apply();
+  });
+  apply();
+}

@@ -10,7 +10,7 @@
 <body class="repl">
   <header>
     <div class="brand"><span class="mark">⎕</span>APL<b>·</b>PLAYGROUND</div>
-    <div class="status"><a class="navlink" href="./learn.html">LEARN →</a><span><span class="dot" id="dot"></span><b id="statustxt">BOOTING ENGINE</b></span></div>
+    <div class="status"><button class="navlink" id="kbtoggle" title="show/hide the glyph keyboard">⌨ KEYS</button><a class="navlink" href="./learn.html">LEARN →</a><span><span class="dot" id="dot"></span><b id="statustxt">BOOTING ENGINE</b></span></div>
   </header>
   <main>
     <section class="col left">
@@ -35,7 +35,7 @@ mean ⍳100
           <button id="clear">Clear session</button>
         </div>
       </div>
-      <div class="keys-wrap">
+      <div class="keys-wrap" id="keys">
         <div id="kbmount"></div>
       </div>
     </section>

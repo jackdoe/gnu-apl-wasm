@@ -4,8 +4,8 @@ export type AplModule = {
   ccall(name: string, ret: Ret, argTypes: CcallArg[], args: (string | number)[]): string | number;
 };
 export type ModuleInit = {
-  print?: (s: string) => void;
-  printErr?: (s: string) => void;
+  stdout?: (byte: number | null) => void;
+  stderr?: (byte: number | null) => void;
   stdin?: () => number | null;
 };
 export default function createModule(init?: ModuleInit): Promise<AplModule>;

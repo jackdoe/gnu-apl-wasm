@@ -1,7 +1,7 @@
 :root{
   --bg:#000; --fg:#ededed; --dim:#dcdcdc; --line:#2b2b2b; --line2:#4a4a4a;
   --glyphbar-height:0px;
-  --mono:'JetBrains Mono','DejaVu Sans Mono',ui-monospace,Menlo,Consolas,monospace;
+  --mono:'JetBrains Mono','DejaVu Sans Mono',ui-monospace,Menlo,Consolas,'Cascadia Mono','APL385 Unicode','BQN386 Unicode','Segoe UI Symbol','Lucida Sans Unicode',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -107,7 +107,8 @@ textarea#src{
   .col.left{border-right:0;border-bottom:1px solid var(--line2)}
   .brand{font-size:18px;letter-spacing:.3em}
 
-  .repl{min-height:0;padding-bottom:clamp(170px,38vw,270px)}
+  .repl{min-height:0;padding-bottom:0}
+  .repl.kb-on{padding-bottom:calc(16px + var(--glyphbar-height))}
   .repl main{display:block}
   .repl .col{min-height:0}
   .repl .col.left{border-bottom:0}
