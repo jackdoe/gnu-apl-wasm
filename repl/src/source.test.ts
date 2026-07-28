@@ -1,0 +1,99 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { stripLiterals, readsInput, evaluatedInput, definesOrAssigns } from './source.js';
+
+const FX_BARPLOT = `⎕cr⎕fx'barplot bar;len;rot ⍝⍝ Bar chart of int(s); LePage (1978)' 'len←↑⍴rot←¯1↓,⍉2 len⍴(¯2×len←1+↑⍴,bar)↑-(1+,bar),0' "⊖bar↓[1]rot⊖(bar len⍴'⎕')⍪(len⍴'- ')⍪((¯1+bar←1+⌈/,bar),len)⍴' '" ⍝ One-line function definition`;
+const LAMBDA_BARPLOT = `Barplot←{⊖⍵↓[1]∆⊖(⍵ λ⍴'⎕')⍪(λ⍴'- ')⍪' '⍴⍨(¯1+⍵←1+⌈/,⍵),λ←≢∆←¯1↓,⍉2 λ⍴(¯2×λ←1+≢,⍵)↑-(1+,⍵),0;∆} ⍝ Barplot int(s) Lambda syntax`;
+const QROOTS = `QRoots←{¯.5×⍵[3]÷⍨λ+1 ¯1×.5*⍨3↓⎕←'D =',(×⍨λ←2⊃⍵)-×/4,1↓1⌽⍵←3⍴⍵} ⍝ QRoots c b a`;
+
+test('detects a genuine ⎕ read', () => {
+  assert.equal(readsInput('2×⎕'), true);
+  assert.equal(evaluatedInput('2×⎕'), true);
+});
+
+test('detects a genuine ⍞ read', () => {
+  assert.equal(readsInput('⍞'), true);
+  assert.equal(readsInput('m ← ⍞'), true);
+  assert.equal(readsInput('m←⍞'), true);
+});
+
+test('⎕← output and ⍞← output are not reads', () => {
+  assert.equal(readsInput('⎕←42'), false);
+  assert.equal(readsInput("⍞←'hello'"), false);
+});
+
+test('system names are not reads', () => {
+  assert.equal(readsInput('⎕IO←0'), false);
+  assert.equal(readsInput('⎕AV[145]'), false);
+  assert.equal(readsInput('⎕UCS 9109'), false);
+});
+
+test('plain arithmetic is not a read', () => {
+  assert.equal(readsInput('+/⍳100'), false);
+});
+
+test('a quad inside a character constant is not a read', () => {
+  assert.equal(readsInput("(bar len⍴'⎕')"), false);
+  assert.equal(readsInput(`"⍴'⎕'"`), false);
+});
+
+test('a quad inside a comment is not a read', () => {
+  assert.equal(readsInput('2+2 ⍝ ask with ⎕ later'), false);
+  assert.equal(readsInput('2+2 ⍝ and ⍞ too'), false);
+});
+
+test('the ⎕FX barplot definition is not a read', () => {
+  assert.equal(readsInput(FX_BARPLOT), false);
+  assert.equal(evaluatedInput(FX_BARPLOT), false);
+});
+
+test('the barplot lambda is not a read', () => {
+  assert.equal(readsInput(LAMBDA_BARPLOT), false);
+});
+
+test('the QRoots lambda is not a read', () => {
+  assert.equal(readsInput(QROOTS), false);
+});
+
+test('a real read beside a quoted quad is still found', () => {
+  assert.equal(readsInput("x←'⎕' ⋄ y←⎕"), true);
+  assert.equal(readsInput("⎕ ⋄ '⎕'"), true);
+});
+
+test('stripLiterals removes constants and comments, keeps line structure', () => {
+  assert.equal(stripLiterals("a←'xy' ⍝ note"), 'a←  ');
+  assert.equal(stripLiterals("'a''b'"), ' ');
+  assert.equal(stripLiterals('x ⍝ c\ny'), 'x \ny');
+  assert.equal(stripLiterals("'unterminated"), ' ');
+});
+
+test('doubled quotes inside a constant do not end it', () => {
+  assert.equal(readsInput("'it''s ⎕ here'"), false);
+});
+
+test('a response holding only a quoted glyph is not a nested read', () => {
+  assert.equal(readsInput("'⎕'"), false);
+  assert.equal(readsInput("'has ⍞ inside'"), false);
+  assert.equal(readsInput('42'), false);
+});
+
+test('a response that genuinely reads is still caught', () => {
+  assert.equal(readsInput('2×⎕'), true);
+  assert.equal(readsInput('⍞'), true);
+});
+
+test('definesOrAssigns sees real assignment, definition and separators', () => {
+  assert.equal(definesOrAssigns('x←5'), true);
+  assert.equal(definesOrAssigns('a←1 ⋄ b←2'), true);
+  assert.equal(definesOrAssigns('2+2\n3+3'), true);
+  assert.equal(definesOrAssigns("⎕FX'f' 'x←1'"), true);
+  assert.equal(definesOrAssigns("⎕fx'f' 'x←1'"), true);
+});
+
+test('definesOrAssigns ignores separators hidden in constants and comments', () => {
+  assert.equal(definesOrAssigns("'a←b'"), false);
+  assert.equal(definesOrAssigns("'a⋄b'"), false);
+  assert.equal(definesOrAssigns("'use ⎕FX someday'"), false);
+  assert.equal(definesOrAssigns('2+2 ⍝ x←5'), false);
+  assert.equal(definesOrAssigns('+/⍳100'), false);
+});

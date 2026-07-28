@@ -1,13 +1,12 @@
 import { describeThrown, loadEngine, type Engine } from './engine.js';
 import { attach, insert } from './glyphs.js';
 import { esc, trackFocus, mountKeyboard, keyboardToggle } from './dom.js';
-import { needsInput, askInput } from './input-modal.js';
+import { askInput } from './input-modal.js';
+import { readsInput, evaluatedInput } from './source.js';
 import { encodeProgram, decodeProgram } from './share.js';
 
 const BUILD = 'repl-error-debug-2026-06-25a';
 console.info(`[APL playground] ${BUILD}`);
-const EVAL_INPUT = /⎕(?![A-Za-z←])/u;
-const INPUT_READ = /[⎕⍞]/u;
 
 const $ = <T extends HTMLElement>(id: string): T => document.getElementById(id) as T;
 const src = $<HTMLTextAreaElement>('src');
@@ -131,14 +130,14 @@ let running = false;
 async function run(): Promise<void> {
   if (!engine || running) return;
   let inputs: string[] = [];
-  const inputNeeded = needsInput(src.value);
+  const inputNeeded = readsInput(src.value);
   console.info('[APL playground] run', { build: BUILD, inputNeeded, chars: src.value.length });
   if (inputNeeded) {
     if (!persist.checked) out.innerHTML = '';
     append('<span class="ghost">Input required. Fill the modal to continue.</span>\n');
     const got = await askInput();
     if (got === null) { append('<span class="ghost">Run cancelled.</span>\n'); return; }
-    if (EVAL_INPUT.test(src.value) && got.some(input => INPUT_READ.test(input))) {
+    if (evaluatedInput(src.value) && got.some(readsInput)) {
       append('<span class="err">Nested input is not supported here. For ⎕, enter a concrete value like 21 or 3+4.</span>\n');
       return;
     }

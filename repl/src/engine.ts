@@ -1,9 +1,8 @@
 import createModule from './apl.mjs';
+import { evaluatedInput, readsInput } from './source.js';
 
 const ANSI = /\x1b\[[0-9;]*[A-Za-z]/g;
 const strip = (s: string): string => s.replace(ANSI, '');
-const EVAL_INPUT = /⎕(?![A-Za-z←])/u;
-const INPUT_READ = /[⎕⍞]/u;
 const FUNCTION_EDITOR = /^\s*∇/u;
 const FUNCTION_EDITOR_MESSAGE = 'The ∇ function editor is not supported in this browser. Use ⎕FX to define traditional functions.';
 
@@ -85,7 +84,7 @@ export async function loadEngine(): Promise<Engine> {
   };
 
   const run = ({ setup = '', code = '', test = '', inputs = [] }: RunOpts): Result => {
-    if (EVAL_INPUT.test(`${setup}\n${code}\n${test}`) && inputs.some(input => INPUT_READ.test(input))) {
+    if (evaluatedInput(`${setup}\n${code}\n${test}`) && inputs.some(readsInput)) {
       return {
         text: 'Nested input is not supported here. For ⎕, enter a concrete value like 21 or 3+4.',
         error: { code: -1 },

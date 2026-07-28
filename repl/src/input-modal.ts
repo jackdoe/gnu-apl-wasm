@@ -1,9 +1,5 @@
 import { attach } from './glyphs.js';
 
-const READS = /⍞(?!\s*←)|⎕(?![A-Za-z←])/u;
-
-export const needsInput = (program: string): boolean => READS.test(program);
-
 export function askInput(): Promise<string[] | null> {
   return new Promise(resolve => {
     const ov = document.createElement('div');

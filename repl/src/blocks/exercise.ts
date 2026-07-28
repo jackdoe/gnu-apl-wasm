@@ -5,6 +5,7 @@ import { esc } from '../dom.js';
 import { attach } from '../glyphs.js';
 import { md } from '../md.js';
 import { clearDraft, loadDraft, saveDraft } from '../drafts.js';
+import { definesOrAssigns } from '../source.js';
 
 type Exercise = Extract<Block, { type: 'exercise' }>;
 
@@ -38,7 +39,7 @@ export function matrixRavelMiss(got: string, expected: string): string | null {
 const shapeExpr = (block: Exercise, code: string): string | null => {
   if (block.shapeTest) return block.shapeTest;
   if (block.test) return block.test;
-  return /[←⋄\n]/u.test(code) || code.includes('⎕FX') ? null : code;
+  return definesOrAssigns(code) ? null : code;
 };
 
 const shapeOf = (engine: Engine, block: Exercise, code: string): string | null => {
