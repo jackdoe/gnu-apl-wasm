@@ -32,6 +32,16 @@ export function mountKeyboard(
   return kbd;
 }
 
+export function autoGrow(ta: HTMLTextAreaElement): void {
+  const fit = (): void => {
+    ta.style.height = 'auto';
+    ta.style.height = `${ta.scrollHeight + 2}px`;
+  };
+  ta.addEventListener('input', fit);
+  window.addEventListener('resize', fit);
+  requestAnimationFrame(fit);
+}
+
 export function keyboardToggle(
   bar: HTMLElement,
   button: HTMLElement,

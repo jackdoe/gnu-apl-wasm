@@ -152,8 +152,8 @@ Two pages:
   URL — **Share link** base64url-encodes the editor into the location hash,
   decoded only as text into the `textarea`, so a shared link can never inject
   anything.
-- **`learn.html`** — a live notebook: a 19-topic, zero-to-fluent curriculum
-  (~80 checked exercises) from arithmetic through sorting and capstone
+- **`learn.html`** — a live notebook: a 20-topic, zero-to-fluent curriculum
+  (102 checked exercises) from arithmetic through sorting and capstone
   one-liners, ending in a playable **hangman** (its board computed by the APL you
   wrote) and tic-tac-toe logic. Topics collapse to a title list and the page
   opens to where you left off; cells auto-run; exercises check in-browser against

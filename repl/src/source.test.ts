@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { stripLiterals, readsInput, evaluatedInput, definesOrAssigns } from './source.js';
+import { tokenize, readsInput, evaluatedInput, definesOrAssigns } from './source.js';
 
 const FX_BARPLOT = `⎕cr⎕fx'barplot bar;len;rot ⍝⍝ Bar chart of int(s); LePage (1978)' 'len←↑⍴rot←¯1↓,⍉2 len⍴(¯2×len←1+↑⍴,bar)↑-(1+,bar),0' "⊖bar↓[1]rot⊖(bar len⍴'⎕')⍪(len⍴'- ')⍪((¯1+bar←1+⌈/,bar),len)⍴' '" ⍝ One-line function definition`;
 const LAMBDA_BARPLOT = `Barplot←{⊖⍵↓[1]∆⊖(⍵ λ⍴'⎕')⍪(λ⍴'- ')⍪' '⍴⍨(¯1+⍵←1+⌈/,⍵),λ←≢∆←¯1↓,⍉2 λ⍴(¯2×λ←1+≢,⍵)↑-(1+,⍵),0;∆} ⍝ Barplot int(s) Lambda syntax`;
@@ -60,11 +60,28 @@ test('a real read beside a quoted quad is still found', () => {
   assert.equal(readsInput("⎕ ⋄ '⎕'"), true);
 });
 
-test('stripLiterals removes constants and comments, keeps line structure', () => {
-  assert.equal(stripLiterals("a←'xy' ⍝ note"), 'a←  ');
-  assert.equal(stripLiterals("'a''b'"), ' ');
-  assert.equal(stripLiterals('x ⍝ c\ny'), 'x \ny');
-  assert.equal(stripLiterals("'unterminated"), ' ');
+test('tokenize reproduces its input exactly', () => {
+  for (const s of [FX_BARPLOT, LAMBDA_BARPLOT, QROOTS, "a←'xy' ⍝ note", "'a''b'", 'x ⍝ c\ny', "'unterminated", '', '⎕', '⍝']) {
+    assert.equal(tokenize(s).map(t => t.text).join(''), s, `lost text for ${JSON.stringify(s)}`);
+  }
+});
+
+test('tokenize classifies constants, comments and quad names', () => {
+  assert.deepEqual(tokenize("a←'x' ⍝ n").map(t => t.kind), ['other', 'assign', 'string', 'space', 'comment']);
+  assert.deepEqual(tokenize('⎕IO←0').map(t => t.kind), ['system', 'assign', 'other']);
+  assert.deepEqual(tokenize('2×⎕').map(t => t.kind), ['other', 'other', 'quad']);
+  assert.deepEqual(tokenize("'a''b'").map(t => t.kind), ['string']);
+});
+
+test('a quad name is one token regardless of case', () => {
+  assert.equal(tokenize('⎕fx').find(t => t.kind === 'system')?.name, 'FX');
+  assert.equal(tokenize('⎕FX').find(t => t.kind === 'system')?.name, 'FX');
+  assert.equal(tokenize('⎕Cr').find(t => t.kind === 'system')?.name, 'CR');
+});
+
+test('a glyph separated from ← by a newline is still a read', () => {
+  assert.equal(readsInput('⍞\n←5'), true);
+  assert.equal(readsInput('⎕\n←5'), true);
 });
 
 test('doubled quotes inside a constant do not end it', () => {

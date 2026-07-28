@@ -1,7 +1,7 @@
 import type { Block } from '../content.js';
 import type { BlockCtx, Rendered } from './index.js';
 import { describeThrown, normalize, type Engine } from '../engine.js';
-import { esc } from '../dom.js';
+import { esc, autoGrow } from '../dom.js';
 import { attach } from '../glyphs.js';
 import { md } from '../md.js';
 import { clearDraft, loadDraft, saveDraft } from '../drafts.js';
@@ -84,6 +84,7 @@ export function renderExercise(block: Exercise, ctx: BlockCtx): Rendered {
   const nextBtn = el.querySelector('.nextbtn') as HTMLButtonElement;
   attach(ta);
   ta.value = loadDraft(block.id);
+  autoGrow(ta);
   explain.innerHTML = md(block.explain);
   hintBtn.textContent = hintLabel(0, block.hints.length);
   nextBtn.hidden = !ctx.navigation?.hasNext(block.id);

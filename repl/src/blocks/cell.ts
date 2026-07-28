@@ -1,7 +1,7 @@
 import type { Block } from '../content.js';
 import type { BlockCtx, Rendered } from './index.js';
 import { attach } from '../glyphs.js';
-import { esc } from '../dom.js';
+import { esc, autoGrow } from '../dom.js';
 
 export function renderCell(block: Extract<Block, { type: 'cell' }>, ctx: BlockCtx): Rendered {
   const el = document.createElement('div');
@@ -13,6 +13,7 @@ export function renderCell(block: Extract<Block, { type: 'cell' }>, ctx: BlockCt
   ta.value = block.code;
   ta.rows = block.code.split('\n').length;
   attach(ta);
+  autoGrow(ta);
 
   const run = (): void => {
     outEl.classList.remove('flash', 'err', 'ghost');
