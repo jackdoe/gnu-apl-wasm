@@ -34,12 +34,11 @@ export function mountKeyboard(
 
 export function autoGrow(ta: HTMLTextAreaElement): void {
   const fit = (): void => {
-    ta.style.height = 'auto';
-    ta.style.height = `${ta.scrollHeight + 2}px`;
+    if (ta.clientHeight === 0) return;
+    if (ta.scrollHeight > ta.clientHeight) ta.style.height = `${ta.scrollHeight + 2}px`;
   };
   ta.addEventListener('input', fit);
-  window.addEventListener('resize', fit);
-  requestAnimationFrame(fit);
+  new ResizeObserver(fit).observe(ta);
 }
 
 export function keyboardToggle(
