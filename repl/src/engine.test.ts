@@ -202,6 +202,21 @@ test('a workspace saves, survives )CLEAR and loads back', () => {
   assert.equal(engine.line('wsf 21').text, '42');
 });
 
+test(')LOAD reports the date the same way )SAVE does', () => {
+  engine.line('dv←1');
+  engine.line(')WSID datecheck');
+  const saved = engine.line(')SAVE datecheck').text;
+  const loaded = engine.line(')LOAD datecheck').text;
+  const stamp = /(\d{4})-(\d{2})-(\d{2})/;
+  const s = stamp.exec(saved);
+  const l = stamp.exec(loaded);
+  assert.ok(s, `no date in )SAVE output: ${saved}`);
+  assert.ok(l, `no date in )LOAD output: ${loaded}`);
+  assert.deepEqual(l.slice(1), s.slice(1), ')LOAD date disagrees with )SAVE');
+  assert.ok(Number(l[2]) >= 1 && Number(l[2]) <= 12, `month out of range: ${l[2]}`);
+  assert.ok(Number(l[3]) >= 1 && Number(l[3]) <= 31, `day out of range: ${l[3]}`);
+});
+
 test(')LIB lists a saved workspace', () => {
   engine.line('wsv←1');
   engine.line(')SAVE wslisted');

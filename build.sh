@@ -27,9 +27,10 @@ echo "[2/5] extract   apl-${VER}"
 rm -rf "$SRC"
 tar xzf "$TARBALL" -C "$BUILD"
 
-echo "[3/5] patch     libapl.cc + ScalarFunction.cc"
+echo "[3/5] patch     libapl.cc + ScalarFunction.cc + Archive.cc"
 patch -p0 -d "$BUILD" < "$HERE/patches/libapl.cc.patch"
 patch -p0 -d "$BUILD" < "$HERE/patches/scalarfunction.cc.patch"
+patch -p0 -d "$BUILD" < "$HERE/patches/archive.cc.patch"
 
 echo "[4/5] build     libapl.a  (minimal core, single-threaded, wasm exceptions — a few minutes)"
 cd "$SRC"

@@ -1,0 +1,40 @@
+Fix the )LOAD timestamp printing single-digit date fields backwards.
+
+)LOAD reports e.g. "SAVED 2026-70-30" for the 30th of July: the month is
+padded on the wrong side. The workspace file itself is correct — it stores
+month="7" — so only the report is wrong, and only for fields that need
+padding, i.e. any single-digit month, day, hour, minute or second.
+
+Cause: Command.cc puts the output stream into left-justified mode before
+dispatching a command (Command.cc:241 and :379, `out << left << ...`), and
+`left` is sticky. Archive.cc then formats the timestamp with setw(2) and
+setfill('0'), which assumes the default right-justification, so the fill
+lands after the digit instead of before it.
+
+)SAVE is unaffected because it formats through
+Workspace::get_v_Quad_TZ().print_timestamp() (Command.cc:1069) rather than
+by hand.
+
+Fix: ask for right-justification explicitly for the timestamp, and restore
+left afterwards so later command output is unchanged. This one is not
+libapl-specific — the standalone apl interpreter prints the same wrong date.
+
+--- apl-2.0/src/Archive.cc
++++ apl-2.0/src/Archive.cc
+@@ -1664,14 +1664,14 @@
+ const char * tz_sign = (offset < 0) ? "" : "+";
+    if (!silent)   out
+         << "SAVED "
+-        << setfill('0') << year        << "-"
++        << setfill('0') << right       << year        << "-"
+         << setw(2)      << mon         << "-"
+         << setw(2)      << day         << " "
+         << setw(2)      << hour        << ":"
+         << setw(2)      << min         << ":"
+         << setw(2)      << sec         << " (GMT"
+         << tz_sign      << offset/3600 << ")"
+-        << setfill(' ') <<  endl;
++        << setfill(' ') << left        <<  endl;
+ 
+    if (!copying)
+       {
