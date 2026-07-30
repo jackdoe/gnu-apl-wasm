@@ -50,23 +50,19 @@ const loadRecoveringEngine = async (): Promise<Engine> => {
     text: `APL engine runner error: ${describeThrown(err)}`,
     error: { code: -2 },
   });
+  const guard = <A extends unknown[]>(call: (engine: Engine, ...args: A) => Result) =>
+    (...args: A): Result => {
+      try { return call(current, ...args); }
+      catch (err) {
+        if (!recover(err)) return crash(err);
+        try { return call(current, ...args); }
+        catch (err2) { return crash(err2); }
+      }
+    };
   return {
-    run(opts: RunOpts): Result {
-      try { return current.run(opts); }
-      catch (err) {
-        if (!recover(err)) return crash(err);
-        try { return current.run(opts); }
-        catch (err2) { return crash(err2); }
-      }
-    },
-    line(code: string): Result {
-      try { return current.line(code); }
-      catch (err) {
-        if (!recover(err)) return crash(err);
-        try { return current.line(code); }
-        catch (err2) { return crash(err2); }
-      }
-    },
+    run: guard((engine, opts: RunOpts) => engine.run(opts)),
+    line: guard((engine, code: string) => engine.line(code)),
+    define: guard((engine, text: string) => engine.define(text)),
     reset(inputs: string[] = []): void {
       try { current.reset(inputs); }
       catch (err) {

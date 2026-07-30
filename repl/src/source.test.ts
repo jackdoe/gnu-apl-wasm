@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { tokenize, readsInput, evaluatedInput, definesOrAssigns } from './source.js';
+import { tokenize, readsInput, evaluatedInput, definesOrAssigns, segments, functionName } from './source.js';
 
 const FX_BARPLOT = `⎕cr⎕fx'barplot bar;len;rot ⍝⍝ Bar chart of int(s); LePage (1978)' 'len←↑⍴rot←¯1↓,⍉2 len⍴(¯2×len←1+↑⍴,bar)↑-(1+,bar),0' "⊖bar↓[1]rot⊖(bar len⍴'⎕')⍪(len⍴'- ')⍪((¯1+bar←1+⌈/,bar),len)⍴' '" ⍝ One-line function definition`;
 const LAMBDA_BARPLOT = `Barplot←{⊖⍵↓[1]∆⊖(⍵ λ⍴'⎕')⍪(λ⍴'- ')⍪' '⍴⍨(¯1+⍵←1+⌈/,⍵),λ←≢∆←¯1↓,⍉2 λ⍴(¯2×λ←1+≢,⍵)↑-(1+,⍵),0;∆} ⍝ Barplot int(s) Lambda syntax`;
@@ -97,6 +97,45 @@ test('a response holding only a quoted glyph is not a nested read', () => {
 test('a response that genuinely reads is still caught', () => {
   assert.equal(readsInput('2×⎕'), true);
   assert.equal(readsInput('⍞'), true);
+});
+
+test('segments splits a ∇ block from surrounding statements', () => {
+  assert.deepEqual(segments("1+1\n∇foo n\nn×2\n∇\n'after'"), [
+    { kind: 'statement', text: '1+1' },
+    { kind: 'define', text: 'foo n\nn×2', name: 'foo' },
+    { kind: 'statement', text: "'after'" },
+  ]);
+});
+
+test('segments accepts a ∇ closed on the last body line', () => {
+  assert.deepEqual(segments('∇foo n\nn×2 ∇'), [
+    { kind: 'define', text: 'foo n\nn×2', name: 'foo' },
+  ]);
+});
+
+test('segments strips line labels pasted from a listing', () => {
+  assert.deepEqual(segments('∇foo n\n[1] n×2\n[2.1] n\n∇'), [
+    { kind: 'define', text: 'foo n\nn×2\nn', name: 'foo' },
+  ]);
+});
+
+test('segments leaves a lone ∇ and braced ∇ as statements', () => {
+  assert.deepEqual(segments('∇').map(s => s.kind), ['statement']);
+  assert.deepEqual(segments('f←{⍵×∇⍵-1}').map(s => s.kind), ['statement']);
+  assert.deepEqual(segments("'∇'").map(s => s.kind), ['statement']);
+});
+
+test('segments handles an unterminated block and several blocks', () => {
+  assert.deepEqual(segments('∇a x\nx\n∇\n∇b y\ny').map(s => (s.kind === 'define' ? s.name : s.kind)), ['a', 'b']);
+});
+
+test('functionName reads every header shape', () => {
+  assert.equal(functionName('foo'), 'foo');
+  assert.equal(functionName('foo x'), 'foo');
+  assert.equal(functionName('l foo r'), 'foo');
+  assert.equal(functionName('R←foo x'), 'foo');
+  assert.equal(functionName('R←l foo r;a;b'), 'foo');
+  assert.equal(functionName('barplot bar;len;rot ⍝⍝ Bar chart'), 'barplot');
 });
 
 test('definesOrAssigns sees real assignment, definition and separators', () => {

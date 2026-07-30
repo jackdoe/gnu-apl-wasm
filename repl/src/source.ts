@@ -82,6 +82,56 @@ export const readsInput = (src: string): boolean => {
   return reads(tokens, 'quad') || reads(tokens, 'quote');
 };
 
+const COMMAND = /^\s*[)\]]/u;
+
+export const isCommand = (src: string): boolean => COMMAND.test(src);
+
+export type Segment =
+  | { kind: 'define'; text: string; name: string }
+  | { kind: 'statement'; text: string };
+
+const OPENER = /^\s*∇(.*)$/u;
+const LABEL = /^\s*\[[0-9]+(?:\.[0-9]+)?\]\s?/u;
+
+export const functionName = (header: string): string => {
+  const bare = (header.split('⍝')[0] ?? '').split(';')[0] ?? '';
+  const rhs = bare.includes('←') ? bare.slice(bare.indexOf('←') + 1) : bare;
+  const parts = rhs.trim().split(/\s+/u).filter(Boolean);
+  return (parts.length >= 3 ? parts[1] : parts[0]) ?? '';
+};
+
+export const segments = (src: string): Segment[] => {
+  const lines = src.split('\n');
+  const found: Segment[] = [];
+  let i = 0;
+  while (i < lines.length) {
+    const opener = OPENER.exec(lines[i]!);
+    const header = (opener?.[1] ?? '').replace(LABEL, '').trim();
+    if (!opener || header === '') {
+      found.push({ kind: 'statement', text: lines[i]! });
+      i++;
+      continue;
+    }
+    i++;
+    const body: string[] = [];
+    let head = header;
+    if (head.endsWith('∇')) {
+      head = head.slice(0, -1).trim();
+    } else {
+      while (i < lines.length) {
+        const line = lines[i]!.replace(LABEL, '');
+        i++;
+        const shut = line.trim();
+        if (shut === '∇') break;
+        if (shut.endsWith('∇')) { body.push(shut.slice(0, -1).trimEnd()); break; }
+        body.push(line);
+      }
+    }
+    found.push({ kind: 'define', text: [head, ...body].join('\n'), name: functionName(head) });
+  }
+  return found;
+};
+
 export const definesOrAssigns = (src: string): boolean =>
   code(tokenize(src)).some(t =>
     t.kind === 'assign' || t.kind === 'diamond' || t.kind === 'newline' ||

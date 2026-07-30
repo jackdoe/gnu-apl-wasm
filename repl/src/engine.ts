@@ -1,10 +1,9 @@
 import createModule from './apl.mjs';
-import { evaluatedInput, readsInput } from './source.js';
+import { evaluatedInput, readsInput, segments, functionName, isCommand } from './source.js';
 
+const WORKSPACE_ROOT = '/tmp';
 const ANSI = /\x1b\[[0-9;]*[A-Za-z]/g;
 const strip = (s: string): string => s.replace(ANSI, '');
-const FUNCTION_EDITOR = /^\s*∇/u;
-const FUNCTION_EDITOR_MESSAGE = 'The ∇ function editor is not supported in this browser. Use ⎕FX to define traditional functions.';
 
 export const normalize = (s: string): string =>
   strip(s).split('\n').map(l => l.replace(/\s+$/, '')).join('\n').replace(/\n+$/, '');
@@ -15,6 +14,7 @@ export type RunOpts = { setup?: string; code?: string; test?: string; inputs?: s
 export type Engine = {
   run(opts: RunOpts): Result;
   line(code: string): Result;
+  define(text: string): Result;
   reset(inputs?: string[]): void;
 };
 
@@ -60,27 +60,54 @@ export async function loadEngine(): Promise<Engine> {
   const feed = (inputs: string[]): void => {
     queue = Array.from(enc.encode(inputs.length ? inputs.join('\n') + '\n' : ''));
   };
-  const command = (c: string): void => {
+  const runCommand = (c: string): string => {
     queue = [];
-    mod.ccall('apl_command', 'string', ['string'], [c]);
+    const owned = mod.ccall('apl_command', 'number', ['string'], [c]) as number;
+    const text = owned ? mod.UTF8ToString(owned) : '';
+    if (owned) mod.ccall('free', 'void', ['number'], [owned]);
     flush();
+    return text.replace(/\n+$/, '');
+  };
+  const command = (c: string): void => { runCommand(c); };
+
+  command(`)LIBS 0 ${WORKSPACE_ROOT}`);
+  out.length = 0;
+
+  const fixFunction = (text: string): number => {
+    const rc = mod.ccall('fix_function_NL', 'number', ['string'], [text]) as number;
+    flush();
+    if (rc === 0) {
+      const name = functionName(text.split('\n')[0] ?? '');
+      if (name) out.push(name);
+    }
+    return rc;
   };
 
   const exec = (src: string): Result => {
     out.length = 0;
     let err = 0;
-    for (const ln of src.split('\n')) {
-      if (FUNCTION_EDITOR.test(ln)) {
-        flush();
-        out.push(FUNCTION_EDITOR_MESSAGE);
-        err = -3;
-        break;
+    for (const seg of segments(src)) {
+      if (seg.kind === 'define') {
+        const rc = fixFunction(seg.text);
+        if (rc !== 0) err = rc;
+        continue;
       }
-      const c = mod.ccall('apl_exec', 'number', ['string'], [ln]) as number;
+      if (isCommand(seg.text)) {
+        const said = runCommand(seg.text);
+        if (said) out.push(said);
+        continue;
+      }
+      const c = mod.ccall('apl_exec', 'number', ['string'], [seg.text]) as number;
       if (c !== 0) err = c;
     }
     flush();
     return { text: normalize(out.join('\n')), error: err !== 0 ? { code: err } : null };
+  };
+
+  const define = (text: string): Result => {
+    out.length = 0;
+    const rc = fixFunction(text);
+    return { text: normalize(out.join('\n')), error: rc !== 0 ? { code: rc } : null };
   };
 
   const run = ({ setup = '', code = '', test = '', inputs = [] }: RunOpts): Result => {
@@ -100,5 +127,5 @@ export async function loadEngine(): Promise<Engine> {
   const line = (code: string): Result => exec(code);
   const reset = (inputs: string[] = []): void => { command(')CLEAR'); feed(inputs); out.length = 0; };
 
-  return { run, line, reset };
+  return { run, line, define, reset };
 }

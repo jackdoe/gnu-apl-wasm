@@ -132,15 +132,22 @@ step on the server, no runtime dependencies, real MIME types only (`.wasm` →
 
 Source lives in `repl/src/` as focused ES modules:
 
-- `engine.ts` — the only wrapper over the WASM module; `apl_exec`'s return code
-  is the authoritative error signal (no output scraping).
+- `engine.ts` — the only wrapper over the WASM module. Expressions go through
+  `apl_exec`, whose return code is the authoritative error signal; `)`/`]`
+  commands go through `apl_command`, which returns its output as a string —
+  `apl_exec`'s code is meaningless for commands (0 even for `BAD COMMAND`, and
+  non-zero for a *successful* `)LOAD` after an error). `∇` blocks go through
+  `fix_function_NL`. The library root is pointed at a writable directory at
+  startup, which is what makes `)SAVE`/`)LOAD` work.
 - `glyphs.ts` — one `LAYOUT` table drives both the backtick-prefix input map and
   the on-screen QWERTY-shaped keyboard.
 - `dom.ts`, `share.ts`, `input-modal.ts`, `content.ts`, `progress.ts` — shared
-  helpers (DOM builders, the URL-hash codec, `⎕`/`⍞` detection, the typed
-  curriculum loader, progress storage).
+  helpers (DOM builders, the URL-hash codec, the typed curriculum loader,
+  progress storage).
 - `blocks/` — one renderer per content block type (`prose`, `cell`, `predict`,
   `tryinput`, `hangman`, `exercise`), dispatched by a registry.
+- `source.ts` — the APL tokenizer: what counts as a read, a definition, or a
+  `∇` block, asked of tokens rather than of raw text.
 - `repl.ts` / `learn.ts` — the two page entry points; `static/repl.html` and
   `static/learn.html` are thin shells that load them.
 
@@ -152,8 +159,8 @@ Two pages:
   URL — **Share link** base64url-encodes the editor into the location hash,
   decoded only as text into the `textarea`, so a shared link can never inject
   anything.
-- **`learn.html`** — a live notebook: a 20-topic, zero-to-fluent curriculum
-  (102 checked exercises) from arithmetic through sorting and capstone
+- **`learn.html`** — a live notebook: a 21-topic, zero-to-fluent curriculum
+  (102 checked exercises, 135 live cells) from arithmetic through sorting and capstone
   one-liners, ending in a playable **hangman** (its board computed by the APL you
   wrote) and tic-tac-toe logic. Topics collapse to a title list and the page
   opens to where you left off; cells auto-run; exercises check in-browser against
@@ -182,9 +189,22 @@ repl/                     TypeScript playground + learning site
 
 ## Credits
 
-Everything here — the WebAssembly build, the two upstream `libapl` bug fixes,
-the differential testing, and the entire `repl/` playground and learning
-curriculum — was built by **Claude Opus 4.8**.
+The WebAssembly build, the two upstream `libapl` bug fixes, the differential
+testing, and the `repl/` playground and curriculum were built by
+**Claude Opus 4.8**.
+
+**D. Alden** contributed the material the later sections of the curriculum are
+built from, and the reports behind most of the entries in `CHANGELOG.md`:
+
+- `barplot` — his condensation of a bar chart from *Applied APL Programming*
+  (Wilbur R. LePage, 1978), which the bar-chart section builds up to
+- the worked examples and the explanations behind the optional mathematics
+  section: Gauss's pairing sum, inner and outer products, the binomial
+  comparisons, and Euler's identity
+- the starting examples in the playground editor
+- the `,⊂` accumulation idiom shown in the `⎕FX` lesson
+- the reports that led to the `)help`, input-detection, keyboard, `∇` and
+  workspace work
 
 ## License
 

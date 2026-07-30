@@ -2,7 +2,7 @@ import { describeThrown, loadEngine, type Engine } from './engine.js';
 import { attach, insert } from './glyphs.js';
 import { esc, trackFocus, mountKeyboard, keyboardToggle } from './dom.js';
 import { askInput } from './input-modal.js';
-import { readsInput, evaluatedInput } from './source.js';
+import { readsInput, evaluatedInput, segments } from './source.js';
 import { encodeProgram, decodeProgram } from './share.js';
 
 const BUILD = 'repl-error-debug-2026-06-25a';
@@ -147,12 +147,12 @@ async function run(): Promise<void> {
   try {
     if (!persist.checked) out.innerHTML = '';
     engine.reset(inputs);
-    for (const raw of src.value.split('\n')) {
-      const line = raw.replace(/\s+$/, '');
-      if (line.trim() === '') continue;
-      append(`<span class="in">${esc(line)}</span>\n`);
+    for (const seg of segments(src.value)) {
+      const shown = seg.kind === 'define' ? `∇${seg.text}\n∇` : seg.text.replace(/\s+$/, '');
+      if (shown.trim() === '') continue;
+      append(`<span class="in">${esc(shown)}</span>\n`);
       try {
-        const { text, error } = engine.line(line);
+        const { text, error } = seg.kind === 'define' ? engine.define(seg.text) : engine.line(seg.text);
         if (text.length) append(`<span class="${error ? 'err' : 'res'}">${esc(text)}</span>\n`);
       } catch (err) {
         append(`<span class="err">${esc(describeThrown(err))}</span>\n`);

@@ -2,6 +2,7 @@ type Ret = 'void' | 'number' | 'string';
 type CcallArg = 'string' | 'number';
 export type AplModule = {
   ccall(name: string, ret: Ret, argTypes: CcallArg[], args: (string | number)[]): string | number;
+  UTF8ToString(ptr: number): string;
 };
 export type ModuleInit = {
   stdout?: (byte: number | null) => void;

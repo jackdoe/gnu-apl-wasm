@@ -41,13 +41,52 @@ test('nested input supplied to ⎕ is rejected without killing the engine', () =
   assert.equal(engine.run({ code: '2×⎕', inputs: ['21'] }).text.includes('42'), true);
 });
 
-test('traditional function editor is rejected before wasm exit', () => {
-  const r = engine.run({ code: '2+2\n∇ move n;c' });
-  assert.equal(r.error?.code, -3);
-  assert.match(r.text, /^4\n/);
-  assert.match(r.text, /∇ function editor/);
-  assert.match(r.text, /⎕FX/);
-  assert.equal(engine.run({ code: '2+2' }).text, '4');
+test('a ∇ block defines a traditional function that can then be called', () => {
+  const r = engine.run({
+    code: '∇sum3 a;t\nt←+/a\nt\n∇',
+    test: 'sum3 1 2 3 4',
+  });
+  assert.equal(r.error, null);
+  assert.equal(r.text, '10');
+});
+
+test('a ∇ block reports the function name like ⎕FX does', () => {
+  const r = engine.run({ code: '∇sum3 a;t\nt←+/a\nt\n∇' });
+  assert.equal(r.error, null);
+  assert.equal(r.text, 'sum3');
+});
+
+test('a ∇ block closed on the last body line still defines', () => {
+  const r = engine.run({ code: '∇twice n\n2×n ∇', test: 'twice 21' });
+  assert.equal(r.error, null);
+  assert.equal(r.text, '42');
+});
+
+test('line labels pasted from a listing are ignored', () => {
+  const r = engine.run({ code: '∇thrice n\n[1] 3×n\n[2] ⍝ done\n∇', test: 'thrice 5' });
+  assert.equal(r.error, null);
+  assert.equal(r.text, '15');
+});
+
+test('statements around a ∇ block still run in order', () => {
+  const r = engine.run({ code: "1+1\n∇pick v\nv[2]\n∇\n'after'" });
+  assert.equal(r.error, null);
+  assert.equal(r.text, '2\npick\nafter');
+});
+
+test('Daves barplot defines from plain pasted lines', () => {
+  const r = engine.run({
+    code: "∇barplot bar;len;rot ⍝⍝ Bar chart of int(s); LePage (1978)\nlen←↑⍴rot←¯1↓,⍉2 len⍴(¯2×len←1+↑⍴,bar)↑-(1+,bar),0\n⊖bar↓[1]rot⊖(bar len⍴'⎕')⍪(len⍴'- ')⍪((¯1+bar←1+⌈/,bar),len)⍴' '\n∇",
+    test: 'barplot 2 1 3',
+  });
+  assert.equal(r.error, null);
+  assert.equal(r.text, '     ⎕\n ⎕   ⎕\n ⎕ ⎕ ⎕\n-⎕-⎕-⎕-');
+});
+
+test('a lambda mentioning ∇ is run, not treated as a definition', () => {
+  const r = engine.run({ code: "'∇ inside a lambda'" });
+  assert.equal(r.error, null);
+  assert.equal(r.text, '∇ inside a lambda');
 });
 
 test('⍞ accepts input glyphs as raw text', () => {
@@ -144,6 +183,58 @@ test(']COLOR ON escapes are stripped from real engine output', () => {
   assert.equal(engine.line(')HELP').text.includes(')CHECK [BRIEF]'), true);
   engine.line(']COLOR OFF');
   assert.equal(engine.line('2+2').text, '4');
+});
+
+test('a workspace saves, survives )CLEAR and loads back', () => {
+  engine.line('wsv←⍳5');
+  engine.line("⎕FX'wsf x' 'x×2'");
+  const saved = engine.line(')SAVE wstest');
+  assert.equal(saved.error, null);
+  assert.doesNotMatch(saved.text, /Unable to/);
+
+  engine.line(')CLEAR');
+  assert.ok(engine.line('wsv').error, 'workspace was not cleared');
+
+  const loaded = engine.line(')LOAD wstest');
+  assert.equal(loaded.error, null);
+  assert.match(loaded.text, /SAVED/);
+  assert.equal(engine.line('wsv').text, '1 2 3 4 5');
+  assert.equal(engine.line('wsf 21').text, '42');
+});
+
+test(')LIB lists a saved workspace', () => {
+  engine.line('wsv←1');
+  engine.line(')SAVE wslisted');
+  assert.match(engine.line(')LIB').text, /wslisted/);
+});
+
+test('a ∇ definition survives a workspace round trip', () => {
+  engine.line(')CLEAR');
+  engine.define('wsd n\n3×n');
+  engine.line(')SAVE wsdel');
+  engine.line(')CLEAR');
+  engine.line(')LOAD wsdel');
+  assert.equal(engine.line('wsd 5').text, '15');
+});
+
+test('a command after an error is not reported as failing', () => {
+  engine.line('wse←⍳3');
+  engine.line(')SAVE wserr');
+  engine.line(')CLEAR');
+  assert.ok(engine.line('wse').error, 'expected the cleared variable to fail');
+  const loaded = engine.line(')LOAD wserr');
+  assert.equal(loaded.error, null, 'a successful )LOAD must not inherit the previous error');
+  assert.match(loaded.text, /SAVED/);
+  assert.equal(engine.line(')VARS').error, null);
+});
+
+test('a bad command reports its own text without a thrown error', () => {
+  const r = engine.line(')NOSUCHCOMMAND');
+  assert.match(r.text, /BAD COMMAND/);
+});
+
+test('safe mode still blocks )HOST', () => {
+  assert.match(engine.line(')HOST echo hello').text, /safe mode/);
 });
 
 test('describeThrown formats wasm exit-like objects', () => {

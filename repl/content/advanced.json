@@ -1,0 +1,137 @@
+{
+  "title": "Optional: mathematics in one line",
+  "blocks": [
+    {
+      "type": "prose",
+      "md": "This section is optional and nothing later depends on it. The examples and the explanations are **D. Alden’s**, condensed. They are here to show what the notation buys you, not to be memorised."
+    },
+    {
+      "type": "prose",
+      "md": "**Gauss’s pairing sum.** Adding 1 to 100 one term at a time works, but there is a closed form: the sum of every integer from `m` to `n` is `(n(n+1)-m(m-1))÷2`. The lambda below computes it, and never builds the list at all."
+    },
+    {
+      "type": "cell",
+      "code": "+/⍳100 ⍝ one term at a time"
+    },
+    {
+      "type": "prose",
+      "md": "Read it right to left. `2⍴⍵` is a sanity check before any arithmetic: it forces the argument to exactly two elements, replicating a lone value or discarding extras, so the function cannot be handed the wrong shape."
+    },
+    {
+      "type": "cell",
+      "code": "2⍴9 99 5 5 ⍝ extras discarded"
+    },
+    {
+      "type": "prose",
+      "md": "Then `-/1,⍵` reduces `1 9 99` with minus — and because reduction also runs right to left, that is `1-(9-99)`, not `(1-9)-99`. The signs alternate, which is exactly the `n(n+1)-m(m-1)` the formula wants."
+    },
+    {
+      "type": "cell",
+      "code": "-/1 9 99 ⍝ 1-(9-99), not (1-9)-99"
+    },
+    {
+      "type": "prose",
+      "md": "Finally `÷⍨` commutes its arguments so the total is divided by 2 rather than 2 by the total. The result is assigned to nothing, and an *uncommitted* value is what APL prints."
+    },
+    {
+      "type": "cell",
+      "code": "{2÷⍨+/⍵×-/1,⍵←2⍴⍵}1 100 ⍝ Gauss pairing"
+    },
+    {
+      "type": "prose",
+      "md": "The same function takes any range as its two endpoints, so summing 9 through 99 needs no new code."
+    },
+    {
+      "type": "cell",
+      "code": "{2÷⍨+/⍵×-/1,⍵←2⍴⍵}9 99"
+    },
+    {
+      "type": "cell",
+      "code": "+/8↓⍳99 ⍝ the same total, counted out"
+    },
+    {
+      "type": "prose",
+      "md": "**A named lambda.** Give a lambda a name and it becomes part of the workspace, reusable without pasting it again. The parentheses in `(+/⍵)÷≢⍵` are not decoration: without them each element would be divided by the tally and the quotients summed afterwards — the same answer from seven divisions instead of one."
+    },
+    {
+      "type": "cell",
+      "code": "Avg←{(+/⍵)÷≢⍵} ⋄ Avg 2 ¯1 1 0 1 1 2"
+    },
+    {
+      "type": "prose",
+      "md": "The blank after `Avg` is required. Without it, `Avg2` reads as one name, and since APL names may not begin with a digit no blank is needed on the left of a function."
+    },
+    {
+      "type": "prose",
+      "md": "**Inner and outer products.** The outer product applies its function to every pairing of left and right, giving a bigger array; the inner product pairs corresponding elements and combines them. `+.×` is common enough that GNU APL lets a bare `∘` stand for it. Here `⍨` is *duplicate*, not commute: it feeds one argument in as both sides — a “selfie” — avoiding a temporary name."
+    },
+    {
+      "type": "cell",
+      "code": "∘⍨⍳5"
+    },
+    {
+      "type": "cell",
+      "code": "+.×⍨⍳5 ⍝ written out in full"
+    },
+    {
+      "type": "cell",
+      "code": "∘.×⍨⍳5 ⍝ the outer product, a whole table"
+    },
+    {
+      "type": "prose",
+      "md": "Over the opening Fibonacci numbers, extended back through 0 and ¯1, the outer product is a 7 by 7 table. Ravel with `,` flattens it so a single reduction finishes the job."
+    },
+    {
+      "type": "cell",
+      "code": "⍴∘.×⍨2 ¯1 1 0 1 1 2 ⍝ 7 by 7"
+    },
+    {
+      "type": "cell",
+      "code": "+/,∘.×⍨2 ¯1 1 0 1 1 2 ⍝ sum of the whole table"
+    },
+    {
+      "type": "cell",
+      "code": "∘⍨2 ¯1 1 0 1 1 2 ⍝ inner product"
+    },
+    {
+      "type": "prose",
+      "md": "**Binomials.** Summing every entry of an outer-product table gives the product of the sums — this is how you multiply multinomials. `⎕←` prints an intermediate on its way past; since evaluation runs right to left, those intermediates appear in the reverse of reading order."
+    },
+    {
+      "type": "cell",
+      "code": "(+/,⎕←2 .5∘.×3 .7),(2 .5∘3 .7),2.5×3.7"
+    },
+    {
+      "type": "prose",
+      "md": "Only the sum of the outer product matches the plain product. The inner product is a different quantity."
+    },
+    {
+      "type": "cell",
+      "code": "(+/,2 .5∘.×3 .7)=2.5×3.7 ⍝ 1 means they agree"
+    },
+    {
+      "type": "prose",
+      "md": "**Division is not symmetric.** Summing an outer *quotient* does not divide two binomials. What works is the sum of the outer product of the dividend with the divisor’s conjugate, divided by the inner product of the divisor with its own conjugate — here numerator `6-(1.4-(1.5-0.35))` over denominator `3×3-.7×.7`. It also sidesteps a DOMAIN ERROR when a divisor holds a zero, and it is the way to divide complex binomials."
+    },
+    {
+      "type": "cell",
+      "code": "((-/,⎕←2 .5∘.×3 .7)÷⎕←-.×⍨3 .7),(+/,⎕←2 .5∘.÷3 .7),(2 .5+.÷3 .7),2.5÷3.7"
+    },
+    {
+      "type": "cell",
+      "code": "(2 .5+.÷3 .7)=2.5÷3.7 ⍝ 0: the inner quotient is simply wrong"
+    },
+    {
+      "type": "prose",
+      "md": "**Euler’s identity.** `0j1` is the imaginary unit — `j` is APL’s shorthand for `+i×`, separating real from imaginary. Monadic `○` multiplies by π, and `*` raises e to that power. The whole of `e^{iπ} = ¯1` fits in four characters."
+    },
+    {
+      "type": "cell",
+      "code": "*○0j1"
+    },
+    {
+      "type": "cell",
+      "code": "0j1×0j1 ⍝ the imaginary unit squared"
+    }
+  ]
+}

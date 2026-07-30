@@ -10,7 +10,7 @@
 <body class="repl">
   <header>
     <div class="brand"><span class="mark">⎕</span>APL<b>·</b>PLAYGROUND</div>
-    <div class="status"><button class="navlink" id="kbtoggle" title="show/hide the glyph keyboard">⌨ KEYS</button><a class="navlink" href="./learn.html">LEARN →</a><span><span class="dot" id="dot"></span><b id="statustxt">BOOTING ENGINE</b></span></div>
+    <div class="status"><button class="navlink" id="kbtoggle" title="show/hide the glyph keyboard">⌨ KEYS</button><a class="navlink" href="./learn.html">LEARN →</a><a class="navlink" href="https://www.gnu.org/software/apl/" target="_blank" rel="noopener">GNU APL DOCS ↗</a><span><span class="dot" id="dot"></span><b id="statustxt">BOOTING ENGINE</b></span></div>
   </header>
   <main>
     <section class="col left">
@@ -24,11 +24,12 @@
           <button id="downloadfile" class="iconbtn" title="Download .apl" aria-label="Download .apl">⇩</button>
           <button id="deletefile" class="iconbtn" title="Delete file" aria-label="Delete file">×</button>
         </div>
-        <textarea id="src" spellcheck="false" autocomplete="off" autocapitalize="off">2 3⍴⍳6
-+/⍳100
-mean ← {(+/⍵)÷≢⍵}
-mean ⍳100
-(⍳5) ∘.× ⍳5</textarea>
+        <textarea id="src" spellcheck="false" autocomplete="off" autocapitalize="off">2 3⍴⍳6 ⍝ Matrix of first six ints
++/⍳100 ⍝ Bad way to sum 100 consecutive ints
+{2÷⍨+/⍵×-/1,⍵←2⍴⍵}1 100 ⍝ Good way to sum 100 consecutive ints
+Avg←{(+/⍵)÷≢⍵} ⋄ Avg⍳100 ⍝ Average of 100 consecutive ints
+∘⍨⍳5 ⍝ Inner product (+.×) selfie on ints
+∘.×⍨⍳5 ⍝ Outer product selfie on ints</textarea>
         <div class="toolbar">
           <button id="run">▸ Run &nbsp;(Ctrl·↵)</button>
           <button id="share">Share link</button>
