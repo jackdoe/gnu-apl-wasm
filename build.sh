@@ -43,10 +43,10 @@ emmake make -C src libapl.la CXXFLAGS="-O2 -fwasm-exceptions" >/dev/null
 echo "[5/5] link      apl.wasm + apl.mjs"
 emcc src/.libs/libapl.a -fwasm-exceptions --no-entry \
   -sEXPORTED_FUNCTIONS=_init_libapl,_apl_exec,_apl_command,_fix_function_NL,_malloc,_free \
-  -sEXPORTED_RUNTIME_METHODS=ccall,cwrap,UTF8ToString,stringToUTF8,lengthBytesUTF8 \
+  -sEXPORTED_RUNTIME_METHODS=ccall,cwrap,UTF8ToString,stringToUTF8,lengthBytesUTF8,FS \
   -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=node,web \
   -sALLOW_MEMORY_GROWTH=1 -sINITIAL_MEMORY=67108864 -sFORCE_FILESYSTEM=1 \
-  -O2 -g0 -o "$DIST/apl.mjs"
+  -lidbfs.js -O2 -g0 -o "$DIST/apl.mjs"
 
 echo
 echo "ok → $DIST/apl.mjs  ($(du -h "$DIST/apl.wasm" | cut -f1) wasm)"

@@ -1,7 +1,8 @@
 import createModule from './apl.mjs';
-import { evaluatedInput, readsInput, segments, functionName, isCommand } from './source.js';
+import { evaluatedInput, readsInput, segments, functionName, isCommand, commandName } from './source.js';
 
-const WORKSPACE_ROOT = '/tmp';
+const WORKSPACE_ROOT = '/workspaces';
+const WRITES_LIBRARY = new Set(['SAVE', 'DUMP', 'DUMPV', 'DUMP-HTML', 'DROP', 'OUT']);
 const ANSI = /\x1b\[[0-9;]*[A-Za-z]/g;
 const strip = (s: string): string => s.replace(ANSI, '');
 
@@ -53,6 +54,24 @@ export async function loadEngine(): Promise<Engine> {
     stderr: sink,
     stdin: () => (queue.length ? queue.shift()! : null),
   });
+  const store = mod.FS;
+  const persistent = await (async (): Promise<boolean> => {
+    if (!store) return false;
+    try { store.mkdir(WORKSPACE_ROOT); } catch {}
+    const idbfs = store.filesystems?.['IDBFS'];
+    if (!idbfs) return false;
+    try { store.mount(idbfs, {}, WORKSPACE_ROOT); }
+    catch { return false; }
+    return new Promise<boolean>(resolve => {
+      try { store.syncfs(true, err => resolve(!err)); }
+      catch { resolve(false); }
+    });
+  })();
+  const persist = (): void => {
+    if (!persistent || !store) return;
+    try { store.syncfs(false, () => {}); } catch {}
+  };
+
   mod.ccall('init_libapl', 'void', ['string', 'number'], ['apl', 0]);
   flush();
   out.length = 0;
@@ -95,6 +114,7 @@ export async function loadEngine(): Promise<Engine> {
       if (isCommand(seg.text)) {
         const said = runCommand(seg.text);
         if (said) out.push(said);
+        if (WRITES_LIBRARY.has(commandName(seg.text))) persist();
         continue;
       }
       const c = mod.ccall('apl_exec', 'number', ['string'], [seg.text]) as number;

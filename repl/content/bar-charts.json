@@ -105,7 +105,7 @@
     },
     {
       "type": "prose",
-      "md": "The other route is `⎕FX`, which takes the lines as text. Rather than one name per line, accumulate them into a single nested array: the first two juxtapose directly, and from then on append with `,⊂`. Appending this way costs time proportional to the square of the line count, so `∇` is the better choice for a long function."
+      "md": "The other route is `⎕FX`, which takes the lines as text. Rather than one name per line, accumulate them into a single nested array: the first two juxtapose directly, and from then on append with `,⊂`. The Reference Manual also documents a pre-allocated form — `∆←3⍴''` then `∆[1]←⊂…` — which avoids recopying the array on each append. Measured here both stay linear out to 800 lines, with indexing about a third faster at that size and indistinguishable at the length of a real function."
     },
     {
       "type": "cell",

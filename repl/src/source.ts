@@ -82,9 +82,12 @@ export const readsInput = (src: string): boolean => {
   return reads(tokens, 'quad') || reads(tokens, 'quote');
 };
 
-const COMMAND = /^\s*[)\]]/u;
+const COMMAND = /^\s*[)\]]\s*([A-Za-z][A-Za-z0-9-]*)?/u;
 
 export const isCommand = (src: string): boolean => COMMAND.test(src);
+
+export const commandName = (src: string): string =>
+  (COMMAND.exec(src)?.[1] ?? '').toUpperCase();
 
 export type Segment =
   | { kind: 'define'; text: string; name: string }
