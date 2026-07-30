@@ -1,23 +1,45 @@
 Fix the )LOAD timestamp printing single-digit date fields backwards.
 
-)LOAD reports e.g. "SAVED 2026-70-30" for the 30th of July: the month is
-padded on the wrong side. The workspace file itself is correct — it stores
-month="7" — so only the report is wrong, and only for fields that need
-padding, i.e. any single-digit month, day, hour, minute or second.
+In apl-2.0, )LOAD reports e.g. "SAVED 2026-70-30" for the 30th of July: the
+month is padded on the wrong side. The workspace file itself is correct — it
+stores month="7" — so only the report is wrong, and only for fields that need
+padding: any single-digit month, day, hour, minute or second. It is therefore
+wrong on the 3rd of a month, or before 10am, not only in July.
 
-Cause: Command.cc puts the output stream into left-justified mode before
-dispatching a command (Command.cc:241 and :379, `out << left << ...`), and
-`left` is sticky. Archive.cc then formats the timestamp with setw(2) and
-setfill('0'), which assumes the default right-justification, so the fill
-lands after the digit instead of before it.
+This is a regression introduced in 2.0, and it is still present in trunk.
+Established by comparing the tags in the GNU APL svn repository:
 
-)SAVE is unaffected because it formats through
-Workspace::get_v_Quad_TZ().print_timestamp() (Command.cc:1069) rather than
-by hand.
+  Archive.cc, the timestamp itself, is unchanged
+      tags/apl-1.9/src/Archive.cc:1636   setfill('0') << year << "-" << setw(2) ...
+      tags/apl-2.0/src/Archive.cc:1664   identical
+      trunk/src/Archive.cc:1617          identical
 
-Fix: ask for right-justification explicitly for the timestamp, and restore
-left afterwards so later command output is unchanged. This one is not
-libapl-specific — the standalone apl interpreter prints the same wrong date.
+  Command.cc gained two sticky left-justifications, new in 2.0
+      tags/apl-1.9/src/Command.cc        neither line exists
+      tags/apl-2.0/src/Command.cc:241    Command::do_APL_command()
+                                           out << left << dec << nouppercase ...
+      tags/apl-2.0/src/Command.cc:379    Command::do_APL_expression()
+                                           COUT << left << dec << nouppercase ...
+      trunk/src/Command.cc:273, :335     both still there
+
+`left` is sticky, so by the time )LOAD formats its timestamp with setw(2) and
+setfill('0') — which assumes the default right-justification — the fill lands
+after the digit instead of before it. Archive.cc did not change; the new
+left-justification in Command.cc changed the stream state it relies on. That
+matches observed behaviour: GNU APL 1.9's native binary prints the date
+correctly, apl-2.0 does not.
+
+Command.cc:1671 shows the codebase's own convention for this: it restores
+`right` immediately after a left-aligned setw. )SAVE is unaffected because it
+formats through Workspace::get_v_Quad_TZ().print_timestamp() (Command.cc:1069)
+rather than by hand.
+
+This patch is the minimal fix, at the point that regressed in behaviour: ask
+for right-justification for the timestamp and restore left afterwards, so later
+command output is unchanged. Two alternatives are arguably better upstream —
+route )LOAD through print_timestamp() like )SAVE and delete the duplicated
+hand-rolled formatting, or have do_APL_command()/do_APL_expression() not leave
+`left` sticky, since that is a latent trap for any other setw on that stream.
 
 --- apl-2.0/src/Archive.cc
 +++ apl-2.0/src/Archive.cc
