@@ -126,11 +126,11 @@
     },
     {
       "type": "prose",
-      "md": "A definition can outlive the session it was made in. `)SAVE` writes the whole workspace — variables and functions together — `)CLEAR` empties it, and `)LOAD` brings it all back."
+      "md": "A definition can outlive the session it was made in. `)SAVE` writes the whole workspace — variables and functions together — `)CLEAR` empties it, and `)LOAD` brings it all back. Name the workspace with `)WSID` first: APL will not let an unnamed workspace overwrite a saved one, and answers `NOT SAVED: THIS WS IS CLEAR WS`."
     },
     {
       "type": "cell",
-      "code": "∇wsdemo n\nn×n\n∇\n)SAVE demo\n)CLEAR\n)LOAD demo\nwsdemo 9"
+      "code": "∇wsdemo n\nn×n\n∇\n)WSID demo\n)SAVE demo\n)CLEAR\n)LOAD demo\nwsdemo 9"
     }
   ]
 }
