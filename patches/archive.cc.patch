@@ -25,9 +25,13 @@ Established by comparing the tags in the GNU APL svn repository:
 `left` is sticky, so by the time )LOAD formats its timestamp with setw(2) and
 setfill('0') — which assumes the default right-justification — the fill lands
 after the digit instead of before it. Archive.cc did not change; the new
-left-justification in Command.cc changed the stream state it relies on. That
-matches observed behaviour: GNU APL 1.9's native binary prints the date
-correctly, apl-2.0 does not.
+left-justification in Command.cc changed the stream state it relies on.
+
+Confirmed on a native build, so this is not specific to a WebAssembly build:
+trunk compiled with clang++ on macOS prints "SAVED 2026-70-30" before this
+patch and "SAVED 2026-07-30" after it, against a )SAVE that already printed
+"2026-07-30" correctly. GNU APL 1.9's native binary is also correct, matching
+the file comparison above.
 
 Command.cc:1671 shows the codebase's own convention for this: it restores
 `right` immediately after a left-aligned setw. )SAVE is unaffected because it

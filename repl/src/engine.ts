@@ -112,8 +112,8 @@ export async function loadEngine(): Promise<Engine> {
         continue;
       }
       if (isCommand(seg.text)) {
-        const said = runCommand(seg.text);
-        if (said) out.push(said);
+        mod.ccall('apl_exec', 'number', ['string'], [seg.text]);
+        flush();
         if (WRITES_LIBRARY.has(commandName(seg.text))) persist();
         continue;
       }

@@ -202,6 +202,22 @@ test('a workspace saves, survives )CLEAR and loads back', () => {
   assert.equal(engine.line('wsf 21').text, '42');
 });
 
+test('a ]usercmd user-defined command runs when invoked', () => {
+  const install = engine.line("]usercmd ]tcmd {⍺,'; ',⍵,'; ⍺:',(⍴⍺),(≢⍺),'⍵:',(⍴⍵),≢⍵}");
+  assert.match(install.text, /installed/);
+  const used = engine.line(']tcmd this is a test');
+  assert.notEqual(used.text.trim(), '', ']tcmd produced no output — user commands are being dropped');
+  assert.match(used.text, /\]tcmd this is a test/);
+  assert.match(engine.line(']USERCMD').text, /\]tcmd/);
+});
+
+test('a user-defined command survives beside built-ins', () => {
+  engine.line("]usercmd ]twice {2×≢⍵}");
+  assert.match(engine.line(']USERCMD').text, /\]twice/);
+  assert.notEqual(engine.line(']twice abc').text.trim(), '');
+  assert.match(engine.line(')HELP').text, /\)CHECK \[BRIEF\]/);
+});
+
 test(')LOAD reports the date the same way )SAVE does', () => {
   engine.line('dv←1');
   engine.line(')WSID datecheck');
