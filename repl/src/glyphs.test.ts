@@ -51,3 +51,10 @@ test('insert works with input-like text controls', () => {
   assert.equal(input.selectionStart, 6);
   assert.equal(input.selectionEnd, 6);
 });
+
+test('the lambda argument glyphs are on the keyboard', () => {
+  const flat = LAYOUT.flat().flatMap(spec => spec.slice(1));
+  for (const glyph of ['⍶', 'χ', '⍹', '⍺', '⍵']) {
+    assert.ok(flat.includes(glyph), `missing glyph ${glyph}`);
+  }
+});

@@ -89,6 +89,13 @@ export async function loadEngine(): Promise<Engine> {
   };
   const command = (c: string): void => { runCommand(c); };
 
+  const drainScripts = (): void => {
+    for (let i = 0; i < 1000000; i++) {
+      const rc = mod.ccall('repl', 'number', ['number', 'number', 'number', 'number', 'number'], [0, 0, 0, 0, 0]) as number;
+      if (rc === 0) return;
+    }
+  };
+
   command(`)LIBS 0 ${WORKSPACE_ROOT}`);
   out.length = 0;
 
@@ -113,6 +120,7 @@ export async function loadEngine(): Promise<Engine> {
       }
       if (isCommand(seg.text)) {
         mod.ccall('apl_exec', 'number', ['string'], [seg.text]);
+        drainScripts();
         flush();
         if (WRITES_LIBRARY.has(commandName(seg.text))) persist();
         continue;

@@ -1,7 +1,7 @@
 # gnu-apl-wasm
 
 [GNU APL 2.0](https://www.gnu.org/software/apl/) compiled to WebAssembly.
-One script downloads the upstream source, applies three small patches, and
+One script downloads the upstream source, applies four small patches, and
 produces a ~4 MB `apl.wasm` you can call from Node or the browser.
 
 ## Build
@@ -73,7 +73,7 @@ handling. Key choices:
   (Native WebAssembly exceptions; needs a recent runtime — Node 17+, current
   browsers.)
 
-Patches (neither changes APL semantics):
+Patches (none changes APL semantics):
 
 - `patches/libapl.cc.patch` — three stale references in upstream `libapl.cc`
   (a wrong include and two renamed types), plus making `apl_exec()`
@@ -88,6 +88,15 @@ Patches (neither changes APL semantics):
   cell vtable and trapped the 3rd consecutive monadic scalar call. Found via a
   differential test against the native binary; the fix took core-language
   fidelity from 96.8% to 99.2% of comparable testcase lines.
+- `patches/archive.cc.patch` — `)LOAD` printed single-digit date fields
+  reversed (`SAVED 2026-70-30`): a 2.0 regression — `Command.cc` newly leaves
+  the stream left-justified, and `Archive.cc`'s hand-rolled `setw(2)` assumed
+  the default. Fixed upstream in SVN 2051; kept here because the released 2.0
+  tarball predates that revision.
+- `patches/command.cc.patch` — `]USERCMD` rejected a lambda with an explicit
+  mode, which is exactly the form `)DUMP` writes, so dumps could not restore
+  their own user commands. Backported verbatim from svn trunk, where it is
+  already fixed.
 
 ## Playground & learning environment (`repl/`)
 
@@ -133,12 +142,15 @@ step on the server, no runtime dependencies, real MIME types only (`.wasm` →
 Source lives in `repl/src/` as focused ES modules:
 
 - `engine.ts` — the only wrapper over the WASM module. Expressions go through
-  `apl_exec`, whose return code is the authoritative error signal; `)`/`]`
-  commands go through `apl_command`, which returns its output as a string —
-  `apl_exec`'s code is meaningless for commands (0 even for `BAD COMMAND`, and
-  non-zero for a *successful* `)LOAD` after an error). `∇` blocks go through
-  `fix_function_NL`. The library root is pointed at a writable directory at
-  startup, which is what makes `)SAVE`/`)LOAD` work.
+  `apl_exec`, whose return code is the authoritative error signal. `)`/`]`
+  commands are also dispatched by `apl_exec` — `apl_command` skips user-defined
+  commands — but their return code is ignored, because it is meaningless for
+  commands (0 even for `BAD COMMAND`, non-zero for a *successful* `)LOAD` after
+  an error); after each command the interpreter's script queue is drained via
+  `repl()`, which is what makes a `)LOAD`ed `)DUMP` script actually execute.
+  `∇` blocks go through `fix_function_NL`. The library root is pointed at a
+  writable, IndexedDB-backed directory at startup, which is what makes
+  `)SAVE`/`)LOAD` work and persist.
 - `glyphs.ts` — one `LAYOUT` table drives both the backtick-prefix input map and
   the on-screen QWERTY-shaped keyboard.
 - `dom.ts`, `share.ts`, `input-modal.ts`, `content.ts`, `progress.ts` — shared
@@ -160,7 +172,7 @@ Two pages:
   decoded only as text into the `textarea`, so a shared link can never inject
   anything.
 - **`learn.html`** — a live notebook: a 21-topic, zero-to-fluent curriculum
-  (102 checked exercises, 135 live cells) from arithmetic through sorting and capstone
+  (102 checked exercises, 142 live cells) from arithmetic through sorting and capstone
   one-liners, ending in a playable **hangman** (its board computed by the APL you
   wrote) and tic-tac-toe logic. Topics collapse to a title list and the page
   opens to where you left off; cells auto-run; exercises check in-browser against
@@ -175,7 +187,7 @@ Content lives in `repl/content/` as one JSON file per topic plus an ordered
 ```
 build.sh                  download → patch → configure → build → link
 test.mjs                  conformance test
-patches/                  upstream fixes (libapl.cc, ScalarFunction.cc)
+patches/                  upstream fixes (libapl, ScalarFunction, Archive, Command)
 build/                    scratch (tarball + extracted source)  [generated]
 dist/                     apl.mjs + apl.wasm                     [generated]
 repl/                     TypeScript playground + learning site

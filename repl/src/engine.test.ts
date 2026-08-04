@@ -218,6 +218,30 @@ test('a user-defined command survives beside built-ins', () => {
   assert.match(engine.line(')HELP').text, /\)CHECK \[BRIEF\]/);
 });
 
+test('a )DUMPV workspace loads back with contents and user commands', () => {
+  engine.line(')CLEAR');
+  engine.line("]usercmd ]tdump {⍺,'; ',⍵}");
+  engine.line('davg←{(+/⍵)÷≢⍵}');
+  engine.line('dv←2 2⍴⍳4');
+  engine.line(')WSID dumprt');
+  assert.match(engine.line(')DUMPV dumprt.apl').text, /DUMPED/);
+
+  engine.line(')CLEAR');
+  assert.ok(engine.line('davg 1 2 3').error, 'workspace was not cleared');
+
+  assert.match(engine.line(')LOAD dumprt.apl').text, /DUMPED/);
+  assert.equal(engine.line('davg ⍳100').text, '50.5', 'dumped function missing after )LOAD');
+  assert.equal(engine.line('dv').text, '1 2\n3 4', 'dumped variable missing after )LOAD');
+  assert.match(engine.line(']tdump hi').text, /hi/, 'dumped ]usercmd missing after )LOAD');
+});
+
+test(']USERCMD accepts a lambda with an explicit mode, as )DUMP writes it', () => {
+  engine.line(']USERCMD REMOVE-ALL');
+  const r = engine.line("]USERCMD ]tmode {⍺,'/',⍵} 1");
+  assert.match(r.text, /installed/);
+  assert.match(engine.line(']tmode x').text, /x/);
+});
+
 test(')LOAD reports the date the same way )SAVE does', () => {
   engine.line('dv←1');
   engine.line(')WSID datecheck');

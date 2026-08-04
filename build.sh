@@ -27,10 +27,11 @@ echo "[2/5] extract   apl-${VER}"
 rm -rf "$SRC"
 tar xzf "$TARBALL" -C "$BUILD"
 
-echo "[3/5] patch     libapl.cc + ScalarFunction.cc + Archive.cc"
+echo "[3/5] patch     libapl.cc + ScalarFunction.cc + Archive.cc + Command.cc"
 patch -p0 -d "$BUILD" < "$HERE/patches/libapl.cc.patch"
 patch -p0 -d "$BUILD" < "$HERE/patches/scalarfunction.cc.patch"
 patch -p0 -d "$BUILD" < "$HERE/patches/archive.cc.patch"
+patch -p0 -d "$BUILD" < "$HERE/patches/command.cc.patch"
 
 echo "[4/5] build     libapl.a  (minimal core, single-threaded, wasm exceptions — a few minutes)"
 cd "$SRC"
@@ -43,7 +44,7 @@ emmake make -C src libapl.la CXXFLAGS="-O2 -fwasm-exceptions" >/dev/null
 
 echo "[5/5] link      apl.wasm + apl.mjs"
 emcc src/.libs/libapl.a -fwasm-exceptions --no-entry \
-  -sEXPORTED_FUNCTIONS=_init_libapl,_apl_exec,_apl_command,_fix_function_NL,_malloc,_free \
+  -sEXPORTED_FUNCTIONS=_init_libapl,_apl_exec,_apl_command,_fix_function_NL,_repl,_malloc,_free \
   -sEXPORTED_RUNTIME_METHODS=ccall,cwrap,UTF8ToString,stringToUTF8,lengthBytesUTF8,FS \
   -sMODULARIZE=1 -sEXPORT_ES6=1 -sENVIRONMENT=node,web \
   -sALLOW_MEMORY_GROWTH=1 -sINITIAL_MEMORY=67108864 -sFORCE_FILESYSTEM=1 \
