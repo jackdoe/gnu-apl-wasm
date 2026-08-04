@@ -83,6 +83,12 @@ test('Daves barplot defines from plain pasted lines', () => {
   assert.equal(r.text, '     ⎕\n ⎕   ⎕\n ⎕ ⎕ ⎕\n-⎕-⎕-⎕-');
 });
 
+test('a λ-header ∇ block reports its error instead of killing the engine', () => {
+  const r = engine.define('λ←lamf ⍵\nλ←⍵+1');
+  assert.ok(r.error, 'expected the λ-header DEFN error to be reported');
+  assert.equal(engine.line('2+2').text, '4', 'engine died after the λ-header definition');
+});
+
 test('a lambda mentioning ∇ is run, not treated as a definition', () => {
   const r = engine.run({ code: "'∇ inside a lambda'" });
   assert.equal(r.error, null);

@@ -1,4 +1,4 @@
-Fix stale references AND make apl_exec exception-safe.
+Fix stale references AND make apl_exec and fix_function_NL exception-safe.
 
 1) Three stale references in upstream libapl.cc (wrong include, two renamed
    types) so it builds against the apl-2.0 headers.
@@ -7,9 +7,14 @@ Fix stale references AND make apl_exec exception-safe.
    →3) escaped libapl as an uncaught C++ exception and crashed the host.
    The native binary wraps process_line; libapl now does too — reporting the
    error (⎕EM lines) like native instead of escaping.
+3) fix_function_NL() had the same defect at the other entry point: it calls
+   Quad_FX::do_quad_FX() with no try/catch, so a header that makes ⎕FX throw
+   (e.g. a lambda-style header 'λ←f ⍵', which raises DEFN ERROR) escaped as
+   an uncaught C++ exception and killed the host. It now reports the error
+   code like apl_exec does.
 
---- apl-2.0/src/libapl.cc	2026-06-22 19:22:20.823876582 +0200
-+++ apl-2.0/src/libapl.cc	2026-06-22 19:22:20.871967852 +0200
+--- apl-2.0/src/libapl.cc
++++ apl-2.0/src/libapl.cc
 @@ -30,7 +30,7 @@
  
  #include <Command.hh>
@@ -40,7 +45,33 @@ Fix stale references AND make apl_exec exception-safe.
     if (si == Workspace::SI_top())   return LAE_NO_ERROR;
  
     si = Workspace::SI_top_error(false);
-@@ -535,7 +547,7 @@
+@@ -519,10 +531,21 @@
+ 
+ const int eprops[] = { 0, 0, 0, 0 };   // execution properties
+ const UTF8_string creator("libapl:fix_function_ucs");
+-const Token tok = Quad_FX::do_quad_FX(eprops, text_ucs, creator, true);
+-
+-   return LIBAPL_error(tok.get_tag() == TOK_ERROR ? tok.get_int_val()
+-                                                  : E_NO_ERROR);
++   try
++      {
++        const Token tok = Quad_FX::do_quad_FX(eprops, text_ucs, creator, true);
++        return LIBAPL_error(tok.get_tag() == TOK_ERROR ? tok.get_int_val()
++                                                       : E_NO_ERROR);
++      }
++   catch (Error & err)
++      {
++        if (err.get_print_loc() == 0)   err.print_em(UERR, LOC);
++        return LIBAPL_error(err.get_error_code());
++      }
++   catch (...)
++      {
++        return LAE_UNKNOWN_ERROR;
++      }
+ }
+ 
+ LIBAPL_error
+@@ -535,7 +558,7 @@
     text.reserve(len);
     for (const char ** f = function_lines_utf8; *f; ++f)
        {
@@ -49,7 +80,7 @@ Fix stale references AND make apl_exec exception-safe.
        }
  
     return fix_function_NL(text.c_str());
-@@ -759,7 +771,7 @@
+@@ -759,7 +782,7 @@
  //----------------------------------------------------------------------------
  extern DiffOut DOUT_filebuf;
  extern DiffOut UERR_filebuf;
