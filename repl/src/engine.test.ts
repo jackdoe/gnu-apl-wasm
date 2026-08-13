@@ -98,14 +98,21 @@ test('reading input with none supplied is refused, not fatal', () => {
 });
 
 test('every keyboard glyph is a character GNU APL accepts', () => {
+  const stringOnly = new Set(['¢']);
   for (const spec of LAYOUT.flat()) {
     for (const glyph of spec.slice(1)) {
       if (glyph === undefined) continue;
-      const r = engine.run({ code: glyph });
+      const r = engine.run({ code: stringOnly.has(glyph) ? `'${glyph}'` : glyph });
       assert.doesNotMatch(r.text, /Unknown APL character/u,
         `keyboard offers ${glyph}, which GNU APL rejects`);
+      if (stringOnly.has(glyph)) assert.equal(r.text, glyph);
     }
   }
+});
+
+test('$ is the hex literal prefix', () => {
+  assert.equal(engine.run({ code: '$FF' }).text, '255');
+  assert.equal(engine.run({ code: '$10' }).text, '16');
 });
 
 test('a lambda mentioning ∇ is run, not treated as a definition', () => {
