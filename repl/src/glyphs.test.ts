@@ -11,7 +11,7 @@ test('MAP derives core glyphs from LAYOUT', () => {
 
 test('MAP keeps the prefix-only glyphs that the old PALETTE dropped', () => {
   assert.equal(MAP['h'], '∆');
-  assert.equal(MAP['k'], "'");
+  assert.equal(MAP['k'], 'λ');
 });
 
 test('MAP includes shifted glyphs from LAYOUT', () => {
@@ -54,7 +54,7 @@ test('insert works with input-like text controls', () => {
 
 test('the lambda argument glyphs are on the keyboard', () => {
   const flat = LAYOUT.flat().flatMap(spec => spec.slice(1));
-  for (const glyph of ['⍶', 'χ', '⍹', '⍺', '⍵']) {
+  for (const glyph of ['⍶', 'χ', '⍹', '⍺', '⍵', 'λ']) {
     assert.ok(flat.includes(glyph), `missing glyph ${glyph}`);
   }
 });
