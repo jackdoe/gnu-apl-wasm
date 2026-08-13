@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { describeThrown, loadEngine, normalize } from './engine.js';
+import { LAYOUT } from './glyphs.js';
 
 const engine = await loadEngine();
 
@@ -87,6 +88,24 @@ test('a λ-header ∇ block reports its error instead of killing the engine', ()
   const r = engine.define('λ←lamf ⍵\nλ←⍵+1');
   assert.ok(r.error, 'expected the λ-header DEFN error to be reported');
   assert.equal(engine.line('2+2').text, '4', 'engine died after the λ-header definition');
+});
+
+test('reading input with none supplied is refused, not fatal', () => {
+  const r = engine.run({ code: '2×⎕' });
+  assert.ok(r.error);
+  assert.match(r.text, /no input was supplied/);
+  assert.equal(engine.run({ code: '2+2' }).text, '4');
+});
+
+test('every keyboard glyph is a character GNU APL accepts', () => {
+  for (const spec of LAYOUT.flat()) {
+    for (const glyph of spec.slice(1)) {
+      if (glyph === undefined) continue;
+      const r = engine.run({ code: glyph });
+      assert.doesNotMatch(r.text, /Unknown APL character/u,
+        `keyboard offers ${glyph}, which GNU APL rejects`);
+    }
+  }
 });
 
 test('a lambda mentioning ∇ is run, not treated as a definition', () => {

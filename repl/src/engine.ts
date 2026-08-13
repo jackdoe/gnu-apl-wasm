@@ -145,6 +145,12 @@ export async function loadEngine(): Promise<Engine> {
         error: { code: -1 },
       };
     }
+    if (readsInput(`${setup}\n${code}\n${test}`) && inputs.length === 0) {
+      return {
+        text: 'This code reads input with ⎕ or ⍞, but no input was supplied.',
+        error: { code: -1 },
+      };
+    }
     command(')CLEAR');
     feed(inputs);
     if (setup) exec(setup);
