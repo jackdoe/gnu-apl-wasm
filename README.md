@@ -1,15 +1,16 @@
 # gnu-apl-wasm
 
-[GNU APL 2.0](https://www.gnu.org/software/apl/) compiled to WebAssembly.
-One script downloads the upstream source, applies four small patches, and
-produces a ~4 MB `apl.wasm` you can call from Node or the browser.
+[GNU APL](https://www.gnu.org/software/apl/) svn trunk compiled to
+WebAssembly. One script copies the checkout, applies one small patch, and
+produces a ~3 MB `apl.wasm` you can call from Node or the browser.
 
 ## Build
 
-Needs [Emscripten](https://emscripten.org) on PATH (`emcc`) and the usual
-build tools (`curl`, `tar`, `patch`, `make`).
+Needs [Emscripten](https://emscripten.org) on PATH (`emcc`), `svn`, and the
+usual build tools (`rsync`, `patch`, `make`), plus a GNU APL checkout:
 
 ```sh
+svn co svn://svn.sv.gnu.org/apl svn/apl     # once; svn up to move forward
 source /path/to/emsdk/emsdk_env.sh
 ./build.sh
 ```
@@ -73,30 +74,18 @@ handling. Key choices:
   (Native WebAssembly exceptions; needs a recent runtime — Node 17+, current
   browsers.)
 
-Patches (none changes APL semantics):
-
-- `patches/libapl.cc.patch` — three stale references in upstream `libapl.cc`
-  (a wrong include and two renamed types), plus making `apl_exec()`
-  exception-safe: it wrapped `process_line()` with no `try/catch`, so an APL
-  error thrown from the post-evaluation phase (e.g. a top-level branch `→3`)
-  escaped `libapl` as an uncaught C++ exception and crashed the host. It now
-  reports the error like the native binary instead of throwing.
-- `patches/scalarfunction.cc.patch` — a latent use-after-destruction in the
-  scalar-function worklist (`do_scalar_B`/`do_scalar_AB` explicitly destroy a
-  persistent worklist member, which the next call then copy-assigns into).
-  Harmless on native x86; under WASM's typed indirect calls it corrupted a
-  cell vtable and trapped the 3rd consecutive monadic scalar call. Found via a
-  differential test against the native binary; the fix took core-language
-  fidelity from 96.8% to 99.2% of comparable testcase lines.
-- `patches/archive.cc.patch` — `)LOAD` printed single-digit date fields
-  reversed (`SAVED 2026-70-30`): a 2.0 regression — `Command.cc` newly leaves
-  the stream left-justified, and `Archive.cc`'s hand-rolled `setw(2)` assumed
-  the default. Fixed upstream in SVN 2051; kept here because the released 2.0
-  tarball predates that revision.
-- `patches/command.cc.patch` — `]USERCMD` rejected a lambda with an explicit
-  mode, which is exactly the form `)DUMP` writes, so dumps could not restore
-  their own user commands. Backported verbatim from svn trunk, where it is
-  already fixed.
+The single patch, `patches/svn-trunk-wasm.patch`, changes no APL semantics:
+it guards `fix_function_NL()` with the same try/catch `apl_exec()` already
+has upstream (an error thrown by `⎕FX` otherwise escapes `extern "C"` and
+kills the host), repairs two spots where rarely-built `libapl.cc` drifted
+against the core headers, qualifies a socket `bind()` that emscripten's
+headers resolve to `std::bind`, and turns the bare `¯` tokens in `rval.def`
+into string literals, which LLVM 23 requires. `patches/wasm-stubs.c` provides
+a `sem_timedwait()` stub for ⎕PLOT — a browser has no plot windows to wait
+for. The four earlier patches against the 2.0 tarball are gone: upstream
+adopted their substance (the `apl_exec` exception guard, the `)LOAD` date
+fix in SVN 2051, the `]USERCMD` lambda parsing) or rewrote the code they
+fixed (the scalar-function worklist).
 
 ## Playground & learning environment (`repl/`)
 
@@ -185,10 +174,11 @@ Content lives in `repl/content/` as one JSON file per topic plus an ordered
 ## Layout
 
 ```
-build.sh                  download → patch → configure → build → link
+build.sh                  copy svn trunk → patch → configure → build → link
 test.mjs                  conformance test
-patches/                  upstream fixes (libapl, ScalarFunction, Archive, Command)
-build/                    scratch (tarball + extracted source)  [generated]
+patches/                  svn-trunk-wasm.patch + wasm-stubs.c
+build/                    scratch (patched copy of svn trunk)    [generated]
+svn/                      GNU APL svn checkout                   [not in git]
 dist/                     apl.mjs + apl.wasm                     [generated]
 repl/                     TypeScript playground + learning site
   src/                    source modules (engine, glyphs, blocks/, repl, learn, …)

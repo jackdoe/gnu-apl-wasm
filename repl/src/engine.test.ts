@@ -110,6 +110,21 @@ test('every keyboard glyph is a character GNU APL accepts', () => {
   }
 });
 
+test('a statement retried via dyadic branch does not leak fun_oper slots', () => {
+  engine.line(')CLEAR');
+  engine.define([
+    'z←a TFun b;i;_;∆ ⍝⍝ Run a tests of b computations',
+    'z←a↑i←0',
+    '∆←b⋄_←¯3↑⎕ts',
+    '0→∆←∆-1⊣ ∆÷⍨∆*.5',
+    '¯2→a>i⊣z[i←i+1]←+/6e4 1e3 1×_-⍨¯3↑⎕ts',
+    'z←(⊂z),⊂i÷⍨+/z',
+  ].join('\n'));
+  const r = engine.line('2 TFun 100');
+  assert.equal(r.error, null, `TFun failed: ${r.text}`);
+  assert.doesNotMatch(r.text, /SYSTEM LIMIT/);
+});
+
 test('$ is the hex literal prefix', () => {
   assert.equal(engine.run({ code: '$FF' }).text, '255');
   assert.equal(engine.run({ code: '$10' }).text, '16');
@@ -317,7 +332,7 @@ test('a command after an error is not reported as failing', () => {
 
 test('a bad command reports its own text without a thrown error', () => {
   const r = engine.line(')NOSUCHCOMMAND');
-  assert.match(r.text, /BAD COMMAND/);
+  assert.match(r.text, /INCORRECT COMMAND/);
 });
 
 test('safe mode still blocks )HOST', () => {

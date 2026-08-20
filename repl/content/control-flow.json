@@ -1,5 +1,5 @@
 {
-  "title": "Traditional functions & branching (⎕FX)",
+  "title": "Traditional functions & branching",
   "blocks": [
     {
       "type": "prose",
@@ -11,7 +11,7 @@
     },
     {
       "type": "prose",
-      "md": "In a desktop APL session, traditional functions are often edited with `∇`. In this browser, `⎕FX` is the direct way to define them."
+      "md": "They are also written between `∇` markers, and pasting such a block works here exactly as it does in a desktop session — the bar-chart lesson shows both forms. Multi-line definitions read best that way."
     },
     {
       "type": "prose",
@@ -19,11 +19,19 @@
     },
     {
       "type": "cell",
-      "code": "⎕FX 'R←fact N' 'R←1' '→(N≤1)/0' 'R←N×fact N-1' ⋄ fact 5"
+      "code": "∇R←fact N\nR←1\n→(N≤1)/0\nR←N×fact N-1\n∇\nfact 5"
     },
     {
       "type": "cell",
-      "code": "⎕FX 'R←fib N' 'R←N' '→(N<2)/0' 'R←(fib N-1)+fib N-2' ⋄ fib 10"
+      "code": "∇R←fib N\nR←N\n→(N<2)/0\nR←(fib N-1)+fib N-2\n∇\nfib 10"
+    },
+    {
+      "type": "prose",
+      "md": "GNU APL also documents a dyadic branch: `N→COND` moves `N` lines relative to the current one when the condition holds — defined as `→(COND)/(⎕LC+N)`. So `¯1→COND` re-runs the previous line and `0→COND` retries the current one, and a counting loop needs no labels at all."
+    },
+    {
+      "type": "cell",
+      "code": "∇r←count n\nr←⍬\nr←r,n\n¯1→0<n←n-1\n∇\ncount 5"
     },
     {
       "type": "exercise",

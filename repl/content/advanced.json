@@ -132,6 +132,14 @@
     {
       "type": "cell",
       "code": "0j1×0j1 ⍝ the imaginary unit squared"
+    },
+    {
+      "type": "prose",
+      "md": "**⎕PLOT.** The interpreter can draw. In the browser it renders straight into the session as character graphics — here a parabola, one `●` per point."
+    },
+    {
+      "type": "cell",
+      "code": "⎕PLOT ×⍨⍳9"
     }
   ]
 }
