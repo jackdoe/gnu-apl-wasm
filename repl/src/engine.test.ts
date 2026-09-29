@@ -90,6 +90,13 @@ test('a λ-header ∇ block reports its error instead of killing the engine', ()
   assert.equal(engine.line('2+2').text, '4', 'engine died after the λ-header definition');
 });
 
+test('a ∇ block with a bad body is reported, not announced as defined', () => {
+  const r = engine.run({ code: '∇z←broken x\nz←(x\n∇' });
+  assert.ok(r.error, 'bad body was accepted');
+  assert.match(r.text, /^DEFN ERROR/);
+  assert.match(engine.line(')MORE').text, /function line \[1\]/);
+});
+
 test('reading input with none supplied is refused, not fatal', () => {
   const r = engine.run({ code: '2×⎕' });
   assert.ok(r.error);
@@ -280,6 +287,23 @@ test('a )DUMPV workspace loads back with contents and user commands', () => {
   assert.equal(engine.line('davg ⍳100').text, '50.5', 'dumped function missing after )LOAD');
   assert.equal(engine.line('dv').text, '1 2\n3 4', 'dumped variable missing after )LOAD');
   assert.match(engine.line(']tdump hi').text, /hi/, 'dumped ]usercmd missing after )LOAD');
+});
+
+test(')PCOPY from )DUMPed workspaces keeps what is already defined', () => {
+  engine.line(')CLEAR');
+  engine.line("pa←'first'");
+  engine.line(')WSID pcopy1');
+  engine.line(')DUMP');
+  engine.line(')CLEAR');
+  engine.line("pa←'second'");
+  engine.line("pb←'only second'");
+  engine.line(')WSID pcopy2');
+  engine.line(')DUMP');
+  engine.line(')CLEAR');
+  engine.line(')PCOPY pcopy1');
+  engine.line(')PCOPY pcopy2');
+  assert.equal(engine.line('pa').text, 'first', ')PCOPY overwrote an existing variable');
+  assert.equal(engine.line('pb').text, 'only second', ')PCOPY skipped a new variable');
 });
 
 test(']USERCMD accepts a lambda with an explicit mode, as )DUMP writes it', () => {

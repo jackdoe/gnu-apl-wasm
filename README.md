@@ -74,18 +74,21 @@ handling. Key choices:
   (Native WebAssembly exceptions; needs a recent runtime — Node 17+, current
   browsers.)
 
-The single patch, `patches/svn-trunk-wasm.patch`, changes no APL semantics:
-it guards `fix_function_NL()` with the same try/catch `apl_exec()` already
-has upstream (an error thrown by `⎕FX` otherwise escapes `extern "C"` and
-kills the host), repairs two spots where rarely-built `libapl.cc` drifted
-against the core headers, qualifies a socket `bind()` that emscripten's
-headers resolve to `std::bind`, and turns the bare `¯` tokens in `rval.def`
-into string literals, which LLVM 23 requires. `patches/wasm-stubs.c` provides
-a `sem_timedwait()` stub for ⎕PLOT — a browser has no plot windows to wait
-for. The four earlier patches against the 2.0 tarball are gone: upstream
-adopted their substance (the `apl_exec` exception guard, the `)LOAD` date
-fix in SVN 2051, the `]USERCMD` lambda parsing) or rewrote the code they
-fixed (the scalar-function worklist).
+The single patch, `patches/svn-trunk-wasm.patch`, changes no APL semantics.
+In `libapl.cc` it guards `fix_function_NL()` with the same try/catch
+`apl_exec()` already has upstream (a `DEFN ERROR` thrown by `⎕FX` otherwise
+escapes `extern "C"` and kills the host), makes it report a failed
+definition as `DEFN ERROR` instead of success (`⎕FX` signals failure by
+returning the bad line number, which `fix_function_NL()` never checked), and
+keeps its private `Quad_FX` declaration in step with the real one. In
+`UCS_string.cc` it resets a stream width that padded the first character of
+any string wider than it, which garbled the long `]KEYB` and `]FILE_CTL`
+lines of `)HELP`. `patches/wasm-stubs.c` provides a `sem_timedwait()` stub
+for ⎕PLOT — a browser has no plot windows to wait for. Upstream has since
+absorbed the rest of what earlier patches fixed: the `apl_exec` exception
+guard, the `)LOAD` date (SVN 2051), the `]USERCMD` lambda parsing, the
+scalar-function worklist, the `libapl.cc` header drift, the socket
+`::bind()`, and the quoted `rval.def` stimuli.
 
 ## Playground & learning environment (`repl/`)
 
